@@ -1,0 +1,29 @@
+name: Build Creative OS APK
+on:
+  push:
+      branches: [ main, master ]
+        workflow_dispatch:
+        jobs:
+          build:
+              runs-on: ubuntu-latest
+                  steps:
+                        - uses: actions/checkout@v3
+                              - name: Set up Java
+                                      uses: actions/setup-java@v3
+                                              with:
+                                                        java-version: '17'
+                                                                  distribution: 'temurin'
+                                                                        - name: Set up Flutter
+                                                                                uses: subosito/flutter-action@v2
+                                                                                        with:
+                                                                                                  flutter-version: '3.16.0'
+                                                                                                        - name: Install dependencies
+                                                                                                                run: flutter pub get
+                                                                                                                      - name: Build Release APK
+                                                                                                                              run: flutter build apk --release
+                                                                                                                                    - name: Upload APK
+                                                                                                                                            uses: actions/upload-artifact@v3
+                                                                                                                                                    with:
+                                                                                                                                                              name: creative-os-release
+                                                                                                                                                                        path: build/app/outputs/flutter-apk/app-release.apk
+                                                                                                                                                                        
