@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F1B2D"/>
+      <stop offset="100%" stop-color="#070D17"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DFBA6E"/>
+      <stop offset="50%" stop-color="#C9A55C"/>
+      <stop offset="100%" stop-color="#9E7C3B"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  <!-- Background Canvas -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle Gold Outer Ring -->
+  <rect x="24" y="24" width="464" height="464" rx="96" fill="none" stroke="url(#goldGrad)" stroke-width="4" opacity="0.3"/>
+  
+  <!-- Document Sheet -->
+  <g filter="url(#shadow)">
+    <!-- Base Document Surface -->
+    <path d="M 144,96 L 312,96 L 368,152 L 368,416 C 368,429.255 357.255,440 344,440 L 144,440 C 130.745,440 120,429.255 120,416 L 120,120 C 120,106.745 130.745,96 144,96 Z" fill="#FFFFFF"/>
+    
+    <!-- Folded Page Corner -->
+    <path d="M 312,96 L 312,152 L 368,152 Z" fill="#E2E8F0"/>
+    <path d="M 312,152 L 368,152" stroke="url(#goldGrad)" stroke-width="3"/>
+  </g>
+  
+  <!-- Accent Line Below Header -->
+  <rect x="152" y="180" width="184" height="6" rx="3" fill="url(#goldGrad)"/>
+  
+  <!-- Bold 'B' Monogram -->
+  <path d="M 176,212 L 244,212 C 270.514,212 288,224.5 288,244 C 288,258.5 278,268 264,272 C 282,276.5 294,288.5 294,306 C 294,328.5 272.514,340 244,340 L 176,340 Z M 212,240 L 212,262 L 240,262 C 249.941,262 256,256.5 256,251 C 256,245.5 249.941,240 240,240 Z M 212,290 L 212,312 L 244,312 C 254.941,312 262,306 262,301 C 262,296 254.941,290 244,290 Z" fill="url(#goldGrad)"/>
+  
+  <!-- Minimal Text/Line Accents -->
+  <rect x="152" y="370" width="120" height="8" rx="4" fill="#CBD5E1"/>
+  <rect x="152" y="390" width="80" height="8" rx="4" fill="#E2E8F0"/>
+</svg>

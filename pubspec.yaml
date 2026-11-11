@@ -1,0 +1,114 @@
+name: creative_os
+description: "Creative OS - Mobile Operating System for Creative Entrepreneurs"
+publish_to: 'none'
+version: 2.1.2+14
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^2.5.1
+
+  # Local SQLite Database
+  drift: ^2.18.0
+  drift_flutter: ^0.1.0
+  sqlite3_flutter_libs: ^0.5.24
+  path_provider: ^2.1.3
+  path: ^1.9.0
+
+  # PDF Generation, Preview, Rasterization & Printing
+  pdf: ^3.10.8
+  printing: ^5.13.1
+  syncfusion_flutter_pdf: ^28.2.9
+
+  # Sharing & System Integration
+  share_plus: ^9.0.0
+  url_launcher: ^6.3.0
+  receive_sharing_intent: ^1.8.1
+  quick_actions: ^1.0.8
+  nfc_manager: ^3.5.0
+  screen_brightness: ^2.0.0
+  wakelock_plus: ^1.2.8
+
+  # Email & Network
+  http: ^1.2.2
+  google_sign_in: ^6.2.2
+  mailer: ^6.1.2
+
+  # Security & Biometrics
+  flutter_secure_storage: ^9.2.2
+  local_auth: ^2.2.0
+
+  # Signatures & Media
+  signature: ^5.5.0
+  image_picker: ^1.1.2
+  file_picker: ^8.0.7
+  flutter_image_compress: ^2.3.0
+  cunning_document_scanner: ^3.0.3
+  google_mlkit_text_recognition: ^0.13.0
+  archive: ^3.6.1
+
+  # Contacts & Widgets & Background tasks
+  flutter_contacts: ^1.1.9+2
+  home_widget: ^0.7.0
+  workmanager: ^0.10.0
+
+  # Notifications & Scheduling
+  flutter_local_notifications: ^17.2.1
+  timezone: ^0.9.3
+
+  # UI & Utilities
+  intl: ^0.20.2
+  google_fonts: ^6.2.1
+  uuid: ^4.4.0
+  qr_flutter: ^4.1.0
+  cupertino_icons: ^1.0.8
+  sensors_plus: ^7.1.1
+  record: ^6.0.0
+  audioplayers: ^6.8.1
+  whisper_flutter_new: ^1.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  drift_dev: ^2.18.0
+  build_runner: ^2.4.11
+  flutter_lints: ^4.0.0
+  flutter_native_splash: ^2.4.0
+
+flutter_native_splash:
+  color: "#0A0C0E"
+  image: assets/icon/app_icon.png
+  android_12:
+    image: assets/icon/app_icon.png
+    icon_background_color: "#0A0C0E"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icon/
+    - assets/fonts/
+    - assets/hub/
+    - assets/email/
+
+  fonts:
+    - family: BebasNeue
+      fonts:
+        - asset: assets/fonts/BebasNeue-Regular.ttf
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
