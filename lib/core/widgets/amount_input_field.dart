@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../theme/app_design_tokens.dart';
 
 class AmountInputField extends StatelessWidget {
@@ -68,7 +69,10 @@ class AmountInputField extends StatelessWidget {
                   left: Radius.circular(AppDesignTokens.radiusMd - 1),
                 ),
                 border: Border(
-                  right: BorderSide(color: theme.colorScheme.outlineVariant, width: 1),
+                  right: BorderSide(
+                    color: theme.colorScheme.outlineVariant,
+                    width: 1,
+                  ),
                 ),
               ),
               child: Text(
@@ -80,7 +84,10 @@ class AmountInputField extends StatelessWidget {
                 ),
               ),
             ),
-            prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+            prefixIconConstraints: const BoxConstraints(
+              minWidth: 0,
+              minHeight: 0,
+            ),
           ),
         ),
       ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../theme/app_design_tokens.dart';
 
 class StatusBadge extends StatelessWidget {
@@ -51,7 +52,9 @@ class StatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = customColor ?? getStatusColor(status);
-    final displayLabel = status.isEmpty ? 'Draft' : status.replaceAll('_', ' ').toUpperCase();
+    final displayLabel = status.isEmpty
+        ? 'Draft'
+        : status.replaceAll('_', ' ').toUpperCase();
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -61,10 +64,7 @@ class StatusBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.14),
         borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
-        border: Border.all(
-          color: color.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -74,10 +74,7 @@ class StatusBadge extends StatelessWidget {
             Container(
               width: compact ? 5 : 6,
               height: compact ? 5 : 6,
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
-              ),
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
             ),
             SizedBox(width: compact ? 4 : 6),
           ],

@@ -146,7 +146,7 @@ class _StudioAcademyScreenState extends State<StudioAcademyScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            '10-CHAPTER FIELD MANUAL',
+                            '12-CHAPTER FIELD MANUAL',
                             style: TextStyle(
                               color: Color(0xFF38B6DB),
                               fontSize: 9.5,
@@ -359,12 +359,20 @@ class _StudioAcademyScreenState extends State<StudioAcademyScreen> {
         'slideIndex': 9,
       },
       {
+        'title': 'The Sanctuary: Solitude & Creative Life',
+        'badge': '7TH DIMENSION',
+        'color': const Color(0xFFEC4899),
+        'icon': Icons.self_improvement_rounded,
+        'desc': 'Monk Mode focus with blind micro-haptics & dual ambient soundscapes (Canopy Rain & Fire, 432Hz Alpha Flow), 60s vintage voice capsule recorder, finger sketchpad, secret spots curator with ambient audio, Personal Atlas life cartography, Gratitude Stars, tactile Burn-After-Writing journal, and Inner Circle quiet milestones.',
+        'slideIndex': 10,
+      },
+      {
         'title': 'Studio Watchdogs & Custom Automation Recipes',
         'badge': 'IFTTT & WATCHDOGS',
         'color': const Color(0xFF00E5FF),
         'icon': Icons.bolt_rounded,
         'desc': '9 native background watchdogs (overdue chasers, stale deals, VIP reconnect, gear reconcile) plus visual Custom Recipe Builder for WHEN ➔ AND IF ➔ THEN autonomous pipelines.',
-        'slideIndex': 9,
+        'slideIndex': 11,
       },
     ];
 
@@ -519,6 +527,59 @@ class _StudioAcademyScreenState extends State<StudioAcademyScreen> {
             '• Quick Create Bar: Quotation, Invoice, Contract, and Payment Receipt.',
             '• Filter Pills: Instant filter by document type.',
             '• Unified Search: Search by doc number, client, item name, or amount.',
+            '• Items Library & Rates: Master rate card for equipment & crew packages.',
+          ],
+        ),
+        const SizedBox(height: 10),
+        _buildSitemapCard(
+          title: 'DOORWAY 4: MEETINGS & MEMORY',
+          icon: Icons.forum_outlined,
+          color: const Color(0xFF2563EB),
+          items: [
+            '• Creative Briefs: Treatment notes, scope boundaries, client alignments.',
+            '• Decision Logs: Anti-backtracking record of agreements made.',
+            '• WhatsApp Import: Paste and extract key commitments from chat exports.',
+            '• Speech Lab: 100% on-device local Whisper audio transcription testing.',
+          ],
+        ),
+        const SizedBox(height: 10),
+        _buildSitemapCard(
+          title: 'DOORWAY 5: DIGITAL STAGE & 3D CARD',
+          icon: Icons.badge_outlined,
+          color: const Color(0xFFDC2626),
+          items: [
+            '• 3D Gyro Card: Physical tilt sensor reaction with specular lighting.',
+            '• 5 Tribal Sheens: Maasai Red, Obsidian Gold, Rift Cyan, Savannah Amber, Swahili Pearl.',
+            '• NFC Wireless Beam: Instant contact sharing via Android beam antenna.',
+            '• Full-Screen QR: High-brightness vCard presentation for scanning.',
+          ],
+        ),
+        const SizedBox(height: 10),
+        _buildSitemapCard(
+          title: 'DOORWAY 6: STUDIO SETTINGS & VAULT',
+          icon: Icons.shield_outlined,
+          color: const Color(0xFF4F46E5),
+          items: [
+            '• Obsidian Theme Engine: Dark obsidian aesthetic customization.',
+            '• Biometrics & Security: Fingerprint / Face app lock.',
+            '• Payment Profiles: M-Pesa Till & Paybill, KCB, Equity bank accounts.',
+            '• Studio Watchdogs & Recipes: 9 background watchers & WHEN-IF-THEN builder.',
+            '• Encrypted AES-256 Vault: 1-tap .etole backup export and restore.',
+          ],
+        ),
+        const SizedBox(height: 10),
+        _buildSitemapCard(
+          title: 'THE 7TH DIMENSION: THE SANCTUARY',
+          icon: Icons.self_improvement_rounded,
+          color: const Color(0xFFEC4899),
+          items: [
+            '• Monk Focus: 4-4-4-4 box breathing with micro-haptic blind pulses.',
+            '• Dual Soundscapes: Canopy Rain & Fireplace, 432Hz Alpha binaural flow.',
+            '• Creative Scrapbook: 60s vintage reel voice capsules, finger sketches & palette lab.',
+            '• Secret Spots: Hidden viewpoints & quiet cafes with ambient audio recording.',
+            '• Personal Atlas: Life cartography with chronological route constellation line.',
+            '• Soulful Vault: 3-Star Gratitude, Burn-After-Writing journal, Letters to the Future.',
+            '• Inner Circle: Warmth decay ratio, quiet milestone horizon & shared lore.',
           ],
         ),
         const SizedBox(height: 14),
@@ -554,6 +615,16 @@ class _StudioAcademyScreenState extends State<StudioAcademyScreen> {
               SizedBox(height: 10),
               Text(
                 '• Return Home: Tap the floating glass "< HUB" pill from any world to go back instantly.',
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+              SizedBox(height: 5),
+              Text(
+                '• Quick Sanctuary Access: Tap the glowing pink "SANCTUARY" jewel button at the top right of the Hub.',
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+              SizedBox(height: 5),
+              Text(
+                '• Blind Focus Mode: In Monk Mode, tap the eye icon to black out the display while micro-haptics guide box breathing intervals.',
                 style: TextStyle(color: Colors.white, fontSize: 12),
               ),
               SizedBox(height: 5),
@@ -670,6 +741,37 @@ class _StudioAcademyScreenState extends State<StudioAcademyScreen> {
           '4. Tap "Chase via WhatsApp" to send the customized message without having to draft awkward follow-up emails.',
         ],
       },
+      {
+        'num': 'PLAYBOOK 05',
+        'title': 'Solo Creative Decompression with Monk Mode & Soundscapes',
+        'steps': [
+          '1. Step into The Sanctuary: Tap the glowing pink "SANCTUARY" pill at the top right of the Hub.',
+          '2. Open "Monk Focus": Select your session duration (e.g. 25 min) and box breathing tempo (4-4-4-4).',
+          '3. Layer Soundscapes: Mix Canopy Rain & Fireplace or 432Hz Alpha Binaural Flow to mask ambient noise.',
+          '4. Blind Focus Mode: Tap the eye icon to black out the display. Slip the phone into your pocket; subtle micro-haptics guide your inhale, hold, exhale, and rest cycles.',
+          '5. Capture Solitude Revelations: Tap "Creative Scrapbook" and record a 60s vintage reel voice capsule of your breakthroughs.',
+        ],
+      },
+      {
+        'num': 'PLAYBOOK 06',
+        'title': 'Scouting & Sharing Secret Filming Locations',
+        'steps': [
+          '1. In The Sanctuary, tap "Secret Spots" ➔ Tap "+" to log a new quiet cafe, rooftop, or hidden viewpoint.',
+          '2. Add Coordinates: Auto-detect GPS or pin precise location with OpenStreetMap.',
+          '3. Record Spot Audio: Capture 30 seconds of ambient environmental room tone directly into the spot card.',
+          '4. 1-Tap Field Guide: Tap "Share Field Guide" to dispatch an elegant text recommendation with GPS links directly to your crew or director via WhatsApp.',
+        ],
+      },
+      {
+        'num': 'PLAYBOOK 07',
+        'title': 'Setting Up Autonomous Watchdogs & Custom Pipelines',
+        'steps': [
+          '1. Open Doorway 6: Settings ➔ Tap "Studio Watchdogs & Automations".',
+          '2. Review Native Watchdogs: Ensure Overdue Chasers, Stale Deals, and VIP Reconnect are active.',
+          '3. Custom Recipe Builder: Tap "+" to build a rule (e.g. WHEN "Invoice Unpaid > 3 Days" ➔ AND IF "Amount > KES 100,000" ➔ THEN "Draft WhatsApp Chaser & Notify").',
+          '4. Autonomous Execution: The engine evaluates rules locally in the background under Android partial wakelock with zero cloud dependency.',
+        ],
+      },
     ];
 
     return Column(
@@ -745,6 +847,18 @@ class _StudioAcademyScreenState extends State<StudioAcademyScreen> {
       {
         'q': 'How does NFC contact sharing work?',
         'a': 'Open "Stage & Card" from the Hub. Ensure NFC is enabled in Android system settings. Tap the back of your phone against another NFC-capable smartphone to trigger your digital business card.',
+      },
+      {
+        'q': 'Where are Sanctuary voice notes and journal entries saved?',
+        'a': 'Everything is stored 100% locally on your phone in the private application sandbox. "Burn After Writing" journal entries are wiped directly from RAM and never touch disk, while Voice Capsules are saved as local .m4a audio files.',
+      },
+      {
+        'q': 'Can I send a letter to my future self?',
+        'a': 'Yes. In the Soulful Vault within The Sanctuary, create a "Letter to the Future" and select an unlock date. The app seals the note until that calendar morning arrives.',
+      },
+      {
+        'q': 'How does the Autonomous Watchdog engine run in the background?',
+        'a': 'The app uses Android Foreground Service Partial WakeLocks and agy-daemon to evaluate overdue documents, deals, and VIP warmth decay even when the screen is off, with zero analytics or telemetry sent over the internet.',
       },
     ];
 

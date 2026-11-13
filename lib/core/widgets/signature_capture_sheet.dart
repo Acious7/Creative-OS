@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:signature/signature.dart';
+
 import '../constants/app_colors.dart';
 
 class SignatureCaptureSheet extends StatefulWidget {
@@ -59,7 +61,8 @@ class _SignatureCaptureSheetState extends State<SignatureCaptureSheet> {
         if (!await signaturesDir.exists()) {
           await signaturesDir.create(recursive: true);
         }
-        final filePath = '${signaturesDir.path}/sig_${DateTime.now().millisecondsSinceEpoch}.png';
+        final filePath =
+            '${signaturesDir.path}/sig_${DateTime.now().millisecondsSinceEpoch}.png';
         final file = File(filePath);
         await file.writeAsBytes(data);
 
@@ -70,9 +73,9 @@ class _SignatureCaptureSheetState extends State<SignatureCaptureSheet> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error saving signature: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error saving signature: $e')));
       }
     } finally {
       if (mounted) {
@@ -99,7 +102,10 @@ class _SignatureCaptureSheetState extends State<SignatureCaptureSheet> {
             children: [
               Text(
                 widget.title,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               IconButton(
                 icon: const Icon(Icons.close),
@@ -131,10 +137,7 @@ class _SignatureCaptureSheetState extends State<SignatureCaptureSheet> {
                     bottom: 24,
                     left: 24,
                     right: 24,
-                    child: Container(
-                      height: 1,
-                      color: Colors.black12,
-                    ),
+                    child: Container(height: 1, color: Colors.black12),
                   ),
                   const Positioned(
                     bottom: 8,
@@ -165,7 +168,10 @@ class _SignatureCaptureSheetState extends State<SignatureCaptureSheet> {
                       ? const SizedBox(
                           width: 18,
                           height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
                         )
                       : const Icon(Icons.check_rounded, size: 18),
                   label: const Text('Use Signature'),

@@ -142,7 +142,7 @@ class CallAndChatIngestionService {
     final summary = _buildSummary(
       type: 'SMS Message Thread',
       contact: contact,
-      participants: [contact, 'Brian Etole'],
+      participants: [contact, 'Studio Lead'],
       agreementsCount: agreements.length,
       actionCount: actionItems.length,
     );
@@ -153,7 +153,7 @@ class CallAndChatIngestionService {
       clientOrContactName: contact,
       phoneNumber: phoneNumber,
       conversationDate: DateTime.now(),
-      participants: [contact, 'Brian Etole'],
+      participants: [contact, 'Studio Lead'],
       summary: summary,
       agreementsAndPromises: agreements,
       actionItems: actionItems,
@@ -195,7 +195,7 @@ class CallAndChatIngestionService {
       clientOrContactName: contactName,
       phoneNumber: phoneNumber,
       conversationDate: DateTime.now(),
-      participants: [contactName, 'Brian Etole'],
+      participants: [contactName, 'Studio Lead'],
       summary: summary,
       agreementsAndPromises: agreements,
       actionItems: actionItems,

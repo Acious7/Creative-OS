@@ -70,12 +70,12 @@ class PdfColorPalette {
     }
 
     final primary = PdfColor.fromInt(colorInt);
-    
+
     // Compute complementary or lighter tint
     final r = (primary.red * 255).round();
     final g = (primary.green * 255).round();
     final b = (primary.blue * 255).round();
-    
+
     // Light tint
     final lightAccent = PdfColor(
       r / 255 * 0.15 + 0.85,
@@ -86,7 +86,7 @@ class PdfColorPalette {
     return PdfColorPalette(
       primary: primary,
       secondary: const PdfColor.fromInt(0xFFF5A623), // Etole Gold (#F5A623)
-      surface: const PdfColor.fromInt(0xFFFBFBF9),   // Gallery off-white
+      surface: const PdfColor.fromInt(0xFFFBFBF9), // Gallery off-white
       textPrimary: const PdfColor.fromInt(0xFF111827), // Charcoal
       textSecondary: const PdfColor.fromInt(0xFF6B7280),
       border: const PdfColor.fromInt(0xFFE5E7EB),

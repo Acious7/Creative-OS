@@ -230,7 +230,7 @@ class FreelancePitchTemplate {
         final n = (notes != null && notes.isNotEmpty)
             ? '\n\nRegarding our conversation: "$notes"'
             : '';
-        return 'Hi $clientName! Really enjoyed connecting$loc$org. Brian Etole here from Brian Etole Productions (Director & Hybrid Filmmaker).$n\n\nI’d love to share our latest commercial reel and explore visual storytelling collaborations for your upcoming projects. When is a good time this week for a brief coffee or intro chat?';
+        return 'Hi $clientName! Really enjoyed connecting$loc$org. Reaching out from our creative production studio.$n\n\nWe’d love to share our latest commercial reel and explore visual storytelling collaborations for your upcoming projects. When is a good time this week for a brief coffee or intro chat?';
       },
     ),
     FreelancePitchTemplate(

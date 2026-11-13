@@ -1,7 +1,11 @@
 import 'package:intl/intl.dart';
 
 class CurrencyFormatter {
-  static String format(double amount, {String currencyCode = 'KES', bool includeSymbol = true}) {
+  static String format(
+    double amount, {
+    String currencyCode = 'KES',
+    bool includeSymbol = true,
+  }) {
     final formatter = NumberFormat('#,##0.00', 'en_US');
     final formattedNumber = formatter.format(amount);
 

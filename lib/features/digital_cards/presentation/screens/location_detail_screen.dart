@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/calendar/calendar_intent_service.dart';
+import '../../../../core/calendar/calendar_sync_service.dart';
 import '../../../../core/constants/document_constants.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/database/database_provider.dart';
@@ -17,8 +20,11 @@ import '../../../../core/design_system/etole_components.dart';
 import '../../../../core/design_system/etole_typography.dart';
 import '../../../documents/presentation/screens/document_editor_screen.dart';
 import '../../domain/location_task_model.dart';
+import '../widgets/add_location_sheet.dart';
 import '../widgets/add_location_task_sheet.dart';
 import '../widgets/add_person_to_location_sheet.dart';
+import '../widgets/osm_map_view.dart';
+import '../widgets/scan_business_card_sheet.dart';
 
 class LocationDetailScreen extends ConsumerStatefulWidget {
   final int locationId;
@@ -32,6 +38,11 @@ class LocationDetailScreen extends ConsumerStatefulWidget {
 
 class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
   static final _dateFormat = DateFormat('EEEE, MMM d, yyyy • h:mm a');
+
+  void _editLocation(NetworkingEvent event) {
+    EtoleHaptics.selection();
+    AddLocationSheet.show(context, existingEvent: event);
+  }
 
   Future<void> _archiveToggle(NetworkingEvent event) async {
     EtoleHaptics.selection();
@@ -400,6 +411,14 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                       Row(
                         children: [
                           IconButton(
+                            icon: const Icon(
+                              Icons.edit_location_alt_outlined,
+                              color: Color(0xFFF59E0B),
+                            ),
+                            tooltip: 'Edit Location',
+                            onPressed: () => _editLocation(event),
+                          ),
+                          IconButton(
                             icon: Icon(
                               event.isArchived
                                   ? Icons.unarchive_rounded
@@ -533,55 +552,187 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 8),
-                                  InkWell(
-                                    onTap: () {
-                                      final query = Uri.encodeComponent(
-                                        '${event.name}, ${event.location ?? ''}',
-                                      );
-                                      final url = Uri.parse(
-                                        'https://www.google.com/maps/search/?api=1&query=$query',
-                                      );
-                                      launchUrl(
-                                        url,
-                                        mode: LaunchMode.externalApplication,
-                                      );
-                                    },
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 6,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFF59E0B)
-                                            .withValues(alpha: 0.12),
+                                  // Small OSM Map on Location Page (Rule: "On the location page show a small map and an 'Open in Google Maps' button")
+                                  if (event.latitude != null &&
+                                      event.longitude != null) ...[
+                                    const SizedBox(height: 10),
+                                    OsmMapView(
+                                      initialLatitude: event.latitude!,
+                                      initialLongitude: event.longitude!,
+                                      height: 155,
+                                      isInteractive: false,
+                                    ),
+                                    const SizedBox(height: 8),
+                                  ] else ...[
+                                    const SizedBox(height: 8),
+                                  ],
+                                  Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          final url =
+                                              (event.latitude != null &&
+                                                  event.longitude != null)
+                                              ? Uri.parse(
+                                                  'https://www.google.com/maps/search/?api=1&query=${event.latitude},${event.longitude}',
+                                                )
+                                              : Uri.parse(
+                                                  'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent("${event.name}, ${event.location ?? ''}")}',
+                                                );
+                                          launchUrl(
+                                            url,
+                                            mode:
+                                                LaunchMode.externalApplication,
+                                          );
+                                        },
                                         borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(
-                                          color: const Color(0xFFF59E0B)
-                                              .withValues(alpha: 0.3),
-                                        ),
-                                      ),
-                                      child: const Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            Icons.map_rounded,
-                                            size: 14,
-                                            color: Color(0xFFF59E0B),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 7,
                                           ),
-                                          SizedBox(width: 6),
-                                          Text(
-                                            'Open in Google Maps / Navigate',
-                                            style: TextStyle(
-                                              color: Color(0xFFF59E0B),
-                                              fontSize: 11.5,
-                                              fontWeight: FontWeight.w600,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFF59E0B)
+                                                .withValues(alpha: 0.14),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                            border: Border.all(
+                                              color: const Color(0xFFF59E0B)
+                                                  .withValues(alpha: 0.35),
                                             ),
                                           ),
-                                        ],
+                                          child: const Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.map_rounded,
+                                                size: 14,
+                                                color: Color(0xFFF59E0B),
+                                              ),
+                                              SizedBox(width: 6),
+                                              Text(
+                                                'Open in Google Maps',
+                                                style: TextStyle(
+                                                  color: Color(0xFFF59E0B),
+                                                  fontSize: 11.5,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      if (event.latitude == null ||
+                                          event.longitude == null)
+                                        InkWell(
+                                          onTap: () => _editLocation(event),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 7,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFF1E252F),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              border: Border.all(
+                                                color: Colors.white12,
+                                              ),
+                                            ),
+                                            child: const Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(
+                                                  Icons
+                                                      .add_location_alt_rounded,
+                                                  size: 13,
+                                                  color: Colors.white70,
+                                                ),
+                                                SizedBox(width: 4),
+                                                Text(
+                                                  'Pin on Map',
+                                                  style: TextStyle(
+                                                    color: Colors.white70,
+                                                    fontSize: 11,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      InkWell(
+                                        onTap: () {
+                                          CalendarSyncService.syncOrUpdateReminder(
+                                            context: context,
+                                            key: 'location_${event.id}',
+                                            title: event.name,
+                                            startTime: event.startDate,
+                                            endTime: event.endDate,
+                                            location:
+                                                [event.name, event.location]
+                                                    .where(
+                                                      (s) =>
+                                                          s != null &&
+                                                          s.isNotEmpty,
+                                                    )
+                                                    .toSet()
+                                                    .join(' - '),
+                                            notes: [
+                                              if (event.notes != null &&
+                                                  event.notes!.isNotEmpty)
+                                                event.notes,
+                                              if (event.description != null &&
+                                                  event.description!.isNotEmpty)
+                                                event.description,
+                                            ].join("\n\n"),
+                                            alertMinutesBefore: 30,
+                                          );
+                                        },
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 7,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF38B6DB)
+                                                .withValues(alpha: 0.14),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                            border: Border.all(
+                                              color: const Color(0xFF38B6DB)
+                                                  .withValues(alpha: 0.35),
+                                            ),
+                                          ),
+                                          child: const Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.calendar_today_rounded,
+                                                size: 13,
+                                                color: Color(0xFF38B6DB),
+                                              ),
+                                              SizedBox(width: 5),
+                                              Text(
+                                                'Add to Calendar',
+                                                style: TextStyle(
+                                                  color: Color(0xFF38B6DB),
+                                                  fontSize: 11.5,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                                 if (event.description != null &&
@@ -654,14 +805,82 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                           const SizedBox(height: 20),
 
                           // Section 2: People I Met Here
-                          _buildSectionHeader(
-                            title: 'PEOPLE I MET HERE (${people.length})',
-                            actionLabel: '+ Add Person',
-                            onAction: () => AddPersonToLocationSheet.show(
-                              context,
-                              locationId: event.id,
-                              locationName: event.name,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'PEOPLE I MET HERE (${people.length})',
+                                style: const TextStyle(
+                                  color: Color(0xFF94A3B8),
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.1,
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  // Rule: In a Network location, add "Scan card" next to "Add person"
+                                  InkWell(
+                                    onTap: () => ScanBusinessCardSheet.show(
+                                      context,
+                                      locationId: event.id,
+                                      locationName: event.name,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFF59E0B)
+                                            .withValues(alpha: 0.16),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: const Color(0xFFF59E0B)
+                                              .withValues(alpha: 0.35),
+                                        ),
+                                      ),
+                                      child: const Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.document_scanner_rounded,
+                                            size: 13,
+                                            color: Color(0xFFF59E0B),
+                                          ),
+                                          SizedBox(width: 4),
+                                          Text(
+                                            'Scan card',
+                                            style: TextStyle(
+                                              color: Color(0xFFF59E0B),
+                                              fontSize: 11.5,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  InkWell(
+                                    onTap: () => AddPersonToLocationSheet.show(
+                                      context,
+                                      locationId: event.id,
+                                      locationName: event.name,
+                                    ),
+                                    child: const Text(
+                                      '+ Add person',
+                                      style: TextStyle(
+                                        color: Color(0xFFF59E0B),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 8),
                           if (people.isEmpty)
@@ -699,30 +918,81 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                                         fontSize: 11,
                                       ),
                                     ),
-                                    const SizedBox(height: 10),
-                                    ElevatedButton.icon(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(
-                                          0xFFF59E0B,
-                                        ),
-                                        foregroundColor: Colors.black,
-                                      ),
-                                      onPressed: () =>
-                                          AddPersonToLocationSheet.show(
-                                            context,
-                                            locationId: event.id,
-                                            locationName: event.name,
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        ElevatedButton.icon(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: const Color(
+                                              0xFFF59E0B,
+                                            ),
+                                            foregroundColor: Colors.black,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 14,
+                                              vertical: 10,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
                                           ),
-                                      icon: const Icon(
-                                        Icons.add_rounded,
-                                        size: 16,
-                                      ),
-                                      label: const Text(
-                                        'Add Person Met Here',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                          onPressed: () =>
+                                              ScanBusinessCardSheet.show(
+                                                context,
+                                                locationId: event.id,
+                                                locationName: event.name,
+                                              ),
+                                          icon: const Icon(
+                                            Icons.document_scanner_rounded,
+                                            size: 16,
+                                          ),
+                                          label: const Text(
+                                            'Scan Card',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12.5,
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                        const SizedBox(width: 10),
+                                        OutlinedButton.icon(
+                                          style: OutlinedButton.styleFrom(
+                                            foregroundColor: Colors.white,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 10,
+                                            ),
+                                            side: BorderSide(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.2,
+                                              ),
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          onPressed: () =>
+                                              AddPersonToLocationSheet.show(
+                                                context,
+                                                locationId: event.id,
+                                                locationName: event.name,
+                                              ),
+                                          icon: const Icon(
+                                            Icons.add_rounded,
+                                            size: 16,
+                                          ),
+                                          label: const Text(
+                                            'Manual Entry',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 12.5,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -935,7 +1205,7 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                   tooltip: 'WhatsApp',
                   onPressed: () => _launchWhatsApp(
                     person.phone!,
-                    'Hi ${person.name}! Brian Etole here. Great meeting you at ${event.name}.',
+                    'Hi ${person.name}! Great meeting you at ${event.name}. Following up from our creative studio.',
                   ),
                 ),
                 IconButton(
@@ -971,6 +1241,95 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                 ),
             ],
           ),
+
+          if (person.cardPhotoPath != null &&
+              File(person.cardPhotoPath!).existsSync()) ...[
+            const SizedBox(height: 8),
+            InkWell(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (ctx) => Dialog(
+                    backgroundColor: Colors.transparent,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        color: Colors.black,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.file(
+                              File(person.cardPhotoPath!),
+                              fit: BoxFit.contain,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 10,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      '${person.name}\'s Business Card',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.close,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () => Navigator.pop(ctx),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF59E0B).withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
+                  ),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.image_outlined,
+                      size: 13,
+                      color: Color(0xFFF59E0B),
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      'View Scanned Card',
+                      style: TextStyle(
+                        color: Color(0xFFF59E0B),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
 
           // Person's Individual Notes
           const SizedBox(height: 10),
@@ -1099,6 +1458,81 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                 style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
               ),
             ],
+            const Spacer(),
+            InkWell(
+              onTap: () {
+                CalendarSyncService.syncOrUpdateReminder(
+                  context: context,
+                  key: 'task_${task.id}',
+                  title: task.title,
+                  startTime:
+                      task.dueDate ??
+                      DateTime.now().add(const Duration(hours: 1)),
+                  location: [
+                    event.name,
+                    event.location,
+                  ].where((s) => s != null && s.isNotEmpty).toSet().join(' - '),
+                  notes: task.personName != null
+                      ? 'Task / reminder for ${task.personName} from ${event.name}'
+                      : 'Task / reminder from ${event.name}',
+                  alertMinutesBefore: 30,
+                );
+              },
+              borderRadius: BorderRadius.circular(6),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF59E0B).withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(
+                    color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
+                  ),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.calendar_today_rounded,
+                      size: 10,
+                      color: Color(0xFFF59E0B),
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      'Add to cal',
+                      style: TextStyle(
+                        color: Color(0xFFF59E0B),
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 6),
+            InkWell(
+              onTap: () async {
+                EtoleHaptics.selection();
+                final updated = allTasks.where((t) => t.id != task.id).toList();
+                await _saveTasks(event, updated);
+                await CalendarSyncService.deleteReminder(
+                  key: 'task_${task.id}',
+                );
+              },
+              borderRadius: BorderRadius.circular(6),
+              child: Container(
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: const Icon(
+                  Icons.close_rounded,
+                  size: 11,
+                  color: Color(0xFFEF4444),
+                ),
+              ),
+            ),
           ],
         ),
         onChanged: (val) async {
@@ -1164,8 +1598,8 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
             onTap: () {
               final phone = primary.phone ?? '';
               final text =
-                  'Hi ${primary.name}! Brian Etole here. It was great meeting you at ${event.name}. '
-                  'Looking forward to staying in touch!';
+                  'Hi ${primary.name}! It was great meeting you at ${event.name}. '
+                  'Following up from our creative studio. Looking forward to staying in touch!';
               _launchWhatsApp(phone, text);
             },
           ),
@@ -1179,9 +1613,9 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
             subtitle: 'Shares your contact card, bio, and showreel link',
             onTap: () {
               Share.share(
-                'Brian Etole · Director & Cinematographer\n'
-                'Portfolio & Showreel: https://brianetole.com\n'
-                'Phone: +254 712 345 678',
+                'Creative Studio · Production & Direction\n'
+                'Portfolio: https://creativeos.app\n'
+                'Contact: +254 700 000 000',
               );
             },
           ),
@@ -1201,6 +1635,33 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                   builder: (_) =>
                       const DocumentEditorScreen(docType: DocType.quotation),
                 ),
+              );
+            },
+          ),
+          const SizedBox(height: 8),
+
+          // Suggestion 4: Schedule Follow-Up in Calendar
+          _buildSuggestionTile(
+            icon: Icons.calendar_today_rounded,
+            color: const Color(0xFF38B6DB),
+            title: 'Schedule Follow-Up in Calendar',
+            subtitle:
+                'Pre-fills title, ${event.name} venue, ${primary.name} in notes & 30-min alert',
+            onTap: () {
+              CalendarSyncService.syncOrUpdateReminder(
+                context: context,
+                key: 'followup_${primary.id}_${event.id}',
+                title: 'Follow-up with ${primary.name}',
+                startTime: DateTime.now().add(
+                  const Duration(days: 2, hours: 10),
+                ),
+                location: [
+                  event.name,
+                  event.location,
+                ].where((s) => s != null && s.isNotEmpty).toSet().join(' - '),
+                notes:
+                    'Follow-up meeting/touchpoint with ${primary.name} (${primary.title ?? ""}) met at ${event.name}.',
+                alertMinutesBefore: 30,
               );
             },
           ),

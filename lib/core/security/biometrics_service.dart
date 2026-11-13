@@ -8,7 +8,8 @@ final biometricsServiceProvider = Provider<BiometricsService>((ref) {
 class BiometricsService {
   final LocalAuthentication _auth;
 
-  BiometricsService({LocalAuthentication? auth}) : _auth = auth ?? LocalAuthentication();
+  BiometricsService({LocalAuthentication? auth})
+    : _auth = auth ?? LocalAuthentication();
 
   Future<bool> isDeviceSupported() async {
     try {
@@ -20,7 +21,9 @@ class BiometricsService {
     }
   }
 
-  Future<bool> authenticate({String reason = 'Authenticate to access Etole'}) async {
+  Future<bool> authenticate({
+    String reason = 'Authenticate to access Etole',
+  }) async {
     try {
       final supported = await isDeviceSupported();
       if (!supported) return false;

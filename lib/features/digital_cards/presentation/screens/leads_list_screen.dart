@@ -4,6 +4,8 @@ import 'package:drift/drift.dart' as drift;
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/constants/app_design_tokens.dart';
+import '../../../../core/calendar/calendar_intent_service.dart';
+import '../../../../core/calendar/calendar_sync_service.dart';
 import '../../../../core/design_system/etole_colors.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/database/database_provider.dart';
@@ -385,6 +387,26 @@ class _LeadsListScreenState extends ConsumerState<LeadsListScreen>
                             ),
                             tooltip: 'Email Lead',
                             onPressed: () => _launchEmail(lead),
+                          ),
+                        if (lead.followUpDate != null)
+                          IconButton(
+                            icon: Icon(
+                              Icons.calendar_today_rounded,
+                              color: accent,
+                              size: 20,
+                            ),
+                            tooltip: 'Add Follow-up to Calendar',
+                            onPressed: () {
+                              CalendarSyncService.syncOrUpdateReminder(
+                                context: context,
+                                key: 'lead_${lead.id}',
+                                title: 'Follow-up: ${lead.name}',
+                                startTime: lead.followUpDate!,
+                                notes:
+                                    'Follow-up with ${lead.name}. Status: ${lead.status}. Notes: ${lead.notes ?? ""}',
+                                alertMinutesBefore: 30,
+                              );
+                            },
                           ),
                       ],
                     ),

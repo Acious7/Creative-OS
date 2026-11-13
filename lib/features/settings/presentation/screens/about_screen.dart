@@ -73,7 +73,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                         ),
                       ),
                       Text(
-                        'ETOLE SUITE',
+                        'CREATIVE OS',
                         style: GoogleFonts.playfairDisplay(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -174,7 +174,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                           ),
                         ),
                         child: Text(
-                          'VERSION 2.0.0 (BUILD 10)',
+                          'VERSION 2.2.0',
                           style: EtoleTypography.labelCaps(color: muted),
                         ),
                       ),
@@ -186,12 +186,12 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
                   const SizedBox(height: 24),
 
                   Text(
-                    'AUTHOR & CREATIVE VISION',
+                    'ARCHITECT & CREATOR',
                     style: EtoleTypography.labelCaps(color: muted),
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Crafted bespoke for Brian Etole — Hybrid Filmmaker & Photographer based in Nairobi, Kenya. Built to manage commercial productions, editorial photography, documentary inquiries, client contracts, digital presence, and professional network without relying on cloud subscriptions or third-party tracking.',
+                    'Designed, engineered, and architected by Brian Etole — Director, Cinematographer & Creative Technologist based in Nairobi, Kenya. Creative OS is built as a sovereign, offline-first personal operating system to empower creative entrepreneurs, directors, and studios to manage commercial productions, high-ticket proposals, legal contracts, client relationships, and business intelligence without cloud subscriptions, vendor lock-in, or third-party tracking.',
                     style: EtoleTypography.bodySmall(color: cream)
                         .copyWith(height: 1.6),
                   ),

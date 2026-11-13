@@ -19,10 +19,10 @@ class DigitalCardScreen extends ConsumerWidget {
     final accent = ref.watch(activeAccentColorProvider);
     final theme = Theme.of(context);
 
-    final brandName = activeBrand?.name ?? 'Brian Etole';
-    final email = activeBrand?.email ?? 'hello@brianetole.com';
-    final phone = activeBrand?.phone ?? '+254 718 013 579';
-    final website = activeBrand?.website ?? 'brianetole.com';
+    final brandName = activeBrand?.name ?? 'Creative Studio';
+    final email = activeBrand?.email ?? 'studio@creativeos.app';
+    final phone = activeBrand?.phone ?? '+254 700 000 000';
+    final website = activeBrand?.website ?? 'creativeos.app';
     final address = activeBrand?.address ?? 'Nairobi, Kenya';
 
     final vCardData =

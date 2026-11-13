@@ -2,15 +2,23 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Brand Defaults (Brian Etole Studio Quotation Palette)
-  static const Color etoleCyan = Color(0xFF38B6DB);       // Primary Cyan / Cerulean Hero
+  static const Color etoleCyan = Color(
+    0xFF38B6DB,
+  ); // Primary Cyan / Cerulean Hero
   static const Color etoleCyanDark = Color(0xFF1D8EAE);
   static const Color etoleCyanLight = Color(0xFFE6F7FC);
-  static const Color etoleGold = Color(0xFFF5A623);       // Signature Total Badge Gold
+  static const Color etoleGold = Color(
+    0xFFF5A623,
+  ); // Signature Total Badge Gold
   static const Color etoleGoldLight = Color(0xFFFEF5E7);
-  static const Color etoleGreen = Color(0xFF007A3D);      // Forest Green ('e' in etole)
-  static const Color etoleRed = Color(0xFFD32F2F);        // Crimson Red ('l' in etole)
-  static const Color etoleSlate = Color(0xFF4A90E2);      // Slate Blue ('o' in etole)
-  static const Color etoleCharcoal = Color(0xFF111827);   // Rich Black Ink
+  static const Color etoleGreen = Color(
+    0xFF007A3D,
+  ); // Forest Green ('e' in etole)
+  static const Color etoleRed = Color(0xFFD32F2F); // Crimson Red ('l' in etole)
+  static const Color etoleSlate = Color(
+    0xFF4A90E2,
+  ); // Slate Blue ('o' in etole)
+  static const Color etoleCharcoal = Color(0xFF111827); // Rich Black Ink
 
   // Aliases for compatibility
   static const Color etoleOrange = etoleCyan;

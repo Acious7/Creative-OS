@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_design_tokens.dart';
 import '../../../../core/constants/document_constants.dart';
@@ -41,17 +42,23 @@ class _TextDefaultsScreenState extends ConsumerState<TextDefaultsScreen> {
     final db = ref.read(databaseProvider);
     final brandId = ref.read(activeBrandIdProvider);
 
-    final item = await (db.select(db.textDefaults)
-          ..where((tbl) => tbl.brandId.equals(brandId) & tbl.docType.equals(_selectedDocType.code)))
-        .getSingleOrNull();
+    final item =
+        await (db.select(db.textDefaults)..where(
+              (tbl) =>
+                  tbl.brandId.equals(brandId) &
+                  tbl.docType.equals(_selectedDocType.code),
+            ))
+            .getSingleOrNull();
 
     if (item != null) {
-      _headingController.text = item.titleOverride ?? _selectedDocType.displayName;
+      _headingController.text =
+          item.titleOverride ?? _selectedDocType.displayName;
       _termsController.text = item.termsConditions ?? '';
       _notesController.text = item.closingNotes ?? '';
     } else {
       _headingController.text = _selectedDocType.displayName;
-      _termsController.text = 'Payment due upon receipt. Terms subject to agreement.';
+      _termsController.text =
+          'Payment due upon receipt. Terms subject to agreement.';
       _notesController.text = 'Thank you for partnering with us.';
     }
 
@@ -64,12 +71,18 @@ class _TextDefaultsScreenState extends ConsumerState<TextDefaultsScreen> {
     final db = ref.read(databaseProvider);
     final brandId = ref.read(activeBrandIdProvider);
 
-    final existing = await (db.select(db.textDefaults)
-          ..where((tbl) => tbl.brandId.equals(brandId) & tbl.docType.equals(_selectedDocType.code)))
-        .getSingleOrNull();
+    final existing =
+        await (db.select(db.textDefaults)..where(
+              (tbl) =>
+                  tbl.brandId.equals(brandId) &
+                  tbl.docType.equals(_selectedDocType.code),
+            ))
+            .getSingleOrNull();
 
     if (existing != null) {
-      await (db.update(db.textDefaults)..where((tbl) => tbl.id.equals(existing.id))).write(
+      await (db.update(
+        db.textDefaults,
+      )..where((tbl) => tbl.id.equals(existing.id))).write(
         TextDefaultsCompanion(
           titleOverride: drift.Value(_headingController.text.trim()),
           termsConditions: drift.Value(_termsController.text.trim()),
@@ -77,15 +90,17 @@ class _TextDefaultsScreenState extends ConsumerState<TextDefaultsScreen> {
         ),
       );
     } else {
-      await db.into(db.textDefaults).insert(
-        TextDefaultsCompanion.insert(
-          brandId: brandId,
-          docType: _selectedDocType.code,
-          titleOverride: drift.Value(_headingController.text.trim()),
-          termsConditions: drift.Value(_termsController.text.trim()),
-          closingNotes: drift.Value(_notesController.text.trim()),
-        ),
-      );
+      await db
+          .into(db.textDefaults)
+          .insert(
+            TextDefaultsCompanion.insert(
+              brandId: brandId,
+              docType: _selectedDocType.code,
+              titleOverride: drift.Value(_headingController.text.trim()),
+              termsConditions: drift.Value(_termsController.text.trim()),
+              closingNotes: drift.Value(_notesController.text.trim()),
+            ),
+          );
     }
 
     if (mounted) {
@@ -123,7 +138,9 @@ class _TextDefaultsScreenState extends ConsumerState<TextDefaultsScreen> {
                 children: [
                   Text(
                     'Select Document Type:',
-                    style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: AppDesignTokens.spacingS),
                   DropdownButtonFormField<DocType>(
@@ -193,19 +210,31 @@ class _TextDefaultsScreenState extends ConsumerState<TextDefaultsScreen> {
                     padding: const EdgeInsets.all(AppDesignTokens.spacingM),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(AppDesignTokens.radiusM),
-                      border: Border.all(color: theme.colorScheme.outlineVariant),
+                      borderRadius: BorderRadius.circular(
+                        AppDesignTokens.radiusM,
+                      ),
+                      border: Border.all(
+                        color: theme.colorScheme.outlineVariant,
+                      ),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Supported Placeholders:', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                        const Text(
+                          'Supported Placeholders:',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         const SizedBox(height: 6),
                         Text(
                           '• {CLIENT_NAME} - Client or company name\n• {DOC_NUMBER} - Sequential document number\n• {DUE_DATE} - Formatted payment due date\n• {BRAND_NAME} - Active brand name',
                           style: TextStyle(
                             fontSize: 11,
-                            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 0.7,
+                            ),
                             height: 1.4,
                           ),
                         ),
@@ -217,7 +246,9 @@ class _TextDefaultsScreenState extends ConsumerState<TextDefaultsScreen> {
                     width: double.infinity,
                     child: FilledButton.icon(
                       icon: const Icon(Icons.save_outlined),
-                      label: Text('Save Defaults for ${_selectedDocType.displayName}'),
+                      label: Text(
+                        'Save Defaults for ${_selectedDocType.displayName}',
+                      ),
                       onPressed: _saveDefaults,
                     ),
                   ),

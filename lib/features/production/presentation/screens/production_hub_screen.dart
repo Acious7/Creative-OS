@@ -1318,9 +1318,9 @@ class _ProductionHubScreenState extends ConsumerState<ProductionHubScreen> {
                           crewJson: drift.Value(
                             jsonEncode([
                               {
-                                'role': 'Director / DP',
-                                'name': 'Brian Etole',
-                                'phone': '+254 718 013 579',
+                                'role': 'Lead Cinematographer',
+                                'name': 'Studio DP',
+                                'phone': '+254 700 000 000',
                                 'callTime': callTimeCtrl.text.trim(),
                               },
                             ]),

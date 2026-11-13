@@ -1,18 +1,8 @@
 import 'package:flutter/material.dart';
 
-enum DocCategory {
-  financial,
-  commercial,
-  legal,
-}
+enum DocCategory { financial, commercial, legal }
 
-enum DocType {
-  quotation,
-  invoice,
-  receipt,
-  rateCard,
-  contract,
-}
+enum DocType { quotation, invoice, receipt, rateCard, contract }
 
 extension DocTypeExtension on DocType {
   String get code {
@@ -48,15 +38,15 @@ extension DocTypeExtension on DocType {
   String get defaultPrefix {
     switch (this) {
       case DocType.quotation:
-        return 'BE-QT';
+        return 'COS-QT';
       case DocType.invoice:
-        return 'BE-INV';
+        return 'COS-INV';
       case DocType.receipt:
-        return 'BE-REC';
+        return 'COS-REC';
       case DocType.rateCard:
-        return 'BE-RC';
+        return 'COS-RC';
       case DocType.contract:
-        return 'BE-CON';
+        return 'COS-CON';
     }
   }
 
@@ -106,7 +96,9 @@ extension DocTypeExtension on DocType {
       return DocType.quotation;
     } else if (normalized == 'receipt' || normalized == 'rec') {
       return DocType.receipt;
-    } else if (normalized == 'rate_card' || normalized == 'ratecard' || normalized == 'rc') {
+    } else if (normalized == 'rate_card' ||
+        normalized == 'ratecard' ||
+        normalized == 'rc') {
       return DocType.rateCard;
     } else if (normalized == 'contract' ||
         normalized == 'service_agreement' ||
@@ -134,12 +126,7 @@ class DocumentConstants {
     'deliverable',
   ];
 
-  static const List<String> currencies = [
-    'KES',
-    'USD',
-    'EUR',
-    'GBP',
-  ];
+  static const List<String> currencies = ['KES', 'USD', 'EUR', 'GBP'];
 
   static const List<String> pdfTemplates = [
     'classic',

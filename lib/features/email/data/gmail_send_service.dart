@@ -379,7 +379,9 @@ class GmailSendService {
     ].map((e) => e.trim()).where((e) => e.isNotEmpty).toSet().toList();
 
     final rfc822Content = buildRfc822(
-      fromName: 'Brian Etole',
+      fromName: account.displayName.isNotEmpty
+          ? account.displayName
+          : 'Creative Studio',
       fromEmail: account.email,
       toEmails: toList,
       ccEmails: ccEmails,
@@ -538,7 +540,7 @@ class GmailSendService {
                     ),
                   ),
                   pw.Text(
-                    'brianetole.com · Nairobi, Kenya',
+                    'creativeos.app · Nairobi, Kenya',
                     style: const pw.TextStyle(
                       fontSize: 9,
                       color: PdfColor.fromInt(0xFF777777),
@@ -554,7 +556,7 @@ class GmailSendService {
     return await pdf.save();
   }
 
-  /// Sends Option 1: Cinema Slate (Invoice) to hello@brianetole.com
+  /// Sends Option 1: Cinema Slate (Invoice) to current user account
   static Future<bool> sendOption1CinemaSlate() async {
     final account = await _authService.getSavedAccount();
     if (account == null) throw GoogleAuthRequiredException();
@@ -570,7 +572,7 @@ class GmailSendService {
 
     final pdfBytes = await _generateSamplePdf(
       title: 'Invoice',
-      docNumber: 'BE-INV-2026-004',
+      docNumber: 'COS-INV-2026-004',
       subtitle:
           'Mara Wildlife Conservation Documentary — Production & Color Grading',
       rows: [
@@ -594,17 +596,19 @@ class GmailSendService {
 
     return await sendEmail(
       recipientEmail: account.email,
-      recipientName: 'Brian Etole',
-      subject: '[Design Option 1: Cinema Slate] Invoice BE-INV-2026-004 — Mara Documentary',
+      recipientName: account.displayName.isNotEmpty
+          ? account.displayName
+          : 'Studio Lead',
+      subject: '[Design Option 1: Cinema Slate] Invoice COS-INV-2026-004 — Mara Documentary',
       bodyText: content.plainText,
       htmlBody: content.html,
       attachmentBytes: pdfBytes,
-      attachmentFilename: 'BE-INV-2026-004.pdf',
+      attachmentFilename: 'COS-INV-2026-004.pdf',
       customLogoBytes: customLogo,
     );
   }
 
-  /// Sends Option 2: Editorial Gallery (Intro) to hello@brianetole.com
+  /// Sends Option 2: Editorial Gallery (Intro) to current user account
   static Future<bool> sendOption2EditorialGallery() async {
     final account = await _authService.getSavedAccount();
     if (account == null) throw GoogleAuthRequiredException();
@@ -620,8 +624,8 @@ class GmailSendService {
 
     final pdfBytes = await _generateSamplePdf(
       title: 'Production Rate Card',
-      docNumber: 'BE-RC-2026',
-      subtitle: 'Brian Etole 2026 Standard Production & Direction Rates',
+      docNumber: 'COS-RC-2026',
+      subtitle: 'Creative Studio 2026 Standard Production & Direction Rates',
       rows: [
         [
           'Documentary Directing (Day Rate)',
@@ -643,17 +647,19 @@ class GmailSendService {
 
     return await sendEmail(
       recipientEmail: account.email,
-      recipientName: 'Brian Etole',
-      subject: '[Design Option 2: Editorial Gallery] Welcome & Portfolio Intro — Brian Etole',
+      recipientName: account.displayName.isNotEmpty
+          ? account.displayName
+          : 'Studio Lead',
+      subject: '[Design Option 2: Editorial Gallery] Welcome & Portfolio Intro — Creative Studio',
       bodyText: content.plainText,
       htmlBody: content.html,
       attachmentBytes: pdfBytes,
-      attachmentFilename: 'BE-RC-2026-RateCard.pdf',
+      attachmentFilename: 'COS-RC-2026-RateCard.pdf',
       customLogoBytes: customLogo,
     );
   }
 
-  /// Sends BOTH Option 1 and Option 2 to hello@brianetole.com
+  /// Sends BOTH Option 1 and Option 2 to current user account
   static Future<void> sendBothDesignOptions() async {
     await sendOption1CinemaSlate();
     // Brief 1.5s delay to ensure separate timestamps in Gmail inbox

@@ -17,7 +17,7 @@ enum EtoleWorld {
       case EtoleWorld.production:
         return 'PRODUCTION';
       case EtoleWorld.brian:
-        return 'BRIAN';
+        return 'STAGE';
       case EtoleWorld.network:
         return 'NETWORK';
       case EtoleWorld.docs:
@@ -34,7 +34,7 @@ enum EtoleWorld {
       case EtoleWorld.production:
         return 'THE SET';
       case EtoleWorld.brian:
-        return 'THE STAGE';
+        return 'DIGITAL CARD';
       case EtoleWorld.network:
         return 'THE CONSTELLATION';
       case EtoleWorld.docs:

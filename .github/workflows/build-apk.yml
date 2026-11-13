@@ -50,18 +50,21 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         with:
-          tag_name: v2.1.2
-          name: "Creative OS v2.1.2 (Release)"
+          tag_name: v2.2.0
+          name: "Creative OS v2.2.0 (Release)"
           body: |
             ### 🎨 Creative OS - Mobile Operating System for Creative Entrepreneurs
+            **Designed & Architected by Brian Etole**
             Download and install **`creative-os.apk`** below on any Android phone.
 
-            #### ⚡ Features & Modules
-            - 📍 **Location-First Network Hub:** Venue and meeting tracking, OpenStreetMap place search, 1-tap GPS venue detection, and Google Maps navigation.
-            - 💼 **Full Freelance CRM:** Pipelines (*Inquiry, Pitched, Negotiation, Won, Lost*), real-time revenue tally (KES), 1-tap quote drafting, and VIP Rolodex.
-            - 📝 **Dual-Level Meeting Notes & Reminders:** Meeting recaps + attendee notes with exact alarm notifications.
-            - 📑 **Instant Business Docs:** Generate client quotations, invoices, contracts, receipts, and rate cards.
-            - 💳 **Digital NFC & QR Business Card:** Share credentials and contact cards in 1 tap.
+            #### ⚡ Features & Modules (v2.2.0)
+            - 🧘 **The Sanctuary:** 6 wellness & focus portals (Stillness, The Forge, Creative Vault, Reflections, Digital Sabbath, Gratitude) with dual ambient audio soundscapes (Rain on Zinc Roof & Acacia Winds).
+            - 🐕 **Studio Watchdogs & Visual Recipe Builder:** Autonomous local monitoring for overdue debts, VAT/WHT tax escrow, weekly backups, plus a visual custom automation builder.
+            - 🎓 **Studio Academy & Guided Tour:** 12 comprehensive chapters covering every studio workflow and interactive tour.
+            - 🎬 **Production Slate & Set Management:** Call sheets, gear manifests, crew rosters, and live production handover portals.
+            - 💳 **3D Digital Business Card & NFC Beam:** Interactive 3D perspective tilt, Maasai bead geometries, NFC beam, vCard export, and 10-per-A4 vector print PDF generator.
+            - 📍 **Location-First Network Rolodex:** Venue memory, on-device OCR business card scanner, and physical occasion tracking.
+            - 📑 **Financial & Legal Engine:** Quotations, invoices, receipts, rate cards, and contracts with dynamic `{PREFIX}-{NUM}` numbering and tap-to-edit.
             - 🔒 **100% Offline-First:** Isolated SQLite database with zero subscription lock-in.
           files: |
             build/app/outputs/flutter-apk/creative-os.apk

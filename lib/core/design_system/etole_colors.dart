@@ -9,30 +9,40 @@ import 'package:flutter/material.dart';
 /// - Dark Canvas: Deep studio obsidian (#0D0F14) with luminous cyan & gold accents
 class EtoleColors {
   // --- Master Palette Identifiers ---
-  static const Color cyan = Color(0xFF38B6DB);          // Primary Action & Budget Card Hero
+  static const Color cyan = Color(
+    0xFF38B6DB,
+  ); // Primary Action & Budget Card Hero
   static const Color cyanDark = Color(0xFF1B8EA9);
   static const Color cyanLight = Color(0xFFE6F7FC);
   static const Color cyanGlow = Color(0x4D38B6DB);
   static const Color cyanSubtle = Color(0x1F38B6DB);
 
-  static const Color gold = Color(0xFFF5A623);          // Signature Total Badge Warm Gold
+  static const Color gold = Color(
+    0xFFF5A623,
+  ); // Signature Total Badge Warm Gold
   static const Color goldLight = Color(0xFFFEF5E7);
   static const Color goldGlow = Color(0x4DF5A623);
   static const Color goldSubtle = Color(0x1FF5A623);
 
-  static const Color green = Color(0xFF007A3D);         // Forest Kenyan Green ('e' in etole)
+  static const Color green = Color(
+    0xFF007A3D,
+  ); // Forest Kenyan Green ('e' in etole)
   static const Color emerald = green;
   static const Color greenLight = Color(0xFFE6F4EA);
-  static const Color red = Color(0xFFD32F2F);           // Crimson Red ('l' in etole)
+  static const Color red = Color(0xFFD32F2F); // Crimson Red ('l' in etole)
   static const Color redLight = Color(0xFFFCE8E6);
-  static const Color slate = Color(0xFF4A90E2);         // Slate Blue ('o' in etole)
+  static const Color slate = Color(0xFF4A90E2); // Slate Blue ('o' in etole)
   static const Color slateLight = Color(0xFFEBF3FC);
 
   // --- Abstract Bauhaus & Geometric Palette from Quotation Document ---
-  static const Color oliveSage = Color(0xFFC5D6C6);     // Soft sage quadrant with dot matrix
+  static const Color oliveSage = Color(
+    0xFFC5D6C6,
+  ); // Soft sage quadrant with dot matrix
   static const Color oliveSageDots = Color(0xFF6B7F6D); // Dot matrix ink
-  static const Color maasaiRed = Color(0xFFC62828);     // Striped Maasai flag red
-  static const Color maasaiBlack = Color(0xFF111827);   // Striped Maasai flag black
+  static const Color maasaiRed = Color(0xFFC62828); // Striped Maasai flag red
+  static const Color maasaiBlack = Color(
+    0xFF111827,
+  ); // Striped Maasai flag black
 
   // --- Brand Aliases ---
   static const Color brandCyan = cyan;
@@ -90,30 +100,40 @@ class EtoleColors {
   static const Color lightGlassHighlight = Color(0x99FFFFFF);
 
   // --- Semantic Document Stamps & Statuses ---
-  static const Color stampPaid = green;          // Forest Green verified ink
-  static const Color stampDraft = gold;          // Warm Golden Amber
-  static const Color stampSent = slate;          // Slate Blue
-  static const Color stampOverdue = red;         // Crimson Red
+  static const Color stampPaid = green; // Forest Green verified ink
+  static const Color stampDraft = gold; // Warm Golden Amber
+  static const Color stampSent = slate; // Slate Blue
+  static const Color stampOverdue = red; // Crimson Red
   static const Color stampCancelled = Color(0xFF4B5563);
 
   // Context-aware color accessors
   static Color bg(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark ? darkBase : lightBase;
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkBase
+        : lightBase;
   }
 
   static Color text(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark ? cream : lightTextPrimary;
+    return Theme.of(context).brightness == Brightness.dark
+        ? cream
+        : lightTextPrimary;
   }
 
   static Color textMuted(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark ? muted : lightTextMuted;
+    return Theme.of(context).brightness == Brightness.dark
+        ? muted
+        : lightTextMuted;
   }
 
   static Color hairline(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark ? darkHairline : lightHairline;
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkHairline
+        : lightHairline;
   }
 
   static Color surface(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark ? darkSurface : lightSurface;
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkSurface
+        : lightSurface;
   }
 }

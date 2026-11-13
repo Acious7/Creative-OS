@@ -17,6 +17,7 @@ import '../../../../core/design_system/etole_colors.dart';
 import '../../../../core/design_system/etole_components.dart';
 import '../../../../core/design_system/etole_typography.dart';
 import '../../../../core/theme/brand_theme_provider.dart';
+import '../../../../core/theme/studio_theme.dart';
 import '../../domain/vcard_builder.dart';
 import '../providers/cards_providers.dart';
 import '../widgets/business_card_3d_flipper.dart';
@@ -173,8 +174,12 @@ class _CardPresentationScreenState
 
     final activeStyle = card.designStyle.toLowerCase();
 
+    final studioTheme = ref.watch(currentStudioThemeProvider);
+    final matchCardToTheme = ref.watch(matchCardToThemeProvider);
+    final cardAccent = matchCardToTheme ? studioTheme.primaryAccent : null;
+
     return Scaffold(
-      backgroundColor: isDark ? EtoleColors.darkBase : EtoleColors.lightBase,
+      backgroundColor: studioTheme.backgroundBase,
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -199,18 +204,16 @@ class _CardPresentationScreenState
                             Container(
                               width: 6,
                               height: 6,
-                              decoration: const BoxDecoration(
+                              decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: EtoleColors.cyan,
+                                color: studioTheme.primaryAccent,
                               ),
                             ),
                             const SizedBox(width: 8),
                             Text(
                               'THE STAGE',
                               style: EtoleTypography.labelCaps(
-                                color: isDark
-                                    ? EtoleColors.cream
-                                    : EtoleColors.lightTextPrimary,
+                                color: studioTheme.textPrimary,
                               ).copyWith(fontSize: 11, letterSpacing: 2.2),
                             ),
                           ],
@@ -221,9 +224,9 @@ class _CardPresentationScreenState
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.contactless_rounded,
-                                color: EtoleColors.cyan,
+                                color: studioTheme.primaryAccent,
                                 size: 20,
                               ),
                               tooltip: 'NFC Pulse',
@@ -232,9 +235,7 @@ class _CardPresentationScreenState
                             IconButton(
                               icon: Icon(
                                 Icons.edit_outlined,
-                                color: isDark
-                                    ? EtoleColors.muted
-                                    : EtoleColors.lightTextMuted,
+                                color: studioTheme.textMuted,
                                 size: 20,
                               ),
                               tooltip: 'Edit Card',
@@ -269,11 +270,13 @@ class _CardPresentationScreenState
                         front: BusinessCardFrontView(
                           card: card,
                           brand: activeBrand,
+                          customAccentOverride: cardAccent,
                         ),
                         back: BusinessCardBackView(
                           card: card,
                           brand: activeBrand,
                           mode: _qrMode,
+                          customAccentOverride: cardAccent,
                         ),
                       ),
                     ),

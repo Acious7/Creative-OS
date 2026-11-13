@@ -115,17 +115,17 @@ I truly appreciate your timely settlement and look forward to our continued coll
       type: EmailTemplateType.rateCard,
       label: 'Rate Card',
       description: 'Standard day rates, kit specs, and production tiers',
-      subject: 'Production Rate Card 2026 — Brian Etole',
+      subject: 'Production Rate Card 2026 — Creative Studio',
       body: '''Hello {first_name},
 
-Thank you for your interest in my filmmaking and photography services.
+Thank you for your interest in our creative production services.
 
-Please find attached my current 2026 Rate Card, detailing standard rates for directing, documentary cinematography, sound capture, and post-production color finishing.
+Please find attached our current 2026 Rate Card, detailing standard rates for directing, commercial cinematography, audio capture, and post-production color finishing.
 
-You can also explore selected portfolio excerpts and showreels at:
-https://brianetole.com/films
+You can also explore our portfolio and commercial work at:
+https://creativeos.app
 
-I would be happy to discuss your project requirements and tailor an estimate specifically for your production timeline.''',
+We would be happy to discuss your project requirements and tailor an estimate specifically for your production timeline.''',
     ),
     EmailTemplateType.contract: const EmailTemplate(
       type: EmailTemplateType.contract,
@@ -140,35 +140,33 @@ Attached is the production agreement {document_number} for {project}.
 
 Please review the terms, licensing, and deliverables schedule. Once confirmed, you can sign and return a copy so we can lock in the production dates.
 
-Feel free to call or WhatsApp me at +254 718 013 579 if you have any questions.''',
+Feel free to reach out directly if you have any questions.''',
     ),
     EmailTemplateType.intro: const EmailTemplate(
       type: EmailTemplateType.intro,
       label: 'Welcome / Introduction',
       description: 'Sent to new networking contacts with bio, card & reel link',
       subject:
-          'Great meeting you — Brian Etole | Hybrid Filmmaker & Photographer',
+          'Great meeting you — Creative Studio | Production & Creative Direction',
       body: '''Hello {first_name},
 
 It was a real pleasure connecting with you recently at {project}.
 
-As mentioned, I am a Nairobi-based hybrid filmmaker and photographer specializing in authentic documentary stories, cinematic field visuals, and commercial narrative directing.
+As discussed, we are a creative production studio specializing in authentic commercial storytelling, cinematic field visuals, and creative direction.
 
-You can view my digital business card and showreels here:
-Showreel & Films: https://brianetole.com/films
-Photography: https://brianetole.com/photography
-Direct WhatsApp: https://wa.me/254718013579
+You can view our digital business card and showreels here:
+Portfolio: https://creativeos.app
 
-Attached is my 2026 Rate Card for your future reference. Whenever a story, campaign, or event arises that calls for cinematic treatment, I would love to collaborate.''',
+Attached is our 2026 Rate Card for your future reference. Whenever a story, campaign, or event arises that calls for cinematic treatment, we would love to collaborate.''',
     ),
     EmailTemplateType.test: const EmailTemplate(
       type: EmailTemplateType.test,
       label: 'Test Connection',
-      description: 'Used to test Gmail API connection and template rendering',
-      subject: 'Brian Etole — Gmail Integration Test',
+      description: 'Used to test email API connection and template rendering',
+      subject: 'Creative OS — Email Integration Test',
       body: '''Hello {first_name},
 
-This is a live test from your Gmail integration. Outgoing emails are rendered using your signature editorial aesthetic matching brianetole.com.
+This is a live test from your email integration. Outgoing emails are rendered using your signature editorial aesthetic.
 
 All document details, payment channels, and PDF attachments are rendered directly below.''',
     ),

@@ -38,7 +38,7 @@ class DocumentTypeDefaults {
           title: 'Receipt',
           introText: 'I gratefully acknowledge receipt of payment for services rendered as specified below.',
           termsConditions: '1. Official acknowledgment of settled invoice / deposit.\n2. Retain this receipt for your accounting and audit records.\n3. Payment received subject to bank / mobile clearance.',
-          closingNotes: 'Thank you for working with Brian Etole. I value our partnership.',
+          closingNotes: 'Thank you for your business. We value our creative partnership.',
         );
 
       case DocType.rateCard:
@@ -52,9 +52,10 @@ class DocumentTypeDefaults {
       case DocType.contract:
         return const DocTypeDefaultContent(
           title: 'Creative & Production Contract',
-          introText: 'This agreement is entered into between Brian Etole and the Client to govern the provision of film, photography, and creative production services.',
+          introText: 'This agreement is entered into between the Service Provider and the Client to govern the provision of creative production and media services.',
           termsConditions: '1. Scope of Work: Services rendered strictly according to the agreed brief and quotation.\n2. Revision Limits: Up to 2 rounds of consolidated feedback included in the base fee.\n3. Payment Schedule: 50% deposit upon contract execution, 50% balance upon final deliverable sign-off.\n4. Intellectual Property: Master deliverable copyright transfers to Client upon receipt of 100% full payment.\n5. Jurisdiction: This Agreement is governed by the Laws of Kenya.',
-          closingNotes: 'Duly executed by authorized representatives of both parties.',
+          closingNotes:
+              'Duly executed by authorized representatives of both parties.',
         );
     }
   }

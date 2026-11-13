@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/document_constants.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/database/database_provider.dart';
+import '../../../core/utils/number_generator.dart';
 import '../domain/models/proposal_options.dart';
 
 final documentRepositoryProvider = Provider<DocumentRepository>((ref) {
@@ -622,12 +623,14 @@ class DocumentRepository {
     required int number,
     required int padding,
   }) {
-    final numStr = number.toString().padLeft(padding, '0');
-    return pattern
-        .replaceAll('{BRAND}', brandPrefix)
-        .replaceAll('{TYPE}', docTypePrefix)
-        .replaceAll('{YEAR}', year.toString())
-        .replaceAll('{NUMBER}', numStr);
+    return NumberGenerator.formatNumber(
+      pattern: pattern,
+      brandName: brandPrefix,
+      docPrefix: docTypePrefix,
+      number: number,
+      padding: padding,
+      date: DateTime(year),
+    );
   }
 }
 

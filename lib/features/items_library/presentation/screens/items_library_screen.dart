@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../../core/constants/document_constants.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/database/database_provider.dart';
@@ -13,9 +14,13 @@ import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/skeleton_loader.dart';
 import '../../../contracts/presentation/screens/clause_library_screen.dart';
 
-final allItemsLibraryStreamProvider = StreamProvider<List<ItemsLibraryData>>((ref) {
+final allItemsLibraryStreamProvider = StreamProvider<List<ItemsLibraryData>>((
+  ref,
+) {
   final db = ref.watch(databaseProvider);
-  return (db.select(db.itemsLibrary)..orderBy([(t) => drift.OrderingTerm.asc(t.title)])).watch();
+  return (db.select(
+    db.itemsLibrary,
+  )..orderBy([(t) => drift.OrderingTerm.asc(t.title)])).watch();
 });
 
 class ItemsLibraryScreen extends ConsumerStatefulWidget {
@@ -56,7 +61,9 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (ctx) => const ClauseLibraryScreen()),
+                MaterialPageRoute(
+                  builder: (ctx) => const ClauseLibraryScreen(),
+                ),
               );
             },
           ),
@@ -72,7 +79,12 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
         children: [
           // Search Bar
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppDesignTokens.space16, AppDesignTokens.space12, AppDesignTokens.space16, AppDesignTokens.space8),
+            padding: const EdgeInsets.fromLTRB(
+              AppDesignTokens.space16,
+              AppDesignTokens.space12,
+              AppDesignTokens.space16,
+              AppDesignTokens.space8,
+            ),
             child: AppSearchBar(
               hintText: 'Search services, rates, equipment...',
               onChanged: (val) {
@@ -88,7 +100,9 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
             height: 40,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: AppDesignTokens.space16),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppDesignTokens.space16,
+              ),
               itemCount: _categories.length,
               itemBuilder: (context, index) {
                 final cat = _categories[index];
@@ -101,13 +115,23 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
                     selectedColor: accent.withValues(alpha: 0.15),
                     checkmarkColor: accent,
                     labelStyle: theme.textTheme.labelMedium?.copyWith(
-                      color: isSelected ? accent : theme.colorScheme.onSurfaceVariant,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                      color: isSelected
+                          ? accent
+                          : theme.colorScheme.onSurfaceVariant,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.w500,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppDesignTokens.radiusFull),
+                      borderRadius: BorderRadius.circular(
+                        AppDesignTokens.radiusFull,
+                      ),
                       side: BorderSide(
-                        color: isSelected ? accent.withValues(alpha: 0.5) : theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+                        color: isSelected
+                            ? accent.withValues(alpha: 0.5)
+                            : theme.colorScheme.outlineVariant.withValues(
+                                alpha: 0.3,
+                              ),
                       ),
                     ),
                     onSelected: (selected) {
@@ -127,13 +151,18 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
             child: itemsAsync.when(
               data: (items) {
                 final filtered = items.where((item) {
-                  if (_selectedCategory != 'All' && item.category != _selectedCategory) {
+                  if (_selectedCategory != 'All' &&
+                      item.category != _selectedCategory) {
                     return false;
                   }
                   if (_search.isEmpty) return true;
                   final matchTitle = item.title.toLowerCase().contains(_search);
-                  final matchDesc = item.description?.toLowerCase().contains(_search) ?? false;
-                  final matchCat = item.category.toLowerCase().contains(_search);
+                  final matchDesc =
+                      item.description?.toLowerCase().contains(_search) ??
+                      false;
+                  final matchCat = item.category.toLowerCase().contains(
+                    _search,
+                  );
                   return matchTitle || matchDesc || matchCat;
                 }).toList();
 
@@ -150,12 +179,17 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
                 }
 
                 return ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: AppDesignTokens.space16, vertical: AppDesignTokens.space8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDesignTokens.space16,
+                    vertical: AppDesignTokens.space8,
+                  ),
                   itemCount: filtered.length,
                   itemBuilder: (context, index) {
                     final item = filtered[index];
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: AppDesignTokens.space8),
+                      padding: const EdgeInsets.only(
+                        bottom: AppDesignTokens.space8,
+                      ),
                       child: AppCard(
                         variant: AppCardVariant.low,
                         onTap: () => _showItemDialog(context, item: item),
@@ -168,9 +202,15 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
                               height: 38,
                               decoration: BoxDecoration(
                                 color: accent.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
+                                borderRadius: BorderRadius.circular(
+                                  AppDesignTokens.radiusSm,
+                                ),
                               ),
-                              child: Icon(Icons.handyman_outlined, color: accent, size: 18),
+                              child: Icon(
+                                Icons.handyman_outlined,
+                                color: accent,
+                                size: 18,
+                              ),
                             ),
                             const SizedBox(width: AppDesignTokens.space12),
                             Expanded(
@@ -179,30 +219,46 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
                                 children: [
                                   Text(
                                     item.title,
-                                    style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                                    style: theme.textTheme.titleSmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                  if (item.description != null && item.description!.isNotEmpty) ...[
+                                  if (item.description != null &&
+                                      item.description!.isNotEmpty) ...[
                                     const SizedBox(height: 2),
                                     Text(
                                       item.description!,
-                                      style: theme.textTheme.bodySmall?.copyWith(
-                                        color: theme.colorScheme.onSurfaceVariant,
-                                      ),
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(
+                                            color: theme
+                                                .colorScheme
+                                                .onSurfaceVariant,
+                                          ),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ],
                                   if (item.category.isNotEmpty) ...[
-                                    const SizedBox(height: AppDesignTokens.space6),
+                                    const SizedBox(
+                                      height: AppDesignTokens.space6,
+                                    ),
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
                                       decoration: BoxDecoration(
-                                        color: theme.colorScheme.surfaceContainerHighest,
-                                        borderRadius: BorderRadius.circular(AppDesignTokens.radiusXs),
+                                        color: theme
+                                            .colorScheme
+                                            .surfaceContainerHighest,
+                                        borderRadius: BorderRadius.circular(
+                                          AppDesignTokens.radiusXs,
+                                        ),
                                       ),
                                       child: Text(
                                         item.category,
-                                        style: theme.textTheme.labelSmall?.copyWith(fontSize: 10),
+                                        style: theme.textTheme.labelSmall
+                                            ?.copyWith(fontSize: 10),
                                       ),
                                     ),
                                   ],
@@ -249,7 +305,9 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
   void _showItemDialog(BuildContext context, {ItemsLibraryData? item}) {
     final titleCtrl = TextEditingController(text: item?.title ?? '');
     final descCtrl = TextEditingController(text: item?.description ?? '');
-    final priceCtrl = TextEditingController(text: item != null ? item.unitPrice.toStringAsFixed(0) : '');
+    final priceCtrl = TextEditingController(
+      text: item != null ? item.unitPrice.toStringAsFixed(0) : '',
+    );
     String selectedUnit = item?.unit ?? 'day';
     String selectedCat = item?.category ?? 'Production';
 
@@ -257,17 +315,28 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDlgState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg)),
-          title: Text(item == null ? 'Add Service / Item' : 'Edit Service / Item'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
+          ),
+          title: Text(
+            item == null ? 'Add Service / Item' : 'Edit Service / Item',
+          ),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextField(controller: titleCtrl, decoration: const InputDecoration(labelText: 'Item / Service Title *')),
+                TextField(
+                  controller: titleCtrl,
+                  decoration: const InputDecoration(
+                    labelText: 'Item / Service Title *',
+                  ),
+                ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: descCtrl,
-                  decoration: const InputDecoration(labelText: 'Description / Details'),
+                  decoration: const InputDecoration(
+                    labelText: 'Description / Details',
+                  ),
                   maxLines: 2,
                 ),
                 const SizedBox(height: 10),
@@ -277,8 +346,12 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
                       flex: 2,
                       child: TextField(
                         controller: priceCtrl,
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        decoration: const InputDecoration(labelText: 'Unit Rate (KES) *'),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        decoration: const InputDecoration(
+                          labelText: 'Unit Rate (KES) *',
+                        ),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -288,10 +361,13 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
                         initialValue: selectedUnit,
                         decoration: const InputDecoration(labelText: 'Unit'),
                         items: DocumentConstants.units
-                            .map((u) => DropdownMenuItem(value: u, child: Text(u)))
+                            .map(
+                              (u) => DropdownMenuItem(value: u, child: Text(u)),
+                            )
                             .toList(),
                         onChanged: (val) {
-                          if (val != null) setDlgState(() => selectedUnit = val);
+                          if (val != null)
+                            setDlgState(() => selectedUnit = val);
                         },
                       ),
                     ),
@@ -301,9 +377,20 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
                 DropdownButtonFormField<String>(
                   initialValue: selectedCat,
                   decoration: const InputDecoration(labelText: 'Category'),
-                  items: ['Production', 'Post-production', 'Photography', 'Pre-production', 'Equipment', 'Crew', 'Other']
-                      .map((c) => DropdownMenuItem(value: c, child: Text(c)))
-                      .toList(),
+                  items:
+                      [
+                            'Production',
+                            'Post-production',
+                            'Photography',
+                            'Pre-production',
+                            'Equipment',
+                            'Crew',
+                            'Other',
+                          ]
+                          .map(
+                            (c) => DropdownMenuItem(value: c, child: Text(c)),
+                          )
+                          .toList(),
                   onChanged: (val) {
                     if (val != null) setDlgState(() => selectedCat = val);
                   },
@@ -316,12 +403,20 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
               TextButton(
                 onPressed: () async {
                   final db = ref.read(databaseProvider);
-                  await (db.delete(db.itemsLibrary)..where((t) => t.id.equals(item.id))).go();
+                  await (db.delete(
+                    db.itemsLibrary,
+                  )..where((t) => t.id.equals(item.id))).go();
                   if (ctx.mounted) Navigator.pop(ctx);
                 },
-                child: const Text('Delete', style: TextStyle(color: AppDesignTokens.statusOverdue)),
+                child: const Text(
+                  'Delete',
+                  style: TextStyle(color: AppDesignTokens.statusOverdue),
+                ),
               ),
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
             ElevatedButton(
               onPressed: () async {
                 if (titleCtrl.text.trim().isEmpty) return;
@@ -329,7 +424,9 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
                 final db = ref.read(databaseProvider);
 
                 if (item == null) {
-                  await db.into(db.itemsLibrary).insert(
+                  await db
+                      .into(db.itemsLibrary)
+                      .insert(
                         ItemsLibraryCompanion.insert(
                           title: titleCtrl.text.trim(),
                           description: descCtrl.text.trim().isNotEmpty
@@ -341,10 +438,16 @@ class _ItemsLibraryScreenState extends ConsumerState<ItemsLibraryScreen> {
                         ),
                       );
                 } else {
-                  await (db.update(db.itemsLibrary)..where((t) => t.id.equals(item.id))).write(
+                  await (db.update(
+                    db.itemsLibrary,
+                  )..where((t) => t.id.equals(item.id))).write(
                     ItemsLibraryCompanion(
                       title: drift.Value(titleCtrl.text.trim()),
-                      description: drift.Value(descCtrl.text.trim().isNotEmpty ? descCtrl.text.trim() : null),
+                      description: drift.Value(
+                        descCtrl.text.trim().isNotEmpty
+                            ? descCtrl.text.trim()
+                            : null,
+                      ),
                       unit: drift.Value(selectedUnit),
                       unitPrice: drift.Value(price),
                       category: drift.Value(selectedCat),

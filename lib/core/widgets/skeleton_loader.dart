@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../theme/app_design_tokens.dart';
 
 class SkeletonLoaderWidget extends StatefulWidget {
@@ -32,9 +33,10 @@ class _SkeletonLoaderWidgetState extends State<SkeletonLoaderWidget>
       duration: const Duration(milliseconds: 1200),
     )..repeat(reverse: true);
 
-    _animation = Tween<double>(begin: 0.3, end: 0.7).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _animation = Tween<double>(
+      begin: 0.3,
+      end: 0.7,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override

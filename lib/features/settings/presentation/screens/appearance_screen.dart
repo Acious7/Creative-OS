@@ -5,6 +5,7 @@ import '../../../../core/design_system/etole_colors.dart';
 import '../../../../core/design_system/etole_components.dart';
 import '../../../../core/design_system/etole_typography.dart';
 import '../../../../core/theme/brand_theme_provider.dart';
+import '../../../../core/theme/studio_theme.dart';
 import '../../../hub/domain/hub_models.dart';
 
 class AppearanceScreen extends ConsumerWidget {
@@ -12,20 +13,18 @@ class AppearanceScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final themeMode = ref.watch(themeModeProvider);
-    final isOled = ref.watch(isOledModeProvider);
+    final studioTheme = ref.watch(currentStudioThemeProvider);
+    final themeSettings = ref.watch(studioThemeSettingsProvider);
     final reduceMotion = ref.watch(reduceMotionProvider);
     final soundEnabled = ref.watch(soundEnabledProvider);
     final openAppTo = ref.watch(openAppToProvider);
 
-    final cream = isDark ? EtoleColors.cream : EtoleColors.lightTextPrimary;
-    final muted = isDark ? EtoleColors.muted : EtoleColors.lightTextMuted;
+    final cream = studioTheme.textPrimary;
+    final muted = studioTheme.textMuted;
+    final isDark = studioTheme.isDark;
 
     return Scaffold(
-      backgroundColor: isDark
-          ? (isOled ? EtoleColors.pitchBlack : EtoleColors.obsidian)
-          : EtoleColors.warmWhite,
+      backgroundColor: studioTheme.backgroundBase,
       body: SafeArea(
         child: Column(
           children: [
@@ -45,7 +44,7 @@ class AppearanceScreen extends ConsumerWidget {
                       Text(
                         '06 · APPEARANCE',
                         style: EtoleTypography.labelCaps(
-                          color: EtoleColors.cyan,
+                          color: studioTheme.primaryAccent,
                         ),
                       ),
                       Text(
@@ -57,64 +56,203 @@ class AppearanceScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            const EtoleHairline(),
+            Divider(color: studioTheme.dividerColor, height: 1),
 
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
+                  horizontal: 20,
                   vertical: 20,
                 ),
                 children: [
-                  // Section: Display Theme
-                  Text(
-                    'PALETTE & CONTRAST',
-                    style: EtoleTypography.labelCaps(color: muted),
+                  // Section: Studio Themes
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'STUDIO THEMES',
+                        style: EtoleTypography.labelCaps(color: muted),
+                      ),
+                      Text(
+                        'INSTANT LIVE APPLIED',
+                        style: EtoleTypography.labelCaps(
+                          color: studioTheme.primaryAccent,
+                        ).copyWith(fontSize: 9),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 12),
-                  _buildThemeOption(
-                    title: 'Cinematic Dark',
-                    subtitle: 'Near-black #0A0C0D obsidian base with warm cream typography',
-                    isSelected: themeMode == ThemeMode.dark && !isOled,
+
+                  // 1. Tribal Orange
+                  _buildThemeCard(
+                    themeData: StudioThemeData.tribalOrange,
+                    isSelected:
+                        themeSettings.themeId == StudioThemeId.tribalOrange,
+                    currentTheme: studioTheme,
                     onTap: () {
-                      ref.read(themeModeProvider.notifier).state =
-                          ThemeMode.dark;
-                      ref.read(isOledModeProvider.notifier).state = false;
-                      EtoleHaptics.light();
+                      ref
+                          .read(studioThemeSettingsProvider.notifier)
+                          .setThemeId(StudioThemeId.tribalOrange);
+                      EtoleHaptics.selection();
                     },
-                    isDark: isDark,
                   ),
-                  const SizedBox(height: 10),
-                  _buildThemeOption(
-                    title: 'OLED Pitch Black',
-                    subtitle: 'Pure #000000 black base for maximum battery saving & contrast',
-                    isSelected: themeMode == ThemeMode.dark && isOled,
+                  const SizedBox(height: 12),
+
+                  // 2. Night Warrior
+                  _buildThemeCard(
+                    themeData: StudioThemeData.nightWarrior,
+                    isSelected:
+                        themeSettings.themeId == StudioThemeId.nightWarrior,
+                    currentTheme: studioTheme,
                     onTap: () {
-                      ref.read(themeModeProvider.notifier).state =
-                          ThemeMode.dark;
-                      ref.read(isOledModeProvider.notifier).state = true;
-                      EtoleHaptics.light();
+                      ref
+                          .read(studioThemeSettingsProvider.notifier)
+                          .setThemeId(StudioThemeId.nightWarrior);
+                      EtoleHaptics.selection();
                     },
-                    isDark: isDark,
                   ),
-                  const SizedBox(height: 10),
-                  _buildThemeOption(
-                    title: 'Warm Light Mode',
-                    subtitle:
-                        'Clean off-white editorial paper finish with dark ink',
-                    isSelected: themeMode == ThemeMode.light,
+                  const SizedBox(height: 12),
+
+                  // 3. Savannah Light
+                  _buildThemeCard(
+                    themeData: StudioThemeData.savannahLight,
+                    isSelected:
+                        themeSettings.themeId == StudioThemeId.savannahLight,
+                    currentTheme: studioTheme,
                     onTap: () {
-                      ref.read(themeModeProvider.notifier).state =
-                          ThemeMode.light;
-                      ref.read(isOledModeProvider.notifier).state = false;
-                      EtoleHaptics.light();
+                      ref
+                          .read(studioThemeSettingsProvider.notifier)
+                          .setThemeId(StudioThemeId.savannahLight);
+                      EtoleHaptics.selection();
                     },
-                    isDark: isDark,
+                  ),
+                  const SizedBox(height: 12),
+
+                  // 4. Nairobi Neon
+                  _buildThemeCard(
+                    themeData: StudioThemeData.nairobiNeon,
+                    isSelected:
+                        themeSettings.themeId == StudioThemeId.nairobiNeon,
+                    currentTheme: studioTheme,
+                    onTap: () {
+                      ref
+                          .read(studioThemeSettingsProvider.notifier)
+                          .setThemeId(StudioThemeId.nairobiNeon);
+                      EtoleHaptics.selection();
+                    },
                   ),
 
-                  const SizedBox(height: 28),
-                  const EtoleHairline(),
                   const SizedBox(height: 24),
+                  Divider(color: studioTheme.dividerColor, height: 1),
+                  const SizedBox(height: 20),
+
+                  // Section: Dark Mode Automation
+                  Text(
+                    'SYSTEM INTEGRATION',
+                    style: EtoleTypography.labelCaps(color: muted),
+                  ),
+                  const SizedBox(height: 14),
+
+                  // Follow phone dark mode toggle
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                    decoration: BoxDecoration(
+                      color: studioTheme.surfaceCardColor,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: studioTheme.dividerColor,
+                        width: 1.0,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Follow phone dark mode',
+                                style: EtoleTypography.bodyLarge(color: cream),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Automatically uses Savannah Light in daytime and your selected dark theme at night.',
+                                style: EtoleTypography.bodySmall(color: muted),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Switch(
+                          value: themeSettings.followSystemDark,
+                          activeThumbColor: studioTheme.primaryAccent,
+                          activeTrackColor: studioTheme.primaryAccent
+                              .withValues(alpha: 0.35),
+                          onChanged: (val) {
+                            ref
+                                .read(studioThemeSettingsProvider.notifier)
+                                .setFollowSystemDark(val);
+                            EtoleHaptics.light();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Match card to theme toggle
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                    decoration: BoxDecoration(
+                      color: studioTheme.surfaceCardColor,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: studioTheme.dividerColor,
+                        width: 1.0,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Match card to theme',
+                                style: EtoleTypography.bodyLarge(color: cream),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'When off, the digital card keeps its signature orange tribal look. When on, it adapts to the active theme.',
+                                style: EtoleTypography.bodySmall(color: muted),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Switch(
+                          value: themeSettings.matchCardToTheme,
+                          activeThumbColor: studioTheme.primaryAccent,
+                          activeTrackColor: studioTheme.primaryAccent
+                              .withValues(alpha: 0.35),
+                          onChanged: (val) {
+                            ref
+                                .read(studioThemeSettingsProvider.notifier)
+                                .setMatchCardToTheme(val);
+                            EtoleHaptics.light();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+                  Divider(color: studioTheme.dividerColor, height: 1),
+                  const SizedBox(height: 20),
 
                   // Section: Motion & Sensor
                   Text(
@@ -142,8 +280,8 @@ class AppearanceScreen extends ConsumerWidget {
                       ),
                       Switch(
                         value: reduceMotion,
-                        activeThumbColor: EtoleColors.cyan,
-                        activeTrackColor: EtoleColors.cyan.withValues(
+                        activeThumbColor: studioTheme.primaryAccent,
+                        activeTrackColor: studioTheme.primaryAccent.withValues(
                           alpha: 0.35,
                         ),
                         onChanged: (val) {
@@ -154,9 +292,9 @@ class AppearanceScreen extends ConsumerWidget {
                     ],
                   ),
 
-                  const SizedBox(height: 28),
-                  const EtoleHairline(),
                   const SizedBox(height: 24),
+                  Divider(color: studioTheme.dividerColor, height: 1),
+                  const SizedBox(height: 20),
 
                   // Section: Audio & Sound
                   Text(
@@ -184,8 +322,8 @@ class AppearanceScreen extends ConsumerWidget {
                       ),
                       Switch(
                         value: soundEnabled,
-                        activeThumbColor: EtoleColors.cyan,
-                        activeTrackColor: EtoleColors.cyan.withValues(
+                        activeThumbColor: studioTheme.primaryAccent,
+                        activeTrackColor: studioTheme.primaryAccent.withValues(
                           alpha: 0.35,
                         ),
                         onChanged: (val) {
@@ -196,9 +334,9 @@ class AppearanceScreen extends ConsumerWidget {
                     ],
                   ),
 
-                  const SizedBox(height: 28),
-                  const EtoleHairline(),
                   const SizedBox(height: 24),
+                  Divider(color: studioTheme.dividerColor, height: 1),
+                  const SizedBox(height: 20),
 
                   // Section: Open App To Target
                   Text(
@@ -229,9 +367,7 @@ class AppearanceScreen extends ConsumerWidget {
                       DropdownButton<OpenAppToTarget>(
                         value: openAppTo,
                         underline: const SizedBox.shrink(),
-                        dropdownColor: isDark
-                            ? EtoleColors.charcoal
-                            : EtoleColors.warmWhite,
+                        dropdownColor: studioTheme.surfaceCardColor,
                         items: [
                           DropdownMenuItem(
                             value: OpenAppToTarget.hub,
@@ -273,70 +409,188 @@ class AppearanceScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildThemeOption({
-    required String title,
-    required String subtitle,
+  Widget _buildThemeCard({
+    required StudioThemeData themeData,
     required bool isSelected,
+    required StudioThemeData currentTheme,
     required VoidCallback onTap,
-    required bool isDark,
   }) {
-    final cream = isDark ? EtoleColors.cream : EtoleColors.lightTextPrimary;
-    final muted = isDark ? EtoleColors.muted : EtoleColors.lightTextMuted;
-
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
+      borderRadius: BorderRadius.circular(16),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: isSelected
-              ? EtoleColors.cyan.withValues(alpha: 0.12)
-              : (isDark
-                    ? Colors.white.withValues(alpha: 0.04)
-                    : Colors.black.withValues(alpha: 0.03)),
-          borderRadius: BorderRadius.circular(12),
+              ? themeData.primaryAccent.withValues(alpha: 0.12)
+              : currentTheme.surfaceCardColor,
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected
-                ? EtoleColors.cyan
-                : (isDark
-                      ? Colors.white.withValues(alpha: 0.1)
-                      : Colors.black12),
-            width: isSelected ? 1.5 : 1.0,
+                ? themeData.primaryAccent
+                : currentTheme.dividerColor,
+            width: isSelected ? 1.8 : 1.0,
           ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: themeData.primaryAccent.withValues(alpha: 0.2),
+                    blurRadius: 12,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            // Color Swatches Cluster Preview
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                color: themeData.backgroundBase,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: themeData.glassBorderColor,
+                  width: 1.2,
+                ),
+              ),
+              padding: const EdgeInsets.all(5),
+              child: Stack(
                 children: [
-                  Text(
-                    title,
-                    style: EtoleTypography.bodyLarge(color: cream).copyWith(
-                      fontWeight: isSelected
-                          ? FontWeight.w700
-                          : FontWeight.w500,
+                  // Background base half
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: themeData.backgroundGradient,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 3),
-                  Text(
-                    subtitle,
-                    style: EtoleTypography.bodySmall(color: muted),
+                  // Primary Accent dot
+                  Positioned(
+                    top: 2,
+                    left: 2,
+                    child: Container(
+                      width: 18,
+                      height: 18,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: themeData.primaryAccent,
+                        boxShadow: [
+                          BoxShadow(
+                            color: themeData.primaryAccent.withValues(
+                              alpha: 0.6,
+                            ),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Secondary Accent dot
+                  Positioned(
+                    bottom: 2,
+                    right: 2,
+                    child: Container(
+                      width: 16,
+                      height: 16,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: themeData.secondaryAccent,
+                      ),
+                    ),
+                  ),
+                  // Glass glint strip
+                  Positioned(
+                    left: 4,
+                    right: 4,
+                    top: 18,
+                    bottom: 18,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: themeData.glassBorderColor,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(width: 14),
+
+            // Theme Info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        themeData.name,
+                        style:
+                            EtoleTypography.bodyLarge(
+                              color: currentTheme.textPrimary,
+                            ).copyWith(
+                              fontWeight: isSelected
+                                  ? FontWeight.w800
+                                  : FontWeight.w600,
+                            ),
+                      ),
+                      if (themeData.id == StudioThemeId.tribalOrange) ...[
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: themeData.primaryAccent.withValues(
+                              alpha: 0.2,
+                            ),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            'DEFAULT',
+                            style: TextStyle(
+                              color: themeData.primaryAccent,
+                              fontSize: 8.5,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.6,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    themeData.subtitle,
+                    style: EtoleTypography.bodySmall(
+                      color: currentTheme.textMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(width: 8),
+
+            // Selection indicator
             if (isSelected)
-              const Icon(
+              Icon(
                 Icons.check_circle_rounded,
-                color: EtoleColors.cyan,
-                size: 22,
+                color: themeData.primaryAccent,
+                size: 24,
               )
             else
               Icon(
-                Icons.radio_button_off_rounded,
-                color: muted.withValues(alpha: 0.5),
-                size: 22,
+                Icons.radio_button_unchecked_rounded,
+                color: currentTheme.textMuted.withValues(alpha: 0.4),
+                size: 24,
               ),
           ],
         ),

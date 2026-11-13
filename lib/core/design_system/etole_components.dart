@@ -817,44 +817,28 @@ class EtoleBrandLogo extends StatelessWidget {
             style: TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.w900,
-              letterSpacing: -0.5,
+              letterSpacing: -1.0,
             ),
             children: [
               const TextSpan(
-                text: 'c',
+                text: 'e',
                 style: TextStyle(color: EtoleColors.green),
               ),
               TextSpan(
-                text: 'r',
+                text: 't',
                 style: TextStyle(color: effectiveTColor),
               ),
               const TextSpan(
-                text: 'e',
+                text: 'o',
                 style: TextStyle(color: EtoleColors.gold),
               ),
               const TextSpan(
-                text: 'a',
+                text: 'l',
                 style: TextStyle(color: EtoleColors.slate),
               ),
               const TextSpan(
-                text: 't',
-                style: TextStyle(color: EtoleColors.red),
-              ),
-              const TextSpan(
-                text: 'i',
-                style: TextStyle(color: EtoleColors.cyan),
-              ),
-              const TextSpan(
-                text: 'v',
-                style: TextStyle(color: EtoleColors.gold),
-              ),
-              TextSpan(
                 text: 'e',
-                style: TextStyle(color: effectiveTColor),
-              ),
-              const TextSpan(
-                text: ' os',
-                style: TextStyle(color: EtoleColors.red, fontWeight: FontWeight.w900),
+                style: TextStyle(color: EtoleColors.red),
               ),
             ],
           ),
@@ -862,7 +846,7 @@ class EtoleBrandLogo extends StatelessWidget {
         if (showSubtitle) ...[
           const SizedBox(height: 2),
           Text(
-            'Creative Operating System',
+            'VisualStoryteller',
             style: TextStyle(
               fontSize: fontSize * 0.35,
               fontWeight: FontWeight.w600,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+
 import '../theme/app_design_tokens.dart';
 import 'app_card.dart';
 import 'status_badge.dart';
@@ -55,7 +56,9 @@ class DocumentThumbnailCard extends StatelessWidget {
       onTap: onTap,
       onLongPress: onLongPress,
       borderColor: isSelected ? theme.colorScheme.primary : null,
-      customColor: isSelected ? theme.colorScheme.primary.withValues(alpha: 0.08) : null,
+      customColor: isSelected
+          ? theme.colorScheme.primary.withValues(alpha: 0.08)
+          : null,
       isHeroAsymmetric: isSelected,
       padding: const EdgeInsets.all(AppDesignTokens.spaceLg),
       child: Column(
@@ -67,10 +70,15 @@ class DocumentThumbnailCard extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
                       color: docTypeColor.withValues(alpha: 0.14),
-                      borderRadius: BorderRadius.circular(AppDesignTokens.radiusXs),
+                      borderRadius: BorderRadius.circular(
+                        AppDesignTokens.radiusXs,
+                      ),
                     ),
                     child: Text(
                       docType.toUpperCase(),
@@ -114,10 +122,15 @@ class DocumentThumbnailCard extends StatelessWidget {
               ),
               if (totalAmount != null && totalAmount! > 0)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: AppDesignTokens.brandAmber,
-                    borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
+                    borderRadius: BorderRadius.circular(
+                      AppDesignTokens.radiusSm,
+                    ),
                   ),
                   child: Text(
                     '$currency ${numberFormatter.format(totalAmount)}',

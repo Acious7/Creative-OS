@@ -99,7 +99,7 @@ class GeminiChiefOfStaffService {
 
       return '''
 --- LIVE STUDIO STATE (${DateFormat('yyyy-MM-dd HH:mm').format(now)}) ---
-- Principal: Brian Etole (Director, Commercial Cinematographer & VisualStoryteller)
+- Application: Creative OS Commercial Suite
 - Verified Paid Revenue This Month: KES ${_currFmt.format(paidThisMonth)}
 - Overdue Invoices: ${overdueDocs.length} overdue (Total outstanding: KES ${_currFmt.format(overdueTotal)})
 ${overdueDocs.map((d) => "  • Invoice ${d.docNumber}: KES ${_currFmt.format(d.totalAmount)} (Due ${d.dueOrValidityDate != null ? DateFormat('MMM d').format(d.dueOrValidityDate!) : 'Past due'})").join('\n')}
@@ -144,8 +144,8 @@ ${activeLeads.map((l) => "  • ${l.name} (${l.organization ?? 'Independent'}) -
 
     final systemInstruction =
         '''
-You are Brian Etole's personal Executive Chief of Staff & Studio AI Partner inside the Etole Studio app.
-Brian Etole is a premier Kenyan commercial cinematographer, director, and visual storyteller.
+You are the personal Executive Chief of Staff & Studio AI Partner inside Creative OS.
+You assist creative directors, visual storytellers, filmmakers, and studio owners in running high-ticket creative operations.
 Currency: Kenyan Shillings (KES).
 Tone: Concise, ultra-competent, loyal, executive, proactive, commercial acumen. Keep replies punchy and under 3-4 paragraphs.
 You have real-time access to the studio's live state:
@@ -153,7 +153,7 @@ $contextText
 
 INSTRUCTIONS:
 1. When asked about revenue, overdue debtors, slate, or taxes, cite the exact numbers from the studio state.
-2. If Brian dictates or pastes a meeting note or deal, ALWAYS extract the business intent into a JSON codeblock at the end of your response:
+2. If the user dictates or pastes a meeting note or deal, ALWAYS extract the business intent into a JSON codeblock at the end of your response:
 ```json
 {
   "intent": "deal_extracted",
@@ -167,8 +167,8 @@ INSTRUCTIONS:
   "stage": "pitching"
 }
 ```
-3. If Brian asks you to draft a quotation, list recommended line items with realistic rates (Director Day Rate: KES 80k-150k, RED/Arri Camera Package: KES 60k-100k, Sound Recordist: KES 35k, Color Grading: KES 50k-80k).
-4. If Brian asks for a WhatsApp chaser, provide a courteous but firm Kenyan commercial reminder formatted with bold text.
+3. If asked to draft a quotation, list recommended line items with realistic rates (Director Day Rate: KES 80k-150k, RED/Arri Camera Package: KES 60k-100k, Sound Recordist: KES 35k, Color Grading: KES 50k-80k).
+4. If asked for a WhatsApp chaser, provide a courteous but firm commercial reminder formatted with bold text.
 ''';
 
     final url = Uri.parse(
@@ -285,7 +285,7 @@ INSTRUCTIONS:
       final activeCount = projects.where((p) => p.stage != 'archived').length;
 
       final reply =
-          '''Good day, Brian. Here is your studio intelligence briefing:
+          '''Good day. Here is your studio intelligence briefing:
 
 • Cashflow MTD: Verified inflow of KES ${_currFmt.format(paidThisMonth)}.
 • Debtors Alert: ${overdueDocs.length} overdue invoice(s) totaling KES ${_currFmt.format(overdueTotal)}.
@@ -321,7 +321,7 @@ All systems and background watchdogs are nominal.''';
       if (overdueDocs.isEmpty) {
         return ChiefOfStaffMessage(
           sender: 'chief',
-          text: 'Clean ledger, Brian! Zero overdue invoices currently on record. All billed commercial clients are up-to-date.',
+          text: 'Clean ledger! Zero overdue invoices currently on record. All billed commercial clients are up-to-date.',
           timestamp: DateTime.now(),
         );
       }
@@ -407,7 +407,7 @@ All systems and background watchdogs are nominal.''';
     return ChiefOfStaffMessage(
       sender: 'chief',
       text:
-          'Understood, Brian. I am monitoring your ledger, active slate, and client deliverables. '
+          'Understood. I am monitoring your ledger, active slate, and client deliverables. '
           'You can ask me for a morning briefing, overdue debtor check, production slate status, or dictate commercial meeting notes to instantly log leads and draft quotations.\n\n'
           '💡 *Tip: Connect your free Gemini API key in the top bar to enable live conversational reasoning and proposal drafting.*',
       timestamp: DateTime.now(),

@@ -15,6 +15,8 @@ import '../../../../core/notifications/local_notification_service.dart';
 import 'transcript_test_screen.dart';
 import '../widgets/import_chat_sheet.dart';
 import '../widgets/meeting_details_sheet.dart';
+import '../../../../core/theme/brand_theme_provider.dart';
+import '../../../../core/theme/studio_theme.dart';
 
 class MeetingsHubScreen extends ConsumerStatefulWidget {
   const MeetingsHubScreen({super.key});
@@ -24,6 +26,11 @@ class MeetingsHubScreen extends ConsumerStatefulWidget {
 }
 
 class _MeetingsHubScreenState extends ConsumerState<MeetingsHubScreen> {
+  StudioThemeData _theme = StudioThemeData.tribalOrange;
+  Color get _accent => _theme.primaryAccent;
+  Color get _bg => _theme.backgroundBase;
+  Color get _cardBg => _theme.surfaceCardColor;
+
   int _selectedFilter =
       0; // 0: All, 1: Pitch Briefs, 2: Production Alignments, 3: Completed
 
@@ -59,10 +66,11 @@ class _MeetingsHubScreenState extends ConsumerState<MeetingsHubScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _theme = ref.watch(currentStudioThemeProvider);
     final db = ref.watch(databaseProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF080B0F),
+      backgroundColor: _bg,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -89,10 +97,10 @@ class _MeetingsHubScreenState extends ConsumerState<MeetingsHubScreen> {
                             fontWeight: FontWeight.w800,
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Briefs, Decision Logs & Audio Memos',
                           style: TextStyle(
-                            color: Color(0xFF2563EB),
+                            color: _accent,
                             fontSize: 10.5,
                             fontWeight: FontWeight.w700,
                             letterSpacing: 0.5,
@@ -124,7 +132,7 @@ class _MeetingsHubScreenState extends ConsumerState<MeetingsHubScreen> {
                   // New Meeting Brief Button
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2563EB),
+                      backgroundColor: _accent,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 11,
@@ -168,7 +176,7 @@ class _MeetingsHubScreenState extends ConsumerState<MeetingsHubScreen> {
                     bottomRight: Radius.circular(12),
                   ),
                   border: Border.all(
-                    color: const Color(0xFF2563EB).withValues(alpha: 0.4),
+                    color: _accent.withValues(alpha: 0.4),
                     width: 1.1,
                   ),
                 ),
@@ -178,10 +186,10 @@ class _MeetingsHubScreenState extends ConsumerState<MeetingsHubScreen> {
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF2563EB).withValues(alpha: 0.25),
+                        color: _accent.withValues(alpha: 0.25),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: const Color(0xFF2563EB).withValues(alpha: 0.5),
+                          color: _accent.withValues(alpha: 0.5),
                         ),
                       ),
                       child: const Icon(
@@ -218,7 +226,7 @@ class _MeetingsHubScreenState extends ConsumerState<MeetingsHubScreen> {
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2563EB),
+                        backgroundColor: _accent,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
@@ -282,10 +290,8 @@ class _MeetingsHubScreenState extends ConsumerState<MeetingsHubScreen> {
                         .watch(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: Color(0xFF2563EB),
-                      ),
+                    return Center(
+                      child: CircularProgressIndicator(color: _accent),
                     );
                   }
 
@@ -299,8 +305,7 @@ class _MeetingsHubScreenState extends ConsumerState<MeetingsHubScreen> {
                           Icon(
                             Icons.forum_outlined,
                             size: 48,
-                            color: const Color(0xFF2563EB)
-                                .withValues(alpha: 0.4),
+                            color: _accent.withValues(alpha: 0.4),
                           ),
                           const SizedBox(height: 12),
                           Text(
@@ -320,7 +325,7 @@ class _MeetingsHubScreenState extends ConsumerState<MeetingsHubScreen> {
                           const SizedBox(height: 16),
                           ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF2563EB),
+                              backgroundColor: _accent,
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
@@ -369,14 +374,10 @@ class _MeetingsHubScreenState extends ConsumerState<MeetingsHubScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected
-              ? const Color(0xFF2563EB).withValues(alpha: 0.22)
-              : const Color(0xFF13171B),
+          color: isSelected ? _accent.withValues(alpha: 0.22) : _cardBg,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isSelected
-                ? const Color(0xFF2563EB)
-                : Colors.white.withValues(alpha: 0.08),
+            color: isSelected ? _accent : Colors.white.withValues(alpha: 0.08),
             width: isSelected ? 1.2 : 0.8,
           ),
         ),
@@ -398,17 +399,14 @@ class _MeetingsHubScreenState extends ConsumerState<MeetingsHubScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFF14171B),
+        color: _cardBg,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(18),
           topRight: Radius.circular(10),
           bottomLeft: Radius.circular(10),
           bottomRight: Radius.circular(10),
         ),
-        border: Border.all(
-          color: const Color(0xFF2563EB).withValues(alpha: 0.3),
-          width: 1.0,
-        ),
+        border: Border.all(color: _accent.withValues(alpha: 0.3), width: 1.0),
       ),
       child: Material(
         color: Colors.transparent,
@@ -434,7 +432,7 @@ class _MeetingsHubScreenState extends ConsumerState<MeetingsHubScreen> {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF2563EB).withValues(alpha: 0.16),
+                        color: _accent.withValues(alpha: 0.16),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
@@ -557,6 +555,8 @@ class _NewMeetingBottomSheetState
 
   @override
   Widget build(BuildContext context) {
+    final studioTheme = ref.watch(currentStudioThemeProvider);
+    final _accent = studioTheme.accentColor;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return ClipRRect(
@@ -569,7 +569,7 @@ class _NewMeetingBottomSheetState
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
             border: Border(
               top: BorderSide(
-                color: const Color(0xFF2563EB).withValues(alpha: 0.4),
+                color: _accent.withValues(alpha: 0.4),
                 width: 1.2,
               ),
             ),
@@ -725,7 +725,7 @@ class _NewMeetingBottomSheetState
                 const SizedBox(height: 22),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2563EB),
+                    backgroundColor: _accent,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(

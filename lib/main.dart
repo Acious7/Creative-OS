@@ -43,15 +43,14 @@ class _EtoleAppState extends ConsumerState<EtoleApp> {
 
   @override
   Widget build(BuildContext context) {
-    final accent = ref.watch(activeAccentColorProvider);
+    final studioTheme = ref.watch(currentStudioThemeProvider);
     final themeMode = ref.watch(themeModeProvider);
-    final isOled = ref.watch(isOledModeProvider);
 
     return MaterialApp(
-      title: 'Creative OS',
+      title: 'Etole',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.getLightTheme(accent),
-      darkTheme: AppTheme.getDarkTheme(accent, isOled: isOled),
+      theme: studioTheme.toMaterialThemeData(),
+      darkTheme: studioTheme.toMaterialThemeData(),
       themeMode: themeMode,
       home: _isAuthenticated
           ? const MainShell()

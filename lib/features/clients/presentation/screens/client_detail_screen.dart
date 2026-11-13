@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../../../../core/constants/document_constants.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/database/database_provider.dart';
@@ -19,18 +20,22 @@ import '../../../documents/presentation/screens/document_detail_screen.dart';
 import '../../../documents/presentation/screens/document_editor_screen.dart';
 import '../../../documents/presentation/widgets/new_document_sheet.dart';
 
-final clientDocumentsStreamProvider = StreamProvider.family.autoDispose<List<Document>, int>((ref, clientId) {
-  final db = ref.watch(databaseProvider);
-  return (db.select(db.documents)
-        ..where((t) => t.clientId.equals(clientId))
-        ..orderBy([(t) => drift.OrderingTerm.desc(t.issueDate)]))
-      .watch();
-});
+final clientDocumentsStreamProvider = StreamProvider.family
+    .autoDispose<List<Document>, int>((ref, clientId) {
+      final db = ref.watch(databaseProvider);
+      return (db.select(db.documents)
+            ..where((t) => t.clientId.equals(clientId))
+            ..orderBy([(t) => drift.OrderingTerm.desc(t.issueDate)]))
+          .watch();
+    });
 
-final singleClientStreamProvider = StreamProvider.family.autoDispose<Client?, int>((ref, clientId) {
-  final db = ref.watch(databaseProvider);
-  return (db.select(db.clients)..where((t) => t.id.equals(clientId))).watchSingleOrNull();
-});
+final singleClientStreamProvider = StreamProvider.family
+    .autoDispose<Client?, int>((ref, clientId) {
+      final db = ref.watch(databaseProvider);
+      return (db.select(
+        db.clients,
+      )..where((t) => t.id.equals(clientId))).watchSingleOrNull();
+    });
 
 class ClientDetailScreen extends ConsumerWidget {
   final Client client;
@@ -67,7 +72,10 @@ class ClientDetailScreen extends ConsumerWidget {
             onPressed: () => _showEditClientDialog(context, ref, currentClient),
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline_rounded, color: AppDesignTokens.statusDanger),
+            icon: const Icon(
+              Icons.delete_outline_rounded,
+              color: AppDesignTokens.statusDanger,
+            ),
             tooltip: 'Delete Client',
             onPressed: () => _confirmDeleteClient(context, ref, currentClient),
           ),
@@ -75,7 +83,10 @@ class ClientDetailScreen extends ConsumerWidget {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: AppDesignTokens.space16, vertical: AppDesignTokens.space16),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppDesignTokens.space16,
+          vertical: AppDesignTokens.space16,
+        ),
         children: [
           // Client Profile Card
           AppCard(
@@ -92,11 +103,16 @@ class ClientDetailScreen extends ConsumerWidget {
                       decoration: BoxDecoration(
                         color: accent.withValues(alpha: 0.12),
                         shape: BoxShape.circle,
-                        border: Border.all(color: accent.withValues(alpha: 0.25), width: 1.5),
+                        border: Border.all(
+                          color: accent.withValues(alpha: 0.25),
+                          width: 1.5,
+                        ),
                       ),
                       child: Center(
                         child: Text(
-                          currentClient.name.isNotEmpty ? currentClient.name.substring(0, 1).toUpperCase() : 'C',
+                          currentClient.name.isNotEmpty
+                              ? currentClient.name.substring(0, 1).toUpperCase()
+                              : 'C',
                           style: GoogleFonts.inter(
                             color: accent,
                             fontWeight: FontWeight.w800,
@@ -117,7 +133,8 @@ class ClientDetailScreen extends ConsumerWidget {
                               fontSize: 18,
                             ),
                           ),
-                          if (currentClient.organization != null && currentClient.organization!.isNotEmpty) ...[
+                          if (currentClient.organization != null &&
+                              currentClient.organization!.isNotEmpty) ...[
                             const SizedBox(height: 2),
                             Text(
                               currentClient.organization!,
@@ -127,13 +144,20 @@ class ClientDetailScreen extends ConsumerWidget {
                               ),
                             ),
                           ],
-                          if (currentClient.kraPin != null && currentClient.kraPin!.isNotEmpty) ...[
+                          if (currentClient.kraPin != null &&
+                              currentClient.kraPin!.isNotEmpty) ...[
                             const SizedBox(height: AppDesignTokens.space6),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
                               decoration: BoxDecoration(
-                                color: theme.colorScheme.surfaceContainerHighest,
-                                borderRadius: BorderRadius.circular(AppDesignTokens.radiusXs),
+                                color:
+                                    theme.colorScheme.surfaceContainerHighest,
+                                borderRadius: BorderRadius.circular(
+                                  AppDesignTokens.radiusXs,
+                                ),
                               ),
                               child: Text(
                                 'PIN: ${currentClient.kraPin}',
@@ -151,65 +175,118 @@ class ClientDetailScreen extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: AppDesignTokens.space16),
-                Divider(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3)),
+                Divider(
+                  color: theme.colorScheme.outlineVariant.withValues(
+                    alpha: 0.3,
+                  ),
+                ),
                 // Contact Details
-                if (currentClient.phone != null && currentClient.phone!.isNotEmpty) ...[
+                if (currentClient.phone != null &&
+                    currentClient.phone!.isNotEmpty) ...[
                   ListTile(
                     dense: true,
                     contentPadding: EdgeInsets.zero,
-                    leading: Icon(Icons.phone_outlined, size: 20, color: theme.colorScheme.onSurfaceVariant),
-                    title: Text(currentClient.phone!, style: theme.textTheme.bodyMedium),
+                    leading: Icon(
+                      Icons.phone_outlined,
+                      size: 20,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    title: Text(
+                      currentClient.phone!,
+                      style: theme.textTheme.bodyMedium,
+                    ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.call_rounded, color: EtoleColors.cyan, size: 20),
-                          onPressed: () => _launchUrl('tel:${currentClient.phone}'),
+                          icon: const Icon(
+                            Icons.call_rounded,
+                            color: EtoleColors.cyan,
+                            size: 20,
+                          ),
+                          onPressed: () =>
+                              _launchUrl('tel:${currentClient.phone}'),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.chat_bubble_outline_rounded, color: EtoleColors.cyan, size: 20),
-                          onPressed: () => _launchUrl('https://wa.me/${currentClient.phone!.replaceAll(RegExp(r'\D'), '')}'),
+                          icon: const Icon(
+                            Icons.chat_bubble_outline_rounded,
+                            color: EtoleColors.cyan,
+                            size: 20,
+                          ),
+                          onPressed: () => _launchUrl(
+                            'https://wa.me/${currentClient.phone!.replaceAll(RegExp(r'\D'), '')}',
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ],
-                if (currentClient.email != null && currentClient.email!.isNotEmpty) ...[
+                if (currentClient.email != null &&
+                    currentClient.email!.isNotEmpty) ...[
                   ListTile(
                     dense: true,
                     contentPadding: EdgeInsets.zero,
-                    leading: Icon(Icons.email_outlined, size: 20, color: theme.colorScheme.onSurfaceVariant),
-                    title: Text(currentClient.email!, style: theme.textTheme.bodyMedium),
+                    leading: Icon(
+                      Icons.email_outlined,
+                      size: 20,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    title: Text(
+                      currentClient.email!,
+                      style: theme.textTheme.bodyMedium,
+                    ),
                     trailing: IconButton(
                       icon: Icon(Icons.send_rounded, size: 18, color: accent),
-                      onPressed: () => _launchUrl('mailto:${currentClient.email}'),
+                      onPressed: () =>
+                          _launchUrl('mailto:${currentClient.email}'),
                     ),
                   ),
                 ],
-                if (currentClient.address != null && currentClient.address!.isNotEmpty) ...[
+                if (currentClient.address != null &&
+                    currentClient.address!.isNotEmpty) ...[
                   ListTile(
                     dense: true,
                     contentPadding: EdgeInsets.zero,
-                    leading: Icon(Icons.location_on_outlined, size: 20, color: theme.colorScheme.onSurfaceVariant),
-                    title: Text(currentClient.address!, style: theme.textTheme.bodyMedium),
+                    leading: Icon(
+                      Icons.location_on_outlined,
+                      size: 20,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    title: Text(
+                      currentClient.address!,
+                      style: theme.textTheme.bodyMedium,
+                    ),
                   ),
                 ],
-                if (currentClient.notes != null && currentClient.notes!.isNotEmpty) ...[
+                if (currentClient.notes != null &&
+                    currentClient.notes!.isNotEmpty) ...[
                   const SizedBox(height: AppDesignTokens.space8),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(AppDesignTokens.space12),
                     decoration: BoxDecoration(
-                      color: AppDesignTokens.statusWarning.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
-                      border: Border.all(color: AppDesignTokens.statusWarning.withValues(alpha: 0.3)),
+                      color: AppDesignTokens.statusWarning.withValues(
+                        alpha: 0.1,
+                      ),
+                      borderRadius: BorderRadius.circular(
+                        AppDesignTokens.radiusSm,
+                      ),
+                      border: Border.all(
+                        color: AppDesignTokens.statusWarning.withValues(
+                          alpha: 0.3,
+                        ),
+                      ),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Row(
                           children: [
-                            Icon(Icons.rule_folder_outlined, size: 16, color: AppDesignTokens.statusWarning),
+                            Icon(
+                              Icons.rule_folder_outlined,
+                              size: 16,
+                              color: AppDesignTokens.statusWarning,
+                            ),
                             SizedBox(width: 6),
                             Text(
                               'Client Requirements & Checklist:',
@@ -222,7 +299,12 @@ class ClientDetailScreen extends ConsumerWidget {
                           ],
                         ),
                         const SizedBox(height: 4),
-                        Text(currentClient.notes!, style: theme.textTheme.bodySmall?.copyWith(height: 1.35)),
+                        Text(
+                          currentClient.notes!,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            height: 1.35,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -237,10 +319,17 @@ class ClientDetailScreen extends ConsumerWidget {
             variant: AppCardVariant.high,
             onTap: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Generating Statement of Account for ${currentClient.name}...')),
+                SnackBar(
+                  content: Text(
+                    'Generating Statement of Account for ${currentClient.name}...',
+                  ),
+                ),
               );
             },
-            padding: const EdgeInsets.symmetric(horizontal: AppDesignTokens.space16, vertical: AppDesignTokens.space14),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDesignTokens.space16,
+              vertical: AppDesignTokens.space14,
+            ),
             child: Row(
               children: [
                 Container(
@@ -248,9 +337,15 @@ class ClientDetailScreen extends ConsumerWidget {
                   height: 42,
                   decoration: BoxDecoration(
                     color: accent.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
+                    borderRadius: BorderRadius.circular(
+                      AppDesignTokens.radiusSm,
+                    ),
                   ),
-                  child: Icon(Icons.account_balance_wallet_outlined, color: accent, size: 22),
+                  child: Icon(
+                    Icons.account_balance_wallet_outlined,
+                    color: accent,
+                    size: 22,
+                  ),
                 ),
                 const SizedBox(width: AppDesignTokens.space14),
                 Expanded(
@@ -259,16 +354,25 @@ class ClientDetailScreen extends ConsumerWidget {
                     children: [
                       Text(
                         'Generate Statement of Account',
-                        style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 14),
+                        style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
                       ),
                       Text(
                         'Export statement of invoices and balances',
-                        style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
                 ),
-                Icon(Icons.arrow_forward_ios_rounded, color: theme.colorScheme.onSurfaceVariant, size: 16),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: theme.colorScheme.onSurfaceVariant,
+                  size: 16,
+                ),
               ],
             ),
           ),
@@ -282,19 +386,31 @@ class ClientDetailScreen extends ConsumerWidget {
                 children: [
                   Text(
                     'Document History',
-                    style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 16),
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
                   ),
                   const SizedBox(width: 8),
                   docsAsync.maybeWhen(
                     data: (docs) => Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: accent.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
+                        borderRadius: BorderRadius.circular(
+                          AppDesignTokens.radiusSm,
+                        ),
                       ),
                       child: Text(
                         '${docs.length}',
-                        style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, color: accent),
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: accent,
+                        ),
                       ),
                     ),
                     orElse: () => const SizedBox.shrink(),
@@ -308,7 +424,8 @@ class ClientDetailScreen extends ConsumerWidget {
                     isScrollControlled: true,
                     backgroundColor: Colors.transparent,
                     builder: (ctx) => NewDocumentSheet(
-                      onSelectDocType: (type) => _openNewDocForClient(context, type, currentClient.id),
+                      onSelectDocType: (type) =>
+                          _openNewDocForClient(context, type, currentClient.id),
                     ),
                   );
                 },
@@ -325,7 +442,8 @@ class ClientDetailScreen extends ConsumerWidget {
                 return EmptyStateWidget(
                   icon: Icons.description_outlined,
                   title: 'No Documents Yet',
-                  description: 'No business documents have been issued to this client.',
+                  description:
+                      'No business documents have been issued to this client.',
                   actionLabel: 'Create Document for Client',
                   onAction: () {
                     showModalBottomSheet(
@@ -333,7 +451,11 @@ class ClientDetailScreen extends ConsumerWidget {
                       isScrollControlled: true,
                       backgroundColor: Colors.transparent,
                       builder: (ctx) => NewDocumentSheet(
-                        onSelectDocType: (type) => _openNewDocForClient(context, type, currentClient.id),
+                        onSelectDocType: (type) => _openNewDocForClient(
+                          context,
+                          type,
+                          currentClient.id,
+                        ),
                       ),
                     );
                   },
@@ -345,14 +467,17 @@ class ClientDetailScreen extends ConsumerWidget {
                   final docType = DocTypeExtension.fromCode(doc.docType);
 
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: AppDesignTokens.space8),
+                    padding: const EdgeInsets.only(
+                      bottom: AppDesignTokens.space8,
+                    ),
                     child: AppCard(
                       variant: AppCardVariant.low,
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => DocumentDetailScreen(documentId: doc.id),
+                            builder: (_) =>
+                                DocumentDetailScreen(documentId: doc.id),
                           ),
                         );
                       },
@@ -364,7 +489,9 @@ class ClientDetailScreen extends ConsumerWidget {
                             height: 40,
                             decoration: BoxDecoration(
                               color: accent.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
+                              borderRadius: BorderRadius.circular(
+                                AppDesignTokens.radiusSm,
+                              ),
                             ),
                             child: Icon(docType.icon, color: accent, size: 20),
                           ),
@@ -378,7 +505,10 @@ class ClientDetailScreen extends ConsumerWidget {
                                     Expanded(
                                       child: Text(
                                         doc.docNumber,
-                                        style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 13),
+                                        style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 13,
+                                        ),
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
@@ -387,16 +517,23 @@ class ClientDetailScreen extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       DateFormatter.format(doc.issueDate),
-                                      style: theme.textTheme.bodySmall?.copyWith(
-                                        color: theme.colorScheme.onSurfaceVariant,
-                                      ),
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(
+                                            color: theme
+                                                .colorScheme
+                                                .onSurfaceVariant,
+                                          ),
                                     ),
                                     Text(
-                                      CurrencyFormatter.format(doc.totalAmount, currencyCode: doc.currencyCode),
+                                      CurrencyFormatter.format(
+                                        doc.totalAmount,
+                                        currencyCode: doc.currencyCode,
+                                      ),
                                       style: AppDesignTokens.tabularStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 13,
@@ -427,14 +564,19 @@ class ClientDetailScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
+        ),
         title: const Text('Delete Client?'),
         content: Text(
           'Are you sure you want to delete "${c.name}"?\n\nAll existing documents and historical transactions will retain full client snapshot information intact.',
           style: const TextStyle(fontSize: 14, height: 1.4),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppDesignTokens.statusDanger,
@@ -442,9 +584,8 @@ class ClientDetailScreen extends ConsumerWidget {
             ),
             onPressed: () async {
               final db = ref.read(databaseProvider);
-              await (db.update(db.clients)..where((t) => t.id.equals(c.id))).write(
-                const ClientsCompanion(isDeleted: drift.Value(true)),
-              );
+              await (db.update(db.clients)..where((t) => t.id.equals(c.id)))
+                  .write(const ClientsCompanion(isDeleted: drift.Value(true)));
               if (ctx.mounted) {
                 Navigator.pop(ctx); // Close dialog
                 Navigator.pop(context); // Close detail screen
@@ -455,7 +596,9 @@ class ClientDetailScreen extends ConsumerWidget {
                       label: 'Undo',
                       textColor: EtoleColors.gold,
                       onPressed: () async {
-                        await (db.update(db.clients)..where((t) => t.id.equals(c.id))).write(
+                        await (db.update(
+                          db.clients,
+                        )..where((t) => t.id.equals(c.id))).write(
                           const ClientsCompanion(isDeleted: drift.Value(false)),
                         );
                       },
@@ -483,7 +626,9 @@ class ClientDetailScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
+        ),
         title: const Text('Edit Client Details'),
         content: SingleChildScrollView(
           child: Column(
@@ -498,7 +643,9 @@ class ClientDetailScreen extends ConsumerWidget {
               TextField(
                 controller: orgCtrl,
                 textCapitalization: TextCapitalization.words,
-                decoration: const InputDecoration(labelText: 'Company / Organization'),
+                decoration: const InputDecoration(
+                  labelText: 'Company / Organization',
+                ),
               ),
               const SizedBox(height: 10),
               TextField(
@@ -528,26 +675,55 @@ class ClientDetailScreen extends ConsumerWidget {
               TextField(
                 controller: notesCtrl,
                 maxLines: 2,
-                decoration: const InputDecoration(labelText: 'Notes / Checklist'),
+                decoration: const InputDecoration(
+                  labelText: 'Notes / Checklist',
+                ),
               ),
             ],
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
           ElevatedButton(
             onPressed: () async {
               if (nameCtrl.text.trim().isEmpty) return;
               final db = ref.read(databaseProvider);
-              await (db.update(db.clients)..where((t) => t.id.equals(c.id))).write(
+              await (db.update(
+                db.clients,
+              )..where((t) => t.id.equals(c.id))).write(
                 ClientsCompanion(
                   name: drift.Value(nameCtrl.text.trim()),
-                  organization: drift.Value(orgCtrl.text.trim().isNotEmpty ? orgCtrl.text.trim() : null),
-                  phone: drift.Value(phoneCtrl.text.trim().isNotEmpty ? phoneCtrl.text.trim() : null),
-                  email: drift.Value(emailCtrl.text.trim().isNotEmpty ? emailCtrl.text.trim() : null),
-                  kraPin: drift.Value(kraCtrl.text.trim().isNotEmpty ? kraCtrl.text.trim().toUpperCase() : null),
-                  address: drift.Value(addressCtrl.text.trim().isNotEmpty ? addressCtrl.text.trim() : null),
-                  notes: drift.Value(notesCtrl.text.trim().isNotEmpty ? notesCtrl.text.trim() : null),
+                  organization: drift.Value(
+                    orgCtrl.text.trim().isNotEmpty ? orgCtrl.text.trim() : null,
+                  ),
+                  phone: drift.Value(
+                    phoneCtrl.text.trim().isNotEmpty
+                        ? phoneCtrl.text.trim()
+                        : null,
+                  ),
+                  email: drift.Value(
+                    emailCtrl.text.trim().isNotEmpty
+                        ? emailCtrl.text.trim()
+                        : null,
+                  ),
+                  kraPin: drift.Value(
+                    kraCtrl.text.trim().isNotEmpty
+                        ? kraCtrl.text.trim().toUpperCase()
+                        : null,
+                  ),
+                  address: drift.Value(
+                    addressCtrl.text.trim().isNotEmpty
+                        ? addressCtrl.text.trim()
+                        : null,
+                  ),
+                  notes: drift.Value(
+                    notesCtrl.text.trim().isNotEmpty
+                        ? notesCtrl.text.trim()
+                        : null,
+                  ),
                 ),
               );
               if (ctx.mounted) {
@@ -564,14 +740,16 @@ class ClientDetailScreen extends ConsumerWidget {
     );
   }
 
-  void _openNewDocForClient(BuildContext context, DocType docType, int clientId) {
+  void _openNewDocForClient(
+    BuildContext context,
+    DocType docType,
+    int clientId,
+  ) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (ctx) => DocumentEditorScreen(
-          docType: docType,
-          initialClientId: clientId,
-        ),
+        builder: (ctx) =>
+            DocumentEditorScreen(docType: docType, initialClientId: clientId),
       ),
     );
   }

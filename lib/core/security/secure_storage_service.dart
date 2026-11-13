@@ -9,10 +9,11 @@ class SecureStorageService {
   final FlutterSecureStorage _storage;
 
   SecureStorageService({FlutterSecureStorage? storage})
-      : _storage = storage ??
-            const FlutterSecureStorage(
-              aOptions: AndroidOptions(encryptedSharedPreferences: true),
-            );
+    : _storage =
+          storage ??
+          const FlutterSecureStorage(
+            aOptions: AndroidOptions(encryptedSharedPreferences: true),
+          );
 
   static const String _keyAppPin = 'etole_app_pin';
   static const String _keyBiometricsEnabled = 'etole_biometrics_enabled';
@@ -56,7 +57,10 @@ class SecureStorageService {
 
   Future<void> setBiometricsEnabled(bool enabled) async {
     try {
-      await _storage.write(key: _keyBiometricsEnabled, value: enabled.toString());
+      await _storage.write(
+        key: _keyBiometricsEnabled,
+        value: enabled.toString(),
+      );
     } catch (_) {}
   }
 
@@ -71,7 +75,10 @@ class SecureStorageService {
 
   Future<void> saveSmtpPassword(int brandId, String password) async {
     try {
-      await _storage.write(key: '$_keySmtpPasswordPrefix$brandId', value: password);
+      await _storage.write(
+        key: '$_keySmtpPasswordPrefix$brandId',
+        value: password,
+      );
     } catch (_) {}
   }
 

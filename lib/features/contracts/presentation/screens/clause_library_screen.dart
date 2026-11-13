@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' as drift;
+
 import '../../../../core/database/app_database.dart';
 import '../../../../core/database/database_provider.dart';
 import '../../../../core/theme/app_design_tokens.dart';
@@ -11,7 +12,9 @@ import '../../../../core/widgets/skeleton_loader.dart';
 
 final clausesProvider = StreamProvider<List<ReusableClause>>((ref) {
   final db = ref.watch(databaseProvider);
-  return (db.select(db.reusableClauses)..orderBy([(t) => drift.OrderingTerm.asc(t.category)])).watch();
+  return (db.select(
+    db.reusableClauses,
+  )..orderBy([(t) => drift.OrderingTerm.asc(t.category)])).watch();
 });
 
 class ClauseLibraryScreen extends ConsumerWidget {
@@ -24,9 +27,7 @@ class ClauseLibraryScreen extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Clause Library'),
-      ),
+      appBar: AppBar(title: const Text('Clause Library')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openClauseEditor(context, ref),
         icon: const Icon(Icons.add_rounded),
@@ -45,7 +46,10 @@ class ClauseLibraryScreen extends ConsumerWidget {
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: AppDesignTokens.space16, vertical: AppDesignTokens.space12),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDesignTokens.space16,
+              vertical: AppDesignTokens.space12,
+            ),
             itemCount: clauses.length,
             itemBuilder: (ctx, idx) {
               final c = clauses[idx];
@@ -57,40 +61,81 @@ class ClauseLibraryScreen extends ConsumerWidget {
                   child: Theme(
                     data: theme.copyWith(dividerColor: Colors.transparent),
                     child: ExpansionTile(
-                      tilePadding: const EdgeInsets.symmetric(horizontal: AppDesignTokens.space14, vertical: AppDesignTokens.space4),
+                      tilePadding: const EdgeInsets.symmetric(
+                        horizontal: AppDesignTokens.space14,
+                        vertical: AppDesignTokens.space4,
+                      ),
                       leading: Container(
                         width: 36,
                         height: 36,
                         decoration: BoxDecoration(
                           color: accent.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
+                          borderRadius: BorderRadius.circular(
+                            AppDesignTokens.radiusSm,
+                          ),
                         ),
-                        child: Icon(Icons.gavel_outlined, color: accent, size: 18),
+                        child: Icon(
+                          Icons.gavel_outlined,
+                          color: accent,
+                          size: 18,
+                        ),
                       ),
-                      title: Text(c.title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                      title: Text(
+                        c.title,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       subtitle: Text(
                         c.category,
-                        style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
                       ),
                       children: [
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(AppDesignTokens.space16, 0, AppDesignTokens.space16, AppDesignTokens.space14),
+                          padding: const EdgeInsets.fromLTRB(
+                            AppDesignTokens.space16,
+                            0,
+                            AppDesignTokens.space16,
+                            AppDesignTokens.space14,
+                          ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Divider(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3)),
+                              Divider(
+                                color: theme.colorScheme.outlineVariant
+                                    .withValues(alpha: 0.3),
+                              ),
                               const SizedBox(height: 6),
-                              Text(c.bodyText, style: theme.textTheme.bodySmall?.copyWith(height: 1.45)),
+                              Text(
+                                c.bodyText,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  height: 1.45,
+                                ),
+                              ),
                               const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   IconButton(
-                                    icon: Icon(Icons.edit_outlined, size: 18, color: theme.colorScheme.onSurfaceVariant),
-                                    onPressed: () => _openClauseEditor(context, ref, clause: c),
+                                    icon: Icon(
+                                      Icons.edit_outlined,
+                                      size: 18,
+                                      color: theme.colorScheme.onSurfaceVariant,
+                                    ),
+                                    onPressed: () => _openClauseEditor(
+                                      context,
+                                      ref,
+                                      clause: c,
+                                    ),
                                   ),
                                   IconButton(
-                                    icon: const Icon(Icons.delete_outline, size: 18, color: AppDesignTokens.statusOverdue),
+                                    icon: const Icon(
+                                      Icons.delete_outline,
+                                      size: 18,
+                                      color: AppDesignTokens.statusOverdue,
+                                    ),
                                     onPressed: () => _deleteClause(ref, c.id),
                                   ),
                                 ],
@@ -112,12 +157,18 @@ class ClauseLibraryScreen extends ConsumerWidget {
     );
   }
 
-  void _openClauseEditor(BuildContext context, WidgetRef ref, {ReusableClause? clause}) {
+  void _openClauseEditor(
+    BuildContext context,
+    WidgetRef ref, {
+    ReusableClause? clause,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppDesignTokens.radiusXl)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppDesignTokens.radiusXl),
+        ),
       ),
       builder: (ctx) => _ClauseForm(clause: clause),
     );
@@ -182,19 +233,30 @@ class _ClauseFormState extends ConsumerState<_ClauseForm> {
           children: [
             Text(
               widget.clause == null ? 'Add Reusable Clause' : 'Edit Clause',
-              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 14),
             DropdownButtonFormField<String>(
-              initialValue: _categories.contains(_catController.text) ? _catController.text : _categories.first,
+              initialValue: _categories.contains(_catController.text)
+                  ? _catController.text
+                  : _categories.first,
               decoration: const InputDecoration(labelText: 'Category'),
-              items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+              items: _categories
+                  .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                  .toList(),
               onChanged: (val) {
                 if (val != null) setState(() => _catController.text = val);
               },
             ),
             const SizedBox(height: 10),
-            TextFormField(controller: _titleController, decoration: const InputDecoration(labelText: 'Clause Title (e.g. Usage Rights)')),
+            TextFormField(
+              controller: _titleController,
+              decoration: const InputDecoration(
+                labelText: 'Clause Title (e.g. Usage Rights)',
+              ),
+            ),
             const SizedBox(height: 10),
             TextFormField(
               controller: _contentController,
@@ -207,7 +269,10 @@ class _ClauseFormState extends ConsumerState<_ClauseForm> {
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(onPressed: _save, child: const Text('Save Clause')),
+              child: ElevatedButton(
+                onPressed: _save,
+                child: const Text('Save Clause'),
+              ),
             ),
           ],
         ),
@@ -216,11 +281,15 @@ class _ClauseFormState extends ConsumerState<_ClauseForm> {
   }
 
   Future<void> _save() async {
-    if (_titleController.text.trim().isEmpty || _contentController.text.trim().isEmpty) return;
+    if (_titleController.text.trim().isEmpty ||
+        _contentController.text.trim().isEmpty)
+      return;
     final db = ref.read(databaseProvider);
 
     if (widget.clause == null) {
-      await db.into(db.reusableClauses).insert(
+      await db
+          .into(db.reusableClauses)
+          .insert(
             ReusableClausesCompanion.insert(
               category: drift.Value(_catController.text.trim()),
               title: _titleController.text.trim(),
@@ -228,7 +297,9 @@ class _ClauseFormState extends ConsumerState<_ClauseForm> {
             ),
           );
     } else {
-      await (db.update(db.reusableClauses)..where((t) => t.id.equals(widget.clause!.id))).write(
+      await (db.update(
+        db.reusableClauses,
+      )..where((t) => t.id.equals(widget.clause!.id))).write(
         ReusableClausesCompanion(
           category: drift.Value(_catController.text.trim()),
           title: drift.Value(_titleController.text.trim()),

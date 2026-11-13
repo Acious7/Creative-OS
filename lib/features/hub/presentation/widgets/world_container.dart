@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/design_system/etole_colors.dart';
 import '../../../../core/design_system/etole_components.dart';
 import '../../../../core/design_system/etole_typography.dart';
+import '../../../../core/theme/studio_theme_provider.dart';
 import '../../domain/hub_models.dart';
 
 class WorldContainer extends ConsumerWidget {
@@ -19,7 +20,8 @@ class WorldContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final studioTheme = ref.watch(currentStudioThemeProvider);
+    final isDark = studioTheme.isDark;
 
     return PopScope(
       canPop: false,
@@ -29,7 +31,7 @@ class WorldContainer extends ConsumerWidget {
         }
       },
       child: Scaffold(
-        backgroundColor: isDark ? EtoleColors.darkBase : EtoleColors.lightBase,
+        backgroundColor: studioTheme.backgroundBase,
         body: GestureDetector(
           // Swipe down from top edge to return to Hub
           onVerticalDragUpdate: (details) {

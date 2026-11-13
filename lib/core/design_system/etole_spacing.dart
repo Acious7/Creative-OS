@@ -18,7 +18,9 @@ class EtoleSpacing {
 
   // Screen horizontal gutter
   static const double screenGutter = 24.0;
-  static const EdgeInsets screenPadding = EdgeInsets.symmetric(horizontal: screenGutter);
+  static const EdgeInsets screenPadding = EdgeInsets.symmetric(
+    horizontal: screenGutter,
+  );
 
   // Accessible minimum tap target
   static const double minTapTarget = 48.0;

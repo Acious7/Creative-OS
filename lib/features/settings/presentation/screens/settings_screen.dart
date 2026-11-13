@@ -20,6 +20,7 @@ import 'automations_settings_screen.dart';
 import 'custom_recipes_screen.dart';
 import 'backup_screen.dart';
 import 'payment_profiles_screen.dart';
+import 'calendar_settings_screen.dart';
 import 'reminders_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -33,9 +34,10 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activeBrand = ref.watch(activeBrandProvider);
+    final studioTheme = ref.watch(currentStudioThemeProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF080B0F),
+      backgroundColor: studioTheme.backgroundBase,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,7 +124,7 @@ class SettingsScreen extends ConsumerWidget {
                     margin: const EdgeInsets.only(top: 4, bottom: 14),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF14171B),
+                      color: studioTheme.surfaceCardColor,
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(12),
@@ -189,7 +191,7 @@ class SettingsScreen extends ConsumerWidget {
                     icon: Icons.tag_rounded,
                     color: const Color(0xFF8B5CF6),
                     title: 'Numbering Sequences',
-                    subtitle: 'BE prefixes (BE-QT, BE-INV, BE-CON, BE-REC) & counters',
+                    subtitle: 'COS prefixes (COS-QT, COS-INV, COS-CON, COS-REC) & counters',
                     onTap: () =>
                         _navigate(context, const NumberingFormatScreen()),
                   ),
@@ -197,7 +199,7 @@ class SettingsScreen extends ConsumerWidget {
                     icon: Icons.mark_email_read_rounded,
                     color: const Color(0xFF00E5FF),
                     title: 'SMTP Mail Setup (Direct Dispatch)',
-                    subtitle: 'Configure hello@brianetole.com or Gmail App Password without OAuth',
+                    subtitle: 'Configure custom domain or Gmail App Password without OAuth',
                     onTap: () =>
                         _navigate(context, const SmtpEmailSettingsScreen()),
                   ),
@@ -234,6 +236,14 @@ class SettingsScreen extends ConsumerWidget {
                     title: 'Reminders & Notifications',
                     subtitle: 'Occasion alerts, 1-day before default & overdue doc notices',
                     onTap: () => _navigate(context, const RemindersScreen()),
+                  ),
+                  _buildSettingTile(
+                    icon: Icons.calendar_month_rounded,
+                    color: const Color(0xFF38B6DB),
+                    title: 'Calendar & Schedule Sync',
+                    subtitle: 'Pick calendar destination, direct background event sync & 7-day strip',
+                    onTap: () =>
+                        _navigate(context, const CalendarSettingsScreen()),
                   ),
                   _buildSettingTile(
                     icon: Icons.bolt_rounded,
@@ -284,8 +294,8 @@ class SettingsScreen extends ConsumerWidget {
                   _buildSettingTile(
                     icon: Icons.info_outline_rounded,
                     color: const Color(0xFF64748B),
-                    title: 'About Etole Studio',
-                    subtitle: 'Version 2.0.0 · Brian Etole Productions',
+                    title: 'About Creative OS',
+                    subtitle: 'Version 2.2.0 · Designed & Architected by Brian Etole',
                     onTap: () => _navigate(context, const AboutScreen()),
                   ),
 
@@ -321,62 +331,64 @@ class SettingsScreen extends ConsumerWidget {
     required String subtitle,
     required VoidCallback onTap,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: const Color(0xFF14171B),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
+    return Builder(
+      builder: (context) => Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(14),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-            child: Row(
-              children: [
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.14),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: color.withValues(alpha: 0.35)),
+          border: Border.all(color: Theme.of(context).dividerColor),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(14),
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+              child: Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: color.withValues(alpha: 0.35)),
+                    ),
+                    child: Icon(icon, color: color, size: 18),
                   ),
-                  child: Icon(icon, color: color, size: 18),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w600,
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        subtitle,
-                        style: const TextStyle(
-                          color: Color(0xFF94A3B8),
-                          fontSize: 11,
+                        const SizedBox(height: 2),
+                        Text(
+                          subtitle,
+                          style: const TextStyle(
+                            color: Color(0xFF94A3B8),
+                            fontSize: 11,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 13,
-                  color: Color(0xFF64748B),
-                ),
-              ],
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 13,
+                    color: Color(0xFF64748B),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

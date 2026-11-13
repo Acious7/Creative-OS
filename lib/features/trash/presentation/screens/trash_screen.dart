@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:intl/intl.dart';
+
 import '../../../../core/constants/app_design_tokens.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/database/database_provider.dart';
@@ -14,7 +15,8 @@ class TrashScreen extends ConsumerStatefulWidget {
   ConsumerState<TrashScreen> createState() => _TrashScreenState();
 }
 
-class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProviderStateMixin {
+class _TrashScreenState extends ConsumerState<TrashScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -53,11 +55,21 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
 
     if (confirmed == true && mounted) {
       final db = ref.read(databaseProvider);
-      await (db.delete(db.documents)..where((t) => t.isDeleted.equals(true))).go();
-      await (db.delete(db.clients)..where((t) => t.isDeleted.equals(true))).go();
-      await (db.delete(db.itemsLibrary)..where((t) => t.isDeleted.equals(true))).go();
-      await (db.delete(db.networkingEvents)..where((t) => t.isDeleted.equals(true))).go();
-      await (db.delete(db.networkingLeads)..where((t) => t.isDeleted.equals(true))).go();
+      await (db.delete(
+        db.documents,
+      )..where((t) => t.isDeleted.equals(true))).go();
+      await (db.delete(
+        db.clients,
+      )..where((t) => t.isDeleted.equals(true))).go();
+      await (db.delete(
+        db.itemsLibrary,
+      )..where((t) => t.isDeleted.equals(true))).go();
+      await (db.delete(
+        db.networkingEvents,
+      )..where((t) => t.isDeleted.equals(true))).go();
+      await (db.delete(
+        db.networkingLeads,
+      )..where((t) => t.isDeleted.equals(true))).go();
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -112,7 +124,11 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.delete_outline_rounded, size: 56, color: Theme.of(context).colorScheme.outlineVariant),
+            Icon(
+              Icons.delete_outline_rounded,
+              size: 56,
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
             const SizedBox(height: 16),
             Text(
               'No deleted $itemType in trash',
@@ -132,7 +148,9 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
 
   Widget _buildDocumentsTrash(AppDatabase db) {
     return StreamBuilder<List<Document>>(
-      stream: (db.select(db.documents)..where((t) => t.isDeleted.equals(true))).watch(),
+      stream: (db.select(
+        db.documents,
+      )..where((t) => t.isDeleted.equals(true))).watch(),
       builder: (context, snapshot) {
         final docs = snapshot.data ?? [];
         if (docs.isEmpty) return _buildEmptyState('documents');
@@ -140,7 +158,8 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
         return ListView.separated(
           padding: const EdgeInsets.all(AppDesignTokens.space16),
           itemCount: docs.length,
-          separatorBuilder: (_, __) => const SizedBox(height: AppDesignTokens.space8),
+          separatorBuilder: (_, __) =>
+              const SizedBox(height: AppDesignTokens.space8),
           itemBuilder: (context, index) {
             final doc = docs[index];
             return AppCard(
@@ -150,18 +169,32 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
                 contentPadding: EdgeInsets.zero,
                 leading: CircleAvatar(
                   backgroundColor: Colors.red.withValues(alpha: 0.15),
-                  child: const Icon(Icons.description_rounded, color: Colors.red, size: 20),
+                  child: const Icon(
+                    Icons.description_rounded,
+                    color: Colors.red,
+                    size: 20,
+                  ),
                 ),
-                title: Text(doc.docNumber, style: const TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text('${doc.docType.toUpperCase()} • Deleted: ${_formatDate(doc.deletedAt)}'),
+                title: Text(
+                  doc.docNumber,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  '${doc.docType.toUpperCase()} • Deleted: ${_formatDate(doc.deletedAt)}',
+                ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.restore_rounded, color: Colors.teal),
+                      icon: const Icon(
+                        Icons.restore_rounded,
+                        color: Colors.teal,
+                      ),
                       tooltip: 'Restore Document',
                       onPressed: () async {
-                        await (db.update(db.documents)..where((t) => t.id.equals(doc.id))).write(
+                        await (db.update(
+                          db.documents,
+                        )..where((t) => t.id.equals(doc.id))).write(
                           const DocumentsCompanion(
                             isDeleted: drift.Value(false),
                             deletedAt: drift.Value(null),
@@ -170,11 +203,15 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Restored document ${doc.docNumber}'),
+                              content: Text(
+                                'Restored document ${doc.docNumber}',
+                              ),
                               action: SnackBarAction(
                                 label: 'Undo',
                                 onPressed: () async {
-                                  await (db.update(db.documents)..where((t) => t.id.equals(doc.id))).write(
+                                  await (db.update(
+                                    db.documents,
+                                  )..where((t) => t.id.equals(doc.id))).write(
                                     DocumentsCompanion(
                                       isDeleted: const drift.Value(true),
                                       deletedAt: drift.Value(DateTime.now()),
@@ -188,12 +225,18 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
                       },
                     ),
                     IconButton(
-                      icon: const Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
+                      icon: const Icon(
+                        Icons.delete_forever_rounded,
+                        color: Colors.redAccent,
+                      ),
                       tooltip: 'Delete Permanently',
                       onPressed: () => _confirmPermanentDelete(
                         title: 'Delete Document Permanently',
-                        message: 'Permanently remove ${doc.docNumber}? This cannot be undone.',
-                        onDelete: () => (db.delete(db.documents)..where((t) => t.id.equals(doc.id))).go(),
+                        message:
+                            'Permanently remove ${doc.docNumber}? This cannot be undone.',
+                        onDelete: () => (db.delete(
+                          db.documents,
+                        )..where((t) => t.id.equals(doc.id))).go(),
                       ),
                     ),
                   ],
@@ -208,128 +251,209 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
 
   Widget _buildClientsTrash(AppDatabase db) {
     return StreamBuilder<List<Client>>(
-      stream: (db.select(db.clients)..where((t) => t.isDeleted.equals(true))).watch(),
+      stream: (db.select(
+        db.clients,
+      )..where((t) => t.isDeleted.equals(true))).watch(),
       builder: (context, clientSnap) {
         return StreamBuilder<List<NetworkingLead>>(
-          stream: (db.select(db.networkingLeads)..where((t) => t.isDeleted.equals(true))).watch(),
+          stream: (db.select(
+            db.networkingLeads,
+          )..where((t) => t.isDeleted.equals(true))).watch(),
           builder: (context, leadSnap) {
             final clients = clientSnap.data ?? [];
             final leads = leadSnap.data ?? [];
-            if (clients.isEmpty && leads.isEmpty) return _buildEmptyState('people & contacts');
+            if (clients.isEmpty && leads.isEmpty)
+              return _buildEmptyState('people & contacts');
 
             return ListView(
               padding: const EdgeInsets.all(AppDesignTokens.space16),
               children: [
                 if (clients.isNotEmpty) ...[
-                  ...clients.map((client) => Padding(
-                    padding: const EdgeInsets.only(bottom: AppDesignTokens.space8),
-                    child: AppCard(
-                      variant: AppCardVariant.surface,
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.red.withValues(alpha: 0.15),
-                          child: const Icon(Icons.person_rounded, color: Colors.red, size: 20),
+                  ...clients.map(
+                    (client) => Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: AppDesignTokens.space8,
+                      ),
+                      child: AppCard(
+                        variant: AppCardVariant.surface,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
                         ),
-                        title: Text(client.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: Text('${client.organization ?? 'Client'} • Deleted: ${_formatDate(client.deletedAt)}'),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.restore_rounded, color: Colors.teal),
-                              tooltip: 'Restore Person',
-                              onPressed: () async {
-                                await (db.update(db.clients)..where((t) => t.id.equals(client.id))).write(
-                                  const ClientsCompanion(
-                                    isDeleted: drift.Value(false),
-                                    deletedAt: drift.Value(null),
-                                  ),
-                                );
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Restored ${client.name}')),
-                                  );
-                                }
-                              },
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.red.withValues(alpha: 0.15),
+                            child: const Icon(
+                              Icons.person_rounded,
+                              color: Colors.red,
+                              size: 20,
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
-                              tooltip: 'Delete Permanently',
-                              onPressed: () => _confirmPermanentDelete(
-                                title: 'Delete Person Permanently',
-                                message: 'Permanently remove ${client.name}? Documents already issued will retain client snapshot.',
-                                onDelete: () => (db.delete(db.clients)..where((t) => t.id.equals(client.id))).go(),
+                          ),
+                          title: Text(
+                            client.name,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            '${client.organization ?? 'Client'} • Deleted: ${_formatDate(client.deletedAt)}',
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.restore_rounded,
+                                  color: Colors.teal,
+                                ),
+                                tooltip: 'Restore Person',
+                                onPressed: () async {
+                                  await (db.update(db.clients)
+                                        ..where((t) => t.id.equals(client.id)))
+                                      .write(
+                                        const ClientsCompanion(
+                                          isDeleted: drift.Value(false),
+                                          deletedAt: drift.Value(null),
+                                        ),
+                                      );
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Restored ${client.name}',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
                               ),
-                            ),
-                          ],
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.delete_forever_rounded,
+                                  color: Colors.redAccent,
+                                ),
+                                tooltip: 'Delete Permanently',
+                                onPressed: () => _confirmPermanentDelete(
+                                  title: 'Delete Person Permanently',
+                                  message:
+                                      'Permanently remove ${client.name}? Documents already issued will retain client snapshot.',
+                                  onDelete: () => (db.delete(
+                                    db.clients,
+                                  )..where((t) => t.id.equals(client.id))).go(),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  )),
+                  ),
                 ],
                 if (leads.isNotEmpty) ...[
-                  ...leads.map((lead) => Padding(
-                    padding: const EdgeInsets.only(bottom: AppDesignTokens.space8),
-                    child: AppCard(
-                      variant: AppCardVariant.surface,
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.amber.withValues(alpha: 0.15),
-                          child: const Icon(Icons.person_outline_rounded, color: Colors.amber, size: 20),
+                  ...leads.map(
+                    (lead) => Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: AppDesignTokens.space8,
+                      ),
+                      child: AppCard(
+                        variant: AppCardVariant.surface,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
                         ),
-                        title: Row(
-                          children: [
-                            Text(lead.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: Colors.amber.withValues(alpha: 0.15),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: const Text('Network', style: TextStyle(fontSize: 10, color: Colors.amber, fontWeight: FontWeight.bold)),
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.amber.withValues(
+                              alpha: 0.15,
                             ),
-                          ],
-                        ),
-                        subtitle: Text('${lead.organization ?? lead.title ?? 'Contact'} • Deleted: ${_formatDate(lead.deletedAt)}'),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.restore_rounded, color: Colors.teal),
-                              tooltip: 'Restore Contact',
-                              onPressed: () async {
-                                await (db.update(db.networkingLeads)..where((t) => t.id.equals(lead.id))).write(
-                                  const NetworkingLeadsCompanion(
-                                    isDeleted: drift.Value(false),
-                                    deletedAt: drift.Value(null),
+                            child: const Icon(
+                              Icons.person_outline_rounded,
+                              color: Colors.amber,
+                              size: 20,
+                            ),
+                          ),
+                          title: Row(
+                            children: [
+                              Text(
+                                lead.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.amber.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: const Text(
+                                  'Network',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.amber,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                );
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Restored ${lead.name} to Network')),
-                                  );
-                                }
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
-                              tooltip: 'Delete Permanently',
-                              onPressed: () => _confirmPermanentDelete(
-                                title: 'Delete Contact Permanently',
-                                message: 'Permanently remove ${lead.name} from Network? This cannot be undone.',
-                                onDelete: () => (db.delete(db.networkingLeads)..where((t) => t.id.equals(lead.id))).go(),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
+                          subtitle: Text(
+                            '${lead.organization ?? lead.title ?? 'Contact'} • Deleted: ${_formatDate(lead.deletedAt)}',
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.restore_rounded,
+                                  color: Colors.teal,
+                                ),
+                                tooltip: 'Restore Contact',
+                                onPressed: () async {
+                                  await (db.update(
+                                    db.networkingLeads,
+                                  )..where((t) => t.id.equals(lead.id))).write(
+                                    const NetworkingLeadsCompanion(
+                                      isDeleted: drift.Value(false),
+                                      deletedAt: drift.Value(null),
+                                    ),
+                                  );
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Restored ${lead.name} to Network',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.delete_forever_rounded,
+                                  color: Colors.redAccent,
+                                ),
+                                tooltip: 'Delete Permanently',
+                                onPressed: () => _confirmPermanentDelete(
+                                  title: 'Delete Contact Permanently',
+                                  message:
+                                      'Permanently remove ${lead.name} from Network? This cannot be undone.',
+                                  onDelete: () => (db.delete(
+                                    db.networkingLeads,
+                                  )..where((t) => t.id.equals(lead.id))).go(),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  )),
+                  ),
                 ],
               ],
             );
@@ -341,7 +465,9 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
 
   Widget _buildEventsTrash(AppDatabase db) {
     return StreamBuilder<List<NetworkingEvent>>(
-      stream: (db.select(db.networkingEvents)..where((t) => t.isDeleted.equals(true))).watch(),
+      stream: (db.select(
+        db.networkingEvents,
+      )..where((t) => t.isDeleted.equals(true))).watch(),
       builder: (context, snapshot) {
         final events = snapshot.data ?? [];
         if (events.isEmpty) return _buildEmptyState('places & events');
@@ -349,7 +475,8 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
         return ListView.separated(
           padding: const EdgeInsets.all(AppDesignTokens.space16),
           itemCount: events.length,
-          separatorBuilder: (_, __) => const SizedBox(height: AppDesignTokens.space8),
+          separatorBuilder: (_, __) =>
+              const SizedBox(height: AppDesignTokens.space8),
           itemBuilder: (context, index) {
             final ev = events[index];
             return AppCard(
@@ -359,18 +486,32 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
                 contentPadding: EdgeInsets.zero,
                 leading: CircleAvatar(
                   backgroundColor: Colors.amber.withValues(alpha: 0.15),
-                  child: const Icon(Icons.place_outlined, color: Colors.amber, size: 20),
+                  child: const Icon(
+                    Icons.place_outlined,
+                    color: Colors.amber,
+                    size: 20,
+                  ),
                 ),
-                title: Text(ev.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text('${ev.eventType.toUpperCase()} • Deleted: ${_formatDate(ev.deletedAt)}'),
+                title: Text(
+                  ev.name,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  '${ev.eventType.toUpperCase()} • Deleted: ${_formatDate(ev.deletedAt)}',
+                ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.restore_rounded, color: Colors.teal),
+                      icon: const Icon(
+                        Icons.restore_rounded,
+                        color: Colors.teal,
+                      ),
                       tooltip: 'Restore Place/Event',
                       onPressed: () async {
-                        await (db.update(db.networkingEvents)..where((t) => t.id.equals(ev.id))).write(
+                        await (db.update(
+                          db.networkingEvents,
+                        )..where((t) => t.id.equals(ev.id))).write(
                           const NetworkingEventsCompanion(
                             isDeleted: drift.Value(false),
                             deletedAt: drift.Value(null),
@@ -384,12 +525,18 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
                       },
                     ),
                     IconButton(
-                      icon: const Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
+                      icon: const Icon(
+                        Icons.delete_forever_rounded,
+                        color: Colors.redAccent,
+                      ),
                       tooltip: 'Delete Permanently',
                       onPressed: () => _confirmPermanentDelete(
                         title: 'Delete Place/Event Permanently',
-                        message: 'Permanently remove "${ev.name}"? This cannot be undone.',
-                        onDelete: () => (db.delete(db.networkingEvents)..where((t) => t.id.equals(ev.id))).go(),
+                        message:
+                            'Permanently remove "${ev.name}"? This cannot be undone.',
+                        onDelete: () => (db.delete(
+                          db.networkingEvents,
+                        )..where((t) => t.id.equals(ev.id))).go(),
                       ),
                     ),
                   ],
@@ -404,7 +551,9 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
 
   Widget _buildItemsTrash(AppDatabase db) {
     return StreamBuilder<List<ItemsLibraryData>>(
-      stream: (db.select(db.itemsLibrary)..where((t) => t.isDeleted.equals(true))).watch(),
+      stream: (db.select(
+        db.itemsLibrary,
+      )..where((t) => t.isDeleted.equals(true))).watch(),
       builder: (context, snapshot) {
         final items = snapshot.data ?? [];
         if (items.isEmpty) return _buildEmptyState('rates & services');
@@ -412,7 +561,8 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
         return ListView.separated(
           padding: const EdgeInsets.all(AppDesignTokens.space16),
           itemCount: items.length,
-          separatorBuilder: (_, __) => const SizedBox(height: AppDesignTokens.space8),
+          separatorBuilder: (_, __) =>
+              const SizedBox(height: AppDesignTokens.space8),
           itemBuilder: (context, index) {
             final item = items[index];
             return AppCard(
@@ -422,18 +572,32 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
                 contentPadding: EdgeInsets.zero,
                 leading: CircleAvatar(
                   backgroundColor: Colors.red.withValues(alpha: 0.15),
-                  child: const Icon(Icons.inventory_2_rounded, color: Colors.red, size: 20),
+                  child: const Icon(
+                    Icons.inventory_2_rounded,
+                    color: Colors.red,
+                    size: 20,
+                  ),
                 ),
-                title: Text(item.title, style: const TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text('${item.category} • KES ${item.unitPrice.toStringAsFixed(2)}'),
+                title: Text(
+                  item.title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  '${item.category} • KES ${item.unitPrice.toStringAsFixed(2)}',
+                ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.restore_rounded, color: Colors.teal),
+                      icon: const Icon(
+                        Icons.restore_rounded,
+                        color: Colors.teal,
+                      ),
                       tooltip: 'Restore Item',
                       onPressed: () async {
-                        await (db.update(db.itemsLibrary)..where((t) => t.id.equals(item.id))).write(
+                        await (db.update(
+                          db.itemsLibrary,
+                        )..where((t) => t.id.equals(item.id))).write(
                           const ItemsLibraryCompanion(
                             isDeleted: drift.Value(false),
                             deletedAt: drift.Value(null),
@@ -446,7 +610,9 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
                               action: SnackBarAction(
                                 label: 'Undo',
                                 onPressed: () async {
-                                  await (db.update(db.itemsLibrary)..where((t) => t.id.equals(item.id))).write(
+                                  await (db.update(
+                                    db.itemsLibrary,
+                                  )..where((t) => t.id.equals(item.id))).write(
                                     ItemsLibraryCompanion(
                                       isDeleted: const drift.Value(true),
                                       deletedAt: drift.Value(DateTime.now()),
@@ -460,12 +626,18 @@ class _TrashScreenState extends ConsumerState<TrashScreen> with SingleTickerProv
                       },
                     ),
                     IconButton(
-                      icon: const Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
+                      icon: const Icon(
+                        Icons.delete_forever_rounded,
+                        color: Colors.redAccent,
+                      ),
                       tooltip: 'Delete Permanently',
                       onPressed: () => _confirmPermanentDelete(
                         title: 'Delete Item Permanently',
-                        message: 'Permanently remove ${item.title}? Existing documents will not be affected.',
-                        onDelete: () => (db.delete(db.itemsLibrary)..where((t) => t.id.equals(item.id))).go(),
+                        message:
+                            'Permanently remove ${item.title}? Existing documents will not be affected.',
+                        onDelete: () => (db.delete(
+                          db.itemsLibrary,
+                        )..where((t) => t.id.equals(item.id))).go(),
                       ),
                     ),
                   ],

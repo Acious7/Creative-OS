@@ -9,6 +9,7 @@ class ParsedCardData {
   final String phone;
   final String email;
   final String website;
+  final String address;
   final String rawText;
   final String imagePath;
   final List<String> unassignedLines;
@@ -20,6 +21,7 @@ class ParsedCardData {
     this.phone = '',
     this.email = '',
     this.website = '',
+    this.address = '',
     this.rawText = '',
     this.imagePath = '',
     this.unassignedLines = const [],
@@ -32,6 +34,7 @@ class ParsedCardData {
     String? phone,
     String? email,
     String? website,
+    String? address,
     String? rawText,
     String? imagePath,
     List<String>? unassignedLines,
@@ -43,6 +46,7 @@ class ParsedCardData {
       phone: phone ?? this.phone,
       email: email ?? this.email,
       website: website ?? this.website,
+      address: address ?? this.address,
       rawText: rawText ?? this.rawText,
       imagePath: imagePath ?? this.imagePath,
       unassignedLines: unassignedLines ?? this.unassignedLines,
@@ -57,16 +61,16 @@ class BusinessCardOcrService {
   );
 
   static final RegExp _urlRegex = RegExp(
-    r'(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+\.)+(?:com|ke|org|net|co|io|africa|tv|me|info|biz)(?:\/[^\s]*)?',
+    r'(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+\.)+(?:com|ke|co\.ke|org|or\.ke|net|io|africa|tv|me|info|biz|studio)(?:\/[^\s]*)?',
     caseSensitive: false,
   );
 
-  // Phone regex matching Kenyan and international formats
+  // Phone regex matching Kenyan (+254, 07xx, 01xx) and international formats
   static final RegExp _phoneRegex = RegExp(
-    r'(?:(?:\+|00)?[0-9]{1,4}[\s\-]?)?(?:\(?[0-9]{2,5}\)?[\s\-]?)?[0-9]{3,4}[\s\-]?[0-9]{3,4}',
+    r'(?:(?:\+?254[\s\-]?)?(?:0?[71][0-9]{2}[\s\-]?[0-9]{3}[\s\-]?[0-9]{3}))|(?:(?:\+|00)?[0-9]{1,4}[\s\-]?(?:\(?[0-9]{2,5}\)?[\s\-]?)?[0-9]{3,4}[\s\-]?[0-9]{3,4})',
   );
 
-  // Common titles in media, film, production & business
+  // Common titles in media, film, production, tech & business
   static final List<String> _titleKeywords = [
     'director',
     'producer',
@@ -74,8 +78,14 @@ class BusinessCardOcrService {
     'photographer',
     'cinematographer',
     'founder',
+    'co-founder',
     'ceo',
+    'cfo',
+    'coo',
+    'cto',
+    'managing director',
     'manager',
+    'creative director',
     'creative',
     'executive',
     'head of',
@@ -91,8 +101,81 @@ class BusinessCardOcrService {
     'agent',
     'consultant',
     'officer',
+    'partner',
+    'associate',
+    'architect',
+    'engineer',
+    'developer',
+    'lead',
+    'specialist',
   ];
 
+  // Company and organization keywords
+  static final List<String> _orgKeywords = [
+    'ltd',
+    'limited',
+    'llc',
+    'inc',
+    'corp',
+    'studios',
+    'studio',
+    'productions',
+    'production',
+    'films',
+    'film',
+    'media',
+    'agency',
+    'group',
+    'company',
+    'enterprises',
+    'technologies',
+    'holdings',
+    'creative',
+    'services',
+    'ventures',
+    'solutions',
+    'kenya',
+    'africa',
+    'bank',
+  ];
+
+  // Address and physical location keywords
+  static final List<String> _addressKeywords = [
+    'p.o. box',
+    'po box',
+    'p.o box',
+    'box',
+    'plaza',
+    'tower',
+    'towers',
+    'building',
+    'center',
+    'centre',
+    'floor',
+    'suite',
+    'road',
+    'rd',
+    'street',
+    'st',
+    'avenue',
+    'ave',
+    'way',
+    'drive',
+    'dr',
+    'lane',
+    'nairobi',
+    'mombasa',
+    'kisumu',
+    'nakuru',
+    'eldoret',
+    'kilimani',
+    'westlands',
+    'upper hill',
+    'cbd',
+    'kenya',
+  ];
+
+  /// Scan and parse an image of a business card using on-device ML Kit
   static Future<ParsedCardData> scanAndParseCard(String imagePath) async {
     final file = File(imagePath);
     if (!file.existsSync()) {
@@ -111,6 +194,7 @@ class BusinessCardOcrService {
       String extractedWebsite = '';
       String extractedTitle = '';
       String extractedOrg = '';
+      String extractedAddress = '';
       String extractedName = '';
 
       final List<String> allLines = [];
@@ -133,7 +217,7 @@ class BusinessCardOcrService {
           continue;
         }
 
-        // 2. Check for website
+        // 2. Check for website (must not be an email)
         final urlMatch = _urlRegex.firstMatch(line);
         if (urlMatch != null &&
             extractedWebsite.isEmpty &&
@@ -142,12 +226,17 @@ class BusinessCardOcrService {
           continue;
         }
 
-        // 3. Check for phone
+        // 3. Check for phone (Kenyan formats +254, 07xx, 01xx, and international)
         final phoneClean = line.replaceAll(RegExp(r'[^0-9+]'), '');
-        if ((line.toLowerCase().contains('tel') ||
-                line.toLowerCase().contains('call') ||
-                line.toLowerCase().contains('phone') ||
-                phoneClean.length >= 9) &&
+        final lower = line.toLowerCase();
+        final hasPhoneKeyword =
+            lower.contains('tel') ||
+            lower.contains('cell') ||
+            lower.contains('mob') ||
+            lower.contains('call') ||
+            lower.contains('phone');
+
+        if ((hasPhoneKeyword || phoneClean.length >= 9) &&
             extractedPhone.isEmpty) {
           final phoneMatch = _phoneRegex.firstMatch(line);
           if (phoneMatch != null && phoneClean.length >= 7) {
@@ -156,45 +245,61 @@ class BusinessCardOcrService {
           }
         }
 
-        // 4. Check for job title
+        unassigned.add(line);
+      }
+
+      // 4. Extract Job Title from unassigned lines
+      for (final line in List<String>.from(unassigned)) {
         final lower = line.toLowerCase();
         final isTitle = _titleKeywords.any((kw) => lower.contains(kw));
         if (isTitle && extractedTitle.isEmpty) {
           extractedTitle = line;
-          continue;
+          unassigned.remove(line);
+          break;
         }
-
-        // 5. Check for company indicators (Ltd, LLC, Studios, Productions, Media, Group)
-        if ((lower.contains('ltd') ||
-                lower.contains('llc') ||
-                lower.contains('studios') ||
-                lower.contains('films') ||
-                lower.contains('media') ||
-                lower.contains('agency') ||
-                lower.contains('production') ||
-                lower.contains('group')) &&
-            extractedOrg.isEmpty) {
-          extractedOrg = line;
-          continue;
-        }
-
-        unassigned.add(line);
       }
 
-      // If name not identified yet, heuristic: the first clean line without symbols or numbers
-      for (final line in unassigned) {
+      // 5. Extract Company / Organization
+      for (final line in List<String>.from(unassigned)) {
+        final lower = line.toLowerCase();
+        final isOrg = _orgKeywords.any((kw) => lower.contains(kw));
+        if (isOrg && extractedOrg.isEmpty) {
+          extractedOrg = line;
+          unassigned.remove(line);
+          break;
+        }
+      }
+
+      // 6. Extract Address
+      final addressParts = <String>[];
+      for (final line in List<String>.from(unassigned)) {
+        final lower = line.toLowerCase();
+        final isAddr = _addressKeywords.any((kw) => lower.contains(kw));
+        if (isAddr) {
+          addressParts.add(line);
+          unassigned.remove(line);
+        }
+      }
+      if (addressParts.isNotEmpty) {
+        extractedAddress = addressParts.join(', ');
+      }
+
+      // 7. Extract Name: First remaining clean line of 2 to 4 words with alphabetic characters
+      for (final line in List<String>.from(unassigned)) {
         if (extractedName.isEmpty) {
           final isAlphaOnly = RegExp(r"^[a-zA-Z\s.'-]+$").hasMatch(line);
           final wordCount = line.split(RegExp(r'\s+')).length;
           if (isAlphaOnly && wordCount >= 2 && wordCount <= 4) {
             extractedName = line;
-            continue;
+            unassigned.remove(line);
+            break;
           }
         }
+      }
 
-        if (extractedOrg.isEmpty && line != extractedName) {
-          extractedOrg = line;
-        }
+      // If org still not found, check if first unassigned line is uppercase/title
+      if (extractedOrg.isEmpty && unassigned.isNotEmpty) {
+        extractedOrg = unassigned.removeAt(0);
       }
 
       return ParsedCardData(
@@ -204,6 +309,7 @@ class BusinessCardOcrService {
         phone: extractedPhone,
         email: extractedEmail,
         website: extractedWebsite,
+        address: extractedAddress,
         rawText: recognizedText.text,
         imagePath: imagePath,
         unassignedLines: unassigned,

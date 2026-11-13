@@ -9,6 +9,7 @@ import '../../../digital_cards/presentation/screens/card_presentation_screen.dar
 import '../../../../core/assistant/executive_chief_of_staff_sheet.dart';
 import '../../../../core/assistant/executive_morning_radar_sheet.dart';
 import '../../../help/presentation/screens/studio_academy_screen.dart';
+import '../../../sanctuary/presentation/screens/sanctuary_hub_screen.dart';
 import '../../domain/hub_models.dart';
 import '../widgets/living_background.dart';
 import '../widgets/world_transition_overlay.dart';
@@ -61,12 +62,13 @@ class _HubScreenState extends ConsumerState<HubScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final reduceMotion = ref.watch(reduceMotionProvider);
     final upcomingProductionAsync = ref.watch(upcomingProductionProvider);
+    final studioTheme = ref.watch(currentStudioThemeProvider);
+    final isDark = studioTheme.isDark;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF080B0F),
+      backgroundColor: studioTheme.backgroundBase,
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -120,7 +122,7 @@ class _HubScreenState extends ConsumerState<HubScreen>
                                   ),
                                   const SizedBox(width: 7),
                                   Text(
-                                    'CREATIVE OS • ACTIVE',
+                                    'STUDIO ACTIVE • REC',
                                     style:
                                         EtoleTypography.labelCaps(
                                           color: isDark
@@ -137,6 +139,63 @@ class _HubScreenState extends ConsumerState<HubScreen>
                               Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
+                                  // The Sanctuary Portal (Life, Focus, Memory, Vault)
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFEC4899)
+                                          .withValues(alpha: 0.15),
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: const Color(0xFFEC4899)
+                                            .withValues(alpha: 0.45),
+                                        width: 0.8,
+                                      ),
+                                    ),
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(12),
+                                        onTap: () {
+                                          EtoleHaptics.selection();
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  const SanctuaryHubScreen(),
+                                            ),
+                                          );
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Icon(
+                                                Icons.spa_rounded,
+                                                size: 12,
+                                                color: Color(0xFFEC4899),
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                'SANCTUARY',
+                                                style:
+                                                    EtoleTypography.labelCaps(
+                                                      color: const Color(
+                                                        0xFFEC4899,
+                                                      ),
+                                                    ).copyWith(fontSize: 8.5),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
                                   // Studio Academy / Help Manual Button
                                   Container(
                                     decoration: BoxDecoration(
@@ -248,7 +307,7 @@ class _HubScreenState extends ConsumerState<HubScreen>
 
                           const SizedBox(height: 16),
 
-                          // Official Brian Etole Logo & Bauhaus Cluster Emblem
+                          // Official Creative OS Logo & Bauhaus Cluster Emblem
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16,
@@ -261,19 +320,24 @@ class _HubScreenState extends ConsumerState<HubScreen>
                                 bottomLeft: Radius.circular(14.0),
                                 bottomRight: Radius.circular(14.0),
                               ),
-                              gradient: const LinearGradient(
+                              gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: [Color(0xFF1C222B), Color(0xFF12161D)],
+                                colors: [
+                                  studioTheme.surfaceElevatedColor,
+                                  studioTheme.surfaceCardColor,
+                                ],
                               ),
                               border: Border.all(
-                                color: EtoleColors.cyan.withValues(alpha: 0.35),
+                                color: studioTheme.primaryAccent.withValues(
+                                  alpha: 0.35,
+                                ),
                                 width: 1.1,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: EtoleColors.cyan.withValues(
-                                    alpha: isDark ? 0.12 : 0.08,
+                                  color: studioTheme.primaryAccent.withValues(
+                                    alpha: studioTheme.isDark ? 0.12 : 0.08,
                                   ),
                                   blurRadius: 18,
                                   offset: const Offset(0, 4),
@@ -302,7 +366,7 @@ class _HubScreenState extends ConsumerState<HubScreen>
                                           CrossAxisAlignment.end,
                                       children: [
                                         Text(
-                                          'CREATIVE OS',
+                                          'VISUAL STORYTELLER',
                                           style:
                                               EtoleTypography.labelCaps(
                                                 color: EtoleColors.cyan,
@@ -314,7 +378,7 @@ class _HubScreenState extends ConsumerState<HubScreen>
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
-                                          'STUDIO SUITE',
+                                          'NAIROBI, KENYA',
                                           style: TextStyle(
                                             fontFamily:
                                                 EtoleTypography.bodyFontFamily,

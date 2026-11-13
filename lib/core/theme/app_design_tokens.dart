@@ -13,7 +13,8 @@ class AppDesignTokens {
   static const double radiusLg = 16.0;
   static const double radiusL = 16.0;
   static const double radiusXl = 24.0;
-  static const double radiusHero = 28.0; // Signature Budget Breakdown top-left radius
+  static const double radiusHero =
+      28.0; // Signature Budget Breakdown top-left radius
   static const double radiusFull = 999.0;
 
   static BorderRadius get borderXs => BorderRadius.circular(radiusXs);
@@ -51,12 +52,16 @@ class AppDesignTokens {
   static const double spacingXxl = 32.0;
 
   // --- Brand Studio Palette (From Official Quotation Document) ---
-  static const Color etoleCyan = Color(0xFF38B6DB);       // Primary Cyan / Cerulean Hero
-  static const Color etoleGold = Color(0xFFF5A623);       // Signature Total Badge Warm Gold
-  static const Color etoleGreen = Color(0xFF007A3D);      // Forest Kenyan Green
-  static const Color etoleRed = Color(0xFFD32F2F);        // Crimson Red
-  static const Color etoleSlate = Color(0xFF4A90E2);      // Slate Blue
-  static const Color etoleCharcoal = Color(0xFF111827);   // Rich Black Ink
+  static const Color etoleCyan = Color(
+    0xFF38B6DB,
+  ); // Primary Cyan / Cerulean Hero
+  static const Color etoleGold = Color(
+    0xFFF5A623,
+  ); // Signature Total Badge Warm Gold
+  static const Color etoleGreen = Color(0xFF007A3D); // Forest Kenyan Green
+  static const Color etoleRed = Color(0xFFD32F2F); // Crimson Red
+  static const Color etoleSlate = Color(0xFF4A90E2); // Slate Blue
+  static const Color etoleCharcoal = Color(0xFF111827); // Rich Black Ink
 
   // Aliases
   static const Color etoleOrange = etoleCyan;
@@ -71,14 +76,14 @@ class AppDesignTokens {
   static const Color brandTotal = etoleGold;
 
   // --- Semantic Status Colors ---
-  static const Color statusDraft = Color(0xFF6B7280);       // Muted Stone
-  static const Color statusSent = etoleSlate;               // Slate Blue
-  static const Color statusAccepted = etoleGreen;           // Forest Green
-  static const Color statusActive = etoleCyan;              // Cerulean Cyan
-  static const Color statusDeclined = etoleRed;             // Crimson Red
-  static const Color statusPaid = etoleGreen;               // Forest Green
-  static const Color statusPartPaid = etoleGold;            // Golden Amber
-  static const Color statusOverdue = etoleRed;              // Crimson Red
+  static const Color statusDraft = Color(0xFF6B7280); // Muted Stone
+  static const Color statusSent = etoleSlate; // Slate Blue
+  static const Color statusAccepted = etoleGreen; // Forest Green
+  static const Color statusActive = etoleCyan; // Cerulean Cyan
+  static const Color statusDeclined = etoleRed; // Crimson Red
+  static const Color statusPaid = etoleGreen; // Forest Green
+  static const Color statusPartPaid = etoleGold; // Golden Amber
+  static const Color statusOverdue = etoleRed; // Crimson Red
   static const Color statusCancelled = Color(0xFF4B5563);
   static const Color statusSigned = etoleGreen;
   static const Color statusUnderReview = etoleGold;
@@ -131,10 +136,7 @@ class AppDesignTokens {
   static TextStyle tabular(TextStyle? style) {
     final s = style ?? const TextStyle();
     return s.copyWith(
-      fontFeatures: [
-        ...?s.fontFeatures,
-        const FontFeature.tabularFigures(),
-      ],
+      fontFeatures: [...?s.fontFeatures, const FontFeature.tabularFigures()],
     );
   }
 

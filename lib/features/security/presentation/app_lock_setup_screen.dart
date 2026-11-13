@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/security/biometrics_service.dart';
 import '../../../../core/security/secure_storage_service.dart';
@@ -59,7 +60,9 @@ class _AppLockSetupScreenState extends ConsumerState<AppLockSetupScreen> {
             const SizedBox(height: 8),
             TextField(
               controller: confirmController,
-              decoration: const InputDecoration(labelText: 'Confirm 4-Digit PIN'),
+              decoration: const InputDecoration(
+                labelText: 'Confirm 4-Digit PIN',
+              ),
               keyboardType: TextInputType.number,
               obscureText: true,
               maxLength: 4,
@@ -67,7 +70,10 @@ class _AppLockSetupScreenState extends ConsumerState<AppLockSetupScreen> {
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
           FilledButton(
             onPressed: () async {
               final pin = pinController.text.trim();
@@ -75,14 +81,20 @@ class _AppLockSetupScreenState extends ConsumerState<AppLockSetupScreen> {
 
               if (pin.length != 4) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('PIN must be 4 digits'), backgroundColor: AppColors.error),
+                  const SnackBar(
+                    content: Text('PIN must be 4 digits'),
+                    backgroundColor: AppColors.error,
+                  ),
                 );
                 return;
               }
 
               if (pin != confirm) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('PINs do not match'), backgroundColor: AppColors.error),
+                  const SnackBar(
+                    content: Text('PINs do not match'),
+                    backgroundColor: AppColors.error,
+                  ),
                 );
                 return;
               }
@@ -116,15 +128,20 @@ class _AppLockSetupScreenState extends ConsumerState<AppLockSetupScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
+              color: Theme.of(context).colorScheme.primary
+                  .withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                color: Theme.of(context).colorScheme.primary
+                    .withValues(alpha: 0.2),
               ),
             ),
             child: Row(
               children: [
-                Icon(Icons.shield_outlined, color: Theme.of(context).colorScheme.primary),
+                Icon(
+                  Icons.shield_outlined,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 const SizedBox(width: 10),
                 const Expanded(
                   child: Text(
@@ -138,7 +155,9 @@ class _AppLockSetupScreenState extends ConsumerState<AppLockSetupScreen> {
           const SizedBox(height: 16),
           SwitchListTile(
             title: const Text('Enable App Lock'),
-            subtitle: Text(_hasPin ? 'PIN is configured' : 'Requires setting a 4-digit PIN'),
+            subtitle: Text(
+              _hasPin ? 'PIN is configured' : 'Requires setting a 4-digit PIN',
+            ),
             value: _isLockEnabled,
             onChanged: (val) async {
               if (val && !_hasPin) {
@@ -167,7 +186,11 @@ class _AppLockSetupScreenState extends ConsumerState<AppLockSetupScreen> {
                       if (!supported) {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Biometrics not available on this device')),
+                            const SnackBar(
+                              content: Text(
+                                'Biometrics not available on this device',
+                              ),
+                            ),
                           );
                         }
                         return;

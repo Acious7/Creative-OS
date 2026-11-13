@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../../core/constants/app_colors.dart';
 import '../../../core/design_system/etole_colors.dart';
 import '../../../core/design_system/etole_components.dart';
@@ -112,9 +113,7 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -130,9 +129,14 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
             children: [
               const Spacer(),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 14,
+                ),
                 decoration: BoxDecoration(
-                  color: isDark ? EtoleColors.darkSurfaceElevated : Colors.white,
+                  color: isDark
+                      ? EtoleColors.darkSurfaceElevated
+                      : Colors.white,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(24),
                     topRight: Radius.circular(12),
@@ -140,11 +144,15 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
                     bottomRight: Radius.circular(12),
                   ),
                   border: Border.all(
-                    color: isDark ? EtoleColors.darkHairline : EtoleColors.lightBorder,
+                    color: isDark
+                        ? EtoleColors.darkHairline
+                        : EtoleColors.lightBorder,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.06),
+                      color: Colors.black.withValues(
+                        alpha: isDark ? 0.4 : 0.06,
+                      ),
                       blurRadius: 16,
                       offset: const Offset(0, 4),
                     ),
@@ -166,14 +174,18 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   letterSpacing: -0.3,
-                  color: isDark ? EtoleColors.cream : EtoleColors.lightTextPrimary,
+                  color: isDark
+                      ? EtoleColors.cream
+                      : EtoleColors.lightTextPrimary,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Enter your 4-digit PIN to access documents',
                 style: TextStyle(
-                  color: isDark ? EtoleColors.muted : EtoleColors.lightTextMuted,
+                  color: isDark
+                      ? EtoleColors.muted
+                      : EtoleColors.lightTextMuted,
                   fontSize: 13,
                 ),
                 textAlign: TextAlign.center,
@@ -205,7 +217,10 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
                 const SizedBox(height: 16),
                 Text(
                   _errorMessage!,
-                  style: const TextStyle(color: AppColors.statusOverdue, fontSize: 13),
+                  style: const TextStyle(
+                    color: AppColors.statusOverdue,
+                    fontSize: 13,
+                  ),
                 ),
               ],
               const Spacer(),
@@ -226,7 +241,11 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
                 icon: Icon(Icons.qr_code_2_rounded, color: accent, size: 18),
                 label: Text(
                   'Show My Business Card (No Unlock Required)',
-                  style: TextStyle(color: accent, fontWeight: FontWeight.bold, fontSize: 13),
+                  style: TextStyle(
+                    color: accent,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -269,7 +288,10 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
             _buildKeypadButton('0'),
             IconButton(
               iconSize: 28,
-              icon: const Icon(Icons.backspace_outlined, color: AppColors.darkTextSecondary),
+              icon: const Icon(
+                Icons.backspace_outlined,
+                color: AppColors.darkTextSecondary,
+              ),
               onPressed: _onDeletePressed,
             ),
           ],
@@ -291,7 +313,9 @@ class _AppLockScreenState extends ConsumerState<AppLockScreen> {
             color: isDark ? EtoleColors.darkHairline : EtoleColors.lightBorder,
             width: 1.5,
           ),
-          backgroundColor: isDark ? Colors.white.withValues(alpha: 0.03) : Colors.white,
+          backgroundColor: isDark
+              ? Colors.white.withValues(alpha: 0.03)
+              : Colors.white,
         ),
         onPressed: () => _onDigitPressed(digit),
         child: Text(

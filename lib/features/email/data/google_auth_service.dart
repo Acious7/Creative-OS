@@ -53,7 +53,7 @@ class GoogleAuthService {
       if (currentUser != null) {
         final account = GoogleEmailAccount(
           email: currentUser.email,
-          displayName: currentUser.displayName ?? 'Brian Etole',
+          displayName: currentUser.displayName ?? 'Creative Studio',
           photoUrl: currentUser.photoUrl,
           connectedAt: DateTime.now(),
         );
@@ -102,7 +102,7 @@ class GoogleAuthService {
 
       final account = GoogleEmailAccount(
         email: googleUser.email,
-        displayName: googleUser.displayName ?? 'Brian Etole',
+        displayName: googleUser.displayName ?? 'Creative Studio',
         photoUrl: googleUser.photoUrl,
         connectedAt: DateTime.now(),
       );

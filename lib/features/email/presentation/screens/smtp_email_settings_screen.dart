@@ -35,8 +35,8 @@ class _SmtpEmailSettingsScreenState extends State<SmtpEmailSettingsScreen> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: 'Brian Etole');
-    _emailController = TextEditingController(text: 'hello@brianetole.com');
+    _nameController = TextEditingController(text: 'Creative Studio');
+    _emailController = TextEditingController(text: 'studio@creativeos.app');
     _hostController = TextEditingController(text: 'smtp.gmail.com');
     _portController = TextEditingController(text: '465');
     _usernameController = TextEditingController();
@@ -82,7 +82,7 @@ class _SmtpEmailSettingsScreenState extends State<SmtpEmailSettingsScreen> {
           _isSsl = true;
           break;
         case 'custom':
-          _hostController.text = 'mail.brianetole.com';
+          _hostController.text = 'mail.yourdomain.com';
           _portController.text = '465';
           _isSsl = true;
           break;
@@ -386,7 +386,7 @@ class _SmtpEmailSettingsScreenState extends State<SmtpEmailSettingsScreen> {
                                   ),
                                   SizedBox(height: 4),
                                   Text(
-                                    'Send official commercial PDFs directly from your own email (Gmail, hello@brianetole.com, cPanel or Outlook) without OAuth login errors.',
+                                    'Send official commercial PDFs directly from your own email (Gmail, custom domain, cPanel or Outlook) without OAuth login errors.',
                                     style: TextStyle(
                                       color: Color(0xFF94A3B8),
                                       fontSize: 11.5,
@@ -421,7 +421,7 @@ class _SmtpEmailSettingsScreenState extends State<SmtpEmailSettingsScreen> {
                           ),
                           const SizedBox(width: 6),
                           _buildPresetChip(
-                            'brianetole.com',
+                            'Custom',
                             'custom',
                             Icons.language_rounded,
                           ),
@@ -454,7 +454,7 @@ class _SmtpEmailSettingsScreenState extends State<SmtpEmailSettingsScreen> {
                         ),
                         decoration: _inputDecoration(
                           label: 'Sender Display Name',
-                          hint: 'Brian Etole | VisualStoryteller',
+                          hint: 'Creative Studio | Commercial Production',
                           icon: Icons.person_outline_rounded,
                         ),
                       ),
@@ -471,7 +471,7 @@ class _SmtpEmailSettingsScreenState extends State<SmtpEmailSettingsScreen> {
                         ),
                         decoration: _inputDecoration(
                           label: 'Sender Email Address',
-                          hint: 'hello@brianetole.com or brian@gmail.com',
+                          hint: 'studio@creativeos.app or user@gmail.com',
                           icon: Icons.alternate_email_rounded,
                         ),
                       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../theme/app_design_tokens.dart';
 
 enum AppCardVariant { low, surface, high, outlined, hero }
@@ -48,7 +49,9 @@ class AppCard extends StatelessWidget {
       switch (variant) {
         case AppCardVariant.low:
           bg = theme.colorScheme.surfaceContainerLow;
-          border = isDark ? AppDesignTokens.darkBorderSubtle : AppDesignTokens.lightBorderSubtle;
+          border = isDark
+              ? AppDesignTokens.darkBorderSubtle
+              : AppDesignTokens.lightBorderSubtle;
           break;
         case AppCardVariant.surface:
           bg = theme.colorScheme.surfaceContainer;
@@ -69,7 +72,8 @@ class AppCard extends StatelessWidget {
       }
     }
 
-    final BorderRadius radius = customBorderRadius ??
+    final BorderRadius radius =
+        customBorderRadius ??
         ((isHeroAsymmetric || variant == AppCardVariant.hero)
             ? const BorderRadius.only(
                 topLeft: Radius.circular(AppDesignTokens.radiusHero),
@@ -79,7 +83,9 @@ class AppCard extends StatelessWidget {
               )
             : BorderRadius.circular(borderRadius ?? AppDesignTokens.radiusLg));
 
-    Widget content = padding != null ? Padding(padding: padding!, child: child) : child;
+    Widget content = padding != null
+        ? Padding(padding: padding!, child: child)
+        : child;
 
     if (onTap != null || onLongPress != null) {
       content = Material(

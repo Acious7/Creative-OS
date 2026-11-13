@@ -95,11 +95,15 @@ class WindowPaneBorderPainter extends CustomPainter {
   final EtoleWorld world;
   final double glintIntensity; // 0.0 to 1.0
   final bool isPressed;
+  final Color? accentColor;
+  final Color? borderColor;
 
   WindowPaneBorderPainter({
     required this.world,
     this.glintIntensity = 0.5,
     this.isPressed = false,
+    this.accentColor,
+    this.borderColor,
   });
 
   @override
@@ -110,9 +114,12 @@ class WindowPaneBorderPainter extends CustomPainter {
     final w = size.width;
     final h = size.height;
 
+    final effectiveAccent = accentColor ?? EtoleColors.cyan;
+    final effectiveBorder = borderColor ?? EtoleColors.cream;
+
     // 1. Subtle ember edge glow
     final glowPaint = Paint()
-      ..color = EtoleColors.cyan.withValues(
+      ..color = effectiveAccent.withValues(
         alpha: isPressed ? 0.45 : 0.12 * glintIntensity,
       )
       ..strokeWidth = isPressed ? 3.5 : 2.5
@@ -126,14 +133,14 @@ class WindowPaneBorderPainter extends CustomPainter {
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [
-          EtoleColors.cream.withValues(
+          effectiveBorder.withValues(
             alpha: (0.45 + glintIntensity * 0.45).clamp(0.0, 1.0),
           ),
-          EtoleColors.cream.withValues(alpha: 0.15),
-          EtoleColors.cyan.withValues(
+          effectiveBorder.withValues(alpha: 0.15),
+          effectiveAccent.withValues(
             alpha: (0.25 + glintIntensity * 0.55).clamp(0.0, 1.0),
           ),
-          EtoleColors.cream.withValues(alpha: 0.3),
+          effectiveBorder.withValues(alpha: 0.3),
         ],
         stops: const [0.0, 0.35, 0.75, 1.0],
       ).createShader(Rect.fromLTWH(0, 0, w, h))

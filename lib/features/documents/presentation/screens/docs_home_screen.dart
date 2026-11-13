@@ -19,6 +19,8 @@ import 'create_new_doc_screen.dart';
 import 'document_detail_screen.dart';
 import 'document_editor_screen.dart';
 import 'recent_docs_list_screen.dart';
+import '../../../../core/theme/brand_theme_provider.dart';
+import '../../../../core/theme/studio_theme.dart';
 
 class DocsHomeScreen extends ConsumerStatefulWidget {
   final Function(int docId)? onOpenDocument;
@@ -36,6 +38,10 @@ class _DocsHomeScreenState extends ConsumerState<DocsHomeScreen> {
   DocType? _selectedDocTypeFilter;
 
   static final NumberFormat _currencyFormat = NumberFormat('#,##0', 'en_US');
+  StudioThemeData _theme = StudioThemeData.tribalOrange;
+  Color get _accent => _theme.primaryAccent;
+  Color get _bg => _theme.backgroundBase;
+  Color get _cardBg => _theme.surfaceCardColor;
 
   @override
   void dispose() {
@@ -76,11 +82,12 @@ class _DocsHomeScreenState extends ConsumerState<DocsHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _theme = ref.watch(currentStudioThemeProvider);
     final recentDocsAsync = ref.watch(recentDocumentsProvider);
     final clientsAsync = ref.watch(allClientsStreamProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF080B0F),
+      backgroundColor: _bg,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -150,7 +157,7 @@ class _DocsHomeScreenState extends ConsumerState<DocsHomeScreen> {
               child: Container(
                 height: 44,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF13171B),
+                  color: _cardBg,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: _searchQuery.isNotEmpty
@@ -440,7 +447,7 @@ class _DocsHomeScreenState extends ConsumerState<DocsHomeScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
-        color: const Color(0xFF12161A),
+        color: _cardBg,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: accentColor.withValues(alpha: 0.35),
@@ -536,7 +543,7 @@ class _DocsHomeScreenState extends ConsumerState<DocsHomeScreen> {
           decoration: BoxDecoration(
             color: isSelected
                 ? const Color(0xFF007A3D).withValues(alpha: 0.22)
-                : const Color(0xFF13171B),
+                : _cardBg,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: isSelected

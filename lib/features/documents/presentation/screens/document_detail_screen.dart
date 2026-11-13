@@ -634,7 +634,7 @@ class _DocumentDetailScreenState extends ConsumerState<DocumentDetailScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Two-Column Metadata: "Prepare For" (Client) & "Prepared By" (Brian Etole)
+                    // Two-Column Metadata: "Prepare For" (Client) & "Prepared By"
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -708,7 +708,7 @@ class _DocumentDetailScreenState extends ConsumerState<DocumentDetailScreen> {
                               Text(
                                 completeDoc.brand.name.isNotEmpty
                                     ? completeDoc.brand.name
-                                    : 'Brian Etole',
+                                    : 'Creative Studio',
                                 style: GoogleFonts.inter(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,

@@ -323,7 +323,7 @@ class _EmailTemplateEditorSheetState extends State<EmailTemplateEditorSheet> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Note: Your professional header, document summary card, sign-off ("Brian Etole · Hybrid Filmmaker · Photographer"), and brianetole.com footer are automatically rendered around this message.',
+                    'Note: Your professional header, document summary card, studio sign-off, and verified brand footer are automatically rendered around this message.',
                     style: TextStyle(
                       fontSize: 11,
                       fontStyle: FontStyle.italic,

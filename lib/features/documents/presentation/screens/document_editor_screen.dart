@@ -320,6 +320,13 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
     } else {
       _docNumber = '${widget.docType.defaultPrefix}-${DateTime.now().year}-001';
     }
+
+    if (_docNumber.contains('{') ||
+        _docNumber.contains('PREFIX') ||
+        _docNumber.contains('NUM')) {
+      final safeNum = ((seq?.currentNumber ?? 0) + 1).toString().padLeft(3, '0');
+      _docNumber = '${widget.docType.defaultPrefix}-${DateTime.now().year}-$safeNum';
+    }
   }
 
   void _discountAmountToPercent(double discountAmt, double subtotal) {
@@ -371,6 +378,14 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
             number: nextSeqNum,
             padding: seq.numberPadding,
           );
+        } else {
+          _docNumber = '${widget.docType.defaultPrefix}-${DateTime.now().year}-${nextSeqNum.toString().padLeft(3, '0')}';
+        }
+
+        if (_docNumber.contains('{') ||
+            _docNumber.contains('PREFIX') ||
+            _docNumber.contains('NUM')) {
+          _docNumber = '${widget.docType.defaultPrefix}-${DateTime.now().year}-${nextSeqNum.toString().padLeft(3, '0')}';
         }
       }
 
@@ -646,6 +661,82 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
     );
   }
 
+  void _showEditDocNumberDialog() {
+    final ctrl = TextEditingController(text: _docNumber);
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF14171B),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: const Color(0xFF38B6DB).withValues(alpha: 0.3),
+          ),
+        ),
+        title: Text(
+          'Edit Document Number',
+          style: EtoleTypography.h3.copyWith(color: Colors.white, fontSize: 16),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Customize document reference number for your client or tax records:',
+              style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: ctrl,
+              autofocus: true,
+              style: GoogleFonts.spaceMono(
+                color: const Color(0xFF38B6DB),
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: const Color(0xFF0D1015),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: Color(0xFF38B6DB)),
+                ),
+                hintText:
+                    '${widget.docType.defaultPrefix}-${DateTime.now().year}-001',
+                hintStyle: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.3),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel', style: TextStyle(color: Colors.white60)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF38B6DB),
+              foregroundColor: Colors.black,
+            ),
+            onPressed: () {
+              final newNum = ctrl.text.trim();
+              if (newNum.isNotEmpty) {
+                setState(() => _docNumber = newNum);
+              }
+              Navigator.pop(ctx);
+            },
+            child: const Text(
+              'Save',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!_isInitialized) {
@@ -687,11 +778,27 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            Text(
-              _docNumber,
-              style: GoogleFonts.spaceMono(
-                color: EtoleColors.cyan,
-                fontSize: 11,
+            InkWell(
+              onTap: _showEditDocNumberDialog,
+              borderRadius: BorderRadius.circular(4),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    _docNumber,
+                    style: GoogleFonts.spaceMono(
+                      color: EtoleColors.cyan,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(
+                    Icons.edit_outlined,
+                    color: EtoleColors.cyan,
+                    size: 11,
+                  ),
+                ],
               ),
             ),
           ],
@@ -846,12 +953,28 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text(
-                            _docNumber,
-                            style: GoogleFonts.spaceMono(
-                              color: EtoleColors.cream,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
+                          InkWell(
+                            onTap: _showEditDocNumberDialog,
+                            borderRadius: BorderRadius.circular(4),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  _docNumber,
+                                  style: GoogleFonts.spaceMono(
+                                    color: EtoleColors.cream,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Icon(
+                                  Icons.edit_outlined,
+                                  color:
+                                      EtoleColors.cream.withValues(alpha: 0.6),
+                                  size: 10,
+                                ),
+                              ],
                             ),
                           ),
                           Text(
@@ -1603,7 +1726,7 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
                       SwitchListTile(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          'Brian Etole Signature',
+                          'Authorized Studio Signature',
                           style: GoogleFonts.inter(
                             color: EtoleColors.cream,
                             fontSize: 13,

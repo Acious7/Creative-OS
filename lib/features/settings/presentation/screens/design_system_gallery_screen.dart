@@ -6,6 +6,7 @@ import '../../../../core/design_system/etole_components.dart';
 import '../../../../core/design_system/etole_spacing.dart';
 import '../../../../core/design_system/etole_typography.dart';
 import '../../../../core/theme/brand_theme_provider.dart';
+import '../../../../core/theme/studio_theme.dart';
 
 class DesignSystemGalleryScreen extends ConsumerStatefulWidget {
   const DesignSystemGalleryScreen({super.key});
@@ -104,9 +105,13 @@ class _DesignSystemGalleryScreenState
                               ? 'Switch to Light Mode'
                               : 'Switch to Dark Mode',
                           onPressed: () {
-                            ref.read(themeModeProvider.notifier).state = isDark
-                                ? ThemeMode.light
-                                : ThemeMode.dark;
+                            ref
+                                .read(studioThemeSettingsProvider.notifier)
+                                .setTheme(
+                                  isDark
+                                      ? StudioThemeId.savannahLight
+                                      : StudioThemeId.tribalOrange,
+                                );
                             EtoleHaptics.selection();
                           },
                         ),
@@ -608,7 +613,7 @@ class _DesignSystemGalleryScreenState
                 ),
                 const SizedBox(height: EtoleSpacing.s8),
                 Text(
-                  'Extracted directly from Brian Etole Official Quotation letterhead & modernist Bauhaus geometry.',
+                  'Modernist Bauhaus geometry & sovereign studio visual language.',
                   style: EtoleTypography.bodySmall(color: mutedColor),
                 ),
                 const SizedBox(height: EtoleSpacing.s20),
@@ -661,7 +666,7 @@ class _DesignSystemGalleryScreenState
                 // Footer signature
                 Center(
                   child: Text(
-                    'BRIAN ETOLE · NAIROBI, KENYA\n+254 718 013 579 · HELLO@BRIANETOLE.COM',
+                    'CREATIVE OS · ARCHITECTED BY BRIAN ETOLE\nNAIROBI, KENYA',
                     textAlign: TextAlign.center,
                     style: EtoleTypography.labelCaps(
                       color: mutedColor.withValues(alpha: 0.6),

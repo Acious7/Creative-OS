@@ -1,7 +1,9 @@
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
+
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_design_tokens.dart';
 import '../../../documents/data/document_repository.dart';
@@ -26,7 +28,9 @@ class _PdfPreviewScreenState extends State<PdfPreviewScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedTemplate = PdfTemplateType.fromString(widget.completeDoc.document.pdfTemplate);
+    _selectedTemplate = PdfTemplateType.fromString(
+      widget.completeDoc.document.pdfTemplate,
+    );
   }
 
   Future<Uint8List> _generatePdf(PdfPageFormat format) async {
@@ -39,10 +43,7 @@ class _PdfPreviewScreenState extends State<PdfPreviewScreen> {
   Future<void> _shareAsPdf() async {
     final bytes = await _generatePdf(PdfPageFormat.a4);
     final docNum = widget.completeDoc.document.docNumber;
-    await Printing.sharePdf(
-      bytes: bytes,
-      filename: '$docNum.pdf',
-    );
+    await Printing.sharePdf(bytes: bytes, filename: '$docNum.pdf');
   }
 
   Future<void> _shareAsImage() async {
@@ -60,7 +61,10 @@ class _PdfPreviewScreenState extends State<PdfPreviewScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error sharing image: $e'), backgroundColor: AppColors.error),
+          SnackBar(
+            content: Text('Error sharing image: $e'),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     } finally {
@@ -87,7 +91,10 @@ class _PdfPreviewScreenState extends State<PdfPreviewScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save PDF: $e'), backgroundColor: AppColors.error),
+          SnackBar(
+            content: Text('Failed to save PDF: $e'),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     } finally {
@@ -128,49 +135,50 @@ class _PdfPreviewScreenState extends State<PdfPreviewScreen> {
         children: [
           // Template Selector Header
           Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppDesignTokens.spacingM,
-                vertical: AppDesignTokens.spacingS,
-              ),
-              color: Theme.of(context).colorScheme.surface,
-              child: Row(
-                children: [
-                  Text(
-                    'Template:',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                    ),
-                  ),
-                  const SizedBox(width: AppDesignTokens.spacingM),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: PdfTemplateType.values.map((t) {
-                          final isSelected = _selectedTemplate == t;
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 6.0),
-                            child: ChoiceChip(
-                              label: Text(t.displayName),
-                              selected: isSelected,
-                              onSelected: (selected) {
-                                if (selected) {
-                                  setState(() {
-                                    _selectedTemplate = t;
-                                  });
-                                }
-                              },
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDesignTokens.spacingM,
+              vertical: AppDesignTokens.spacingS,
             ),
+            color: Theme.of(context).colorScheme.surface,
+            child: Row(
+              children: [
+                Text(
+                  'Template:',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurface
+                        .withValues(alpha: 0.7),
+                  ),
+                ),
+                const SizedBox(width: AppDesignTokens.spacingM),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: PdfTemplateType.values.map((t) {
+                        final isSelected = _selectedTemplate == t;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 6.0),
+                          child: ChoiceChip(
+                            label: Text(t.displayName),
+                            selected: isSelected,
+                            onSelected: (selected) {
+                              if (selected) {
+                                setState(() {
+                                  _selectedTemplate = t;
+                                });
+                              }
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
 
           // Main Interactive PDF Preview Canvas
           Expanded(
@@ -194,7 +202,11 @@ class _PdfPreviewScreenState extends State<PdfPreviewScreen> {
         ),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
+          border: Border(
+            top: BorderSide(
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
+          ),
         ),
         child: SafeArea(
           child: Row(

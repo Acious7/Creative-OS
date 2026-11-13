@@ -3,39 +3,39 @@ import 'package:creative_os/core/utils/number_generator.dart';
 
 void main() {
   group('NumberGenerator Tests', () {
-    test('formats sequence number correctly for Brian Etole (BE-QT-2026-001)', () {
+    test('formats sequence number correctly for Creative OS (COS-QT-2026-001)', () {
       final formatted = NumberGenerator.formatNumber(
         pattern: '{BRAND}-{TYPE}-{YEAR}-{NUMBER}',
-        brandName: 'Brian Etole',
+        brandName: 'Creative OS',
         docPrefix: 'QT',
         number: 1,
         padding: 3,
         date: DateTime(2026, 1, 1),
       );
 
-      expect(formatted, equals('BE-QT-2026-001'));
+      expect(formatted, equals('COS-QT-2026-001'));
     });
 
-    test('formats invoice and receipt numbers with BE prefix', () {
+    test('formats invoice and receipt numbers with COS and generic prefixes', () {
       final inv = NumberGenerator.formatNumber(
-        pattern: '{BRAND}-{TYPE}-{YEAR}-{NUMBER}',
-        brandName: 'Etole Studios',
-        docPrefix: 'INV',
+        pattern: '{PREFIX}-{YEAR}-{NUM}',
+        brandName: 'Creative OS',
+        docPrefix: 'COS-INV',
         number: 42,
         padding: 3,
         date: DateTime(2026, 5, 15),
       );
-      expect(inv, equals('BE-INV-2026-042'));
+      expect(inv, equals('COS-INV-2026-042'));
 
       final rec = NumberGenerator.formatNumber(
-        pattern: '{BRAND}-{TYPE}-{YEAR}-{NUMBER}',
-        brandName: 'Brian Etole',
-        docPrefix: 'REC',
+        pattern: '{PREFIX}-{NUM}',
+        brandName: 'Creative Studio',
+        docPrefix: 'COS-REC',
         number: 5,
-        padding: 3,
+        padding: 4,
         date: DateTime(2026, 10, 1),
       );
-      expect(rec, equals('BE-REC-2026-005'));
+      expect(rec, equals('COS-REC-0005'));
     });
   });
 }

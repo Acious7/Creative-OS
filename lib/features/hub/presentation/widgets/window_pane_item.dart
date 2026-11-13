@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/design_system/etole_colors.dart';
 import '../../../../core/design_system/etole_components.dart';
 import '../../../../core/design_system/etole_typography.dart';
+import '../../../../core/theme/brand_theme_provider.dart';
 import '../../domain/hub_models.dart';
 import 'window_pane_clipper.dart';
 
@@ -67,7 +68,7 @@ class _WindowPaneItemState extends ConsumerState<WindowPaneItem> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final studioTheme = ref.watch(currentStudioThemeProvider);
 
     // Check status notifications
     final hasOccasion =
@@ -121,7 +122,7 @@ class _WindowPaneItemState extends ConsumerState<WindowPaneItem> {
                     ),
                   ),
 
-                  // 2. Frosted Glass Pane with clipped geometry
+                  // 2. Frosted Glass Pane with clipped geometry & theme glass tint
                   ClipPath(
                     clipper: WindowPaneClipper(world: widget.world),
                     child: BackdropFilter(
@@ -131,17 +132,7 @@ class _WindowPaneItemState extends ConsumerState<WindowPaneItem> {
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: isDark
-                                ? [
-                                    const Color(0x350A0C0D),
-                                    const Color(0x22111417),
-                                    const Color(0x420A0C0D),
-                                  ]
-                                : [
-                                    const Color(0x40FFFFFF),
-                                    const Color(0x22FFFFFF),
-                                    const Color(0x35FFFFFF),
-                                  ],
+                            colors: studioTheme.glassTintColors,
                           ),
                         ),
                         child: Stack(
@@ -157,7 +148,7 @@ class _WindowPaneItemState extends ConsumerState<WindowPaneItem> {
                                 ),
                                 child: _buildLivingGlimpse(
                                   widget.world,
-                                  isDark,
+                                  studioTheme.isDark,
                                 ),
                               ),
                             ),
@@ -172,9 +163,7 @@ class _WindowPaneItemState extends ConsumerState<WindowPaneItem> {
                                   widget.world.displayName,
                                   style:
                                       EtoleTypography.sectionTitle(
-                                        color: isDark
-                                            ? EtoleColors.cream
-                                            : EtoleColors.lightTextPrimary,
+                                        color: studioTheme.textPrimary,
                                       ).copyWith(
                                         fontSize: 16.5,
                                         letterSpacing: 2.0,
@@ -197,6 +186,8 @@ class _WindowPaneItemState extends ConsumerState<WindowPaneItem> {
                           world: widget.world,
                           glintIntensity: _isPressed ? 1.0 : 0.55,
                           isPressed: _isPressed,
+                          accentColor: studioTheme.primaryAccent,
+                          borderColor: studioTheme.glassBorderColor,
                         ),
                       ),
                     ),

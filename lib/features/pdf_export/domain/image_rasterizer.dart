@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
@@ -34,7 +35,10 @@ class ImageRasterizer {
     String? subject,
     String? message,
   }) async {
-    final files = await rasterizePdfToImages(pdfBytes: pdfBytes, docNumber: docNumber);
+    final files = await rasterizePdfToImages(
+      pdfBytes: pdfBytes,
+      docNumber: docNumber,
+    );
     if (files.isEmpty) return;
 
     final xFiles = files.map((f) => XFile(f.path)).toList();

@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+
 import '../../../../core/constants/document_constants.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/utils/date_formatter.dart';
@@ -22,7 +24,8 @@ class PdfBuilder {
       author: completeDoc.brand.name,
     );
 
-    final selectedTemplate = templateType ??
+    final selectedTemplate =
+        templateType ??
         PdfTemplateType.fromString(completeDoc.document.pdfTemplate);
 
     final palette = PdfColorPalette.fromHex(completeDoc.brand.accentColorHex);
@@ -34,7 +37,8 @@ class PdfBuilder {
 
     // Load logo if exists
     pw.MemoryImage? logoImage;
-    if (completeDoc.brand.logoPath != null && completeDoc.brand.logoPath!.isNotEmpty) {
+    if (completeDoc.brand.logoPath != null &&
+        completeDoc.brand.logoPath!.isNotEmpty) {
       final logoPath = completeDoc.brand.logoPath!;
       try {
         if (logoPath.startsWith('assets/')) {
@@ -94,13 +98,18 @@ class PdfBuilder {
       }
     }
 
-    final metaData = DocumentMetaData.fromRawJson(completeDoc.document.extraJsonData);
+    final metaData = DocumentMetaData.fromRawJson(
+      completeDoc.document.extraJsonData,
+    );
     final now = DateTime.now();
-    final isExpired = (completeDoc.document.docType == 'quotation' || completeDoc.document.docType == 'proposal') &&
+    final isExpired =
+        (completeDoc.document.docType == 'quotation' ||
+            completeDoc.document.docType == 'proposal') &&
         completeDoc.document.dueOrValidityDate != null &&
         completeDoc.document.dueOrValidityDate!.isBefore(now);
     final symbol = completeDoc.document.currencyCode;
-    final targetPageFormat = (completeDoc.document.pageSize.toLowerCase() == 'letter')
+    final targetPageFormat =
+        (completeDoc.document.pageSize.toLowerCase() == 'letter')
         ? PdfPageFormat.letter
         : PdfPageFormat.a4;
 
@@ -124,11 +133,8 @@ class PdfBuilder {
           boldFont: boldFont,
           semiBoldFont: semiBoldFont,
         ),
-        footer: (context) => _buildFooter(
-          context,
-          completeDoc: completeDoc,
-          palette: palette,
-        ),
+        footer: (context) =>
+            _buildFooter(context, completeDoc: completeDoc, palette: palette),
         build: (context) => [
           if (isExpired) _buildExpiredWatermark(palette, boldFont),
           _buildClientAndMetaSection(
@@ -140,18 +146,31 @@ class PdfBuilder {
           pw.SizedBox(height: 12),
           if (completeDoc.document.introText != null &&
               completeDoc.document.introText!.trim().isNotEmpty) ...[
-            _buildIntroSection(completeDoc: completeDoc, palette: palette, boldFont: boldFont),
+            _buildIntroSection(
+              completeDoc: completeDoc,
+              palette: palette,
+              boldFont: boldFont,
+            ),
             pw.SizedBox(height: 12),
           ],
-          if (metaData.showreelUrl != null && metaData.showreelUrl!.isNotEmpty) ...[
+          if (metaData.showreelUrl != null &&
+              metaData.showreelUrl!.isNotEmpty) ...[
             _buildShowreelQrSection(metaData.showreelUrl!, palette, boldFont),
           ],
           if (completeDoc.customFields.isNotEmpty) ...[
-            _buildCustomFieldsSection(completeDoc: completeDoc, palette: palette),
+            _buildCustomFieldsSection(
+              completeDoc: completeDoc,
+              palette: palette,
+            ),
             pw.SizedBox(height: 12),
           ],
           if (metaData.packages.isNotEmpty) ...[
-            _buildPackageOptionsSection(metaData.packages, symbol, palette, boldFont),
+            _buildPackageOptionsSection(
+              metaData.packages,
+              symbol,
+              palette,
+              boldFont,
+            ),
           ] else if (completeDoc.items.isNotEmpty) ...[
             _buildLineItemsTable(
               completeDoc: completeDoc,
@@ -162,12 +181,24 @@ class PdfBuilder {
             pw.SizedBox(height: 14),
           ],
           if (metaData.addons.isNotEmpty) ...[
-            _buildOptionalAddonsSection(metaData.addons, symbol, palette, boldFont),
+            _buildOptionalAddonsSection(
+              metaData.addons,
+              symbol,
+              palette,
+              boldFont,
+            ),
           ],
           if (metaData.milestones.isNotEmpty) ...[
-            _buildPaymentMilestonesSection(metaData.milestones, symbol, palette, boldFont),
+            _buildPaymentMilestonesSection(
+              metaData.milestones,
+              symbol,
+              palette,
+              boldFont,
+            ),
           ],
-          if (completeDoc.items.isNotEmpty || completeDoc.document.totalAmount > 0 || metaData.packages.isNotEmpty) ...[
+          if (completeDoc.items.isNotEmpty ||
+              completeDoc.document.totalAmount > 0 ||
+              metaData.packages.isNotEmpty) ...[
             _buildTotalsAndPaymentSection(
               completeDoc: completeDoc,
               palette: palette,
@@ -188,12 +219,20 @@ class PdfBuilder {
           if (completeDoc.document.closingNotes != null &&
               completeDoc.document.closingNotes!.trim().isNotEmpty) ...[
             pw.SizedBox(height: 12),
-            _buildNotesSection(completeDoc: completeDoc, palette: palette, boldFont: boldFont),
+            _buildNotesSection(
+              completeDoc: completeDoc,
+              palette: palette,
+              boldFont: boldFont,
+            ),
           ],
           if (completeDoc.document.termsConditions != null &&
               completeDoc.document.termsConditions!.trim().isNotEmpty) ...[
             pw.SizedBox(height: 12),
-            _buildTermsSection(completeDoc: completeDoc, palette: palette, boldFont: boldFont),
+            _buildTermsSection(
+              completeDoc: completeDoc,
+              palette: palette,
+              boldFont: boldFont,
+            ),
           ],
         ],
       ),
@@ -209,7 +248,9 @@ class PdfBuilder {
           header: (context) => pw.Container(
             padding: const pw.EdgeInsets.only(bottom: 12),
             decoration: const pw.BoxDecoration(
-              border: pw.Border(bottom: pw.BorderSide(color: PdfColors.grey300)),
+              border: pw.Border(
+                bottom: pw.BorderSide(color: PdfColors.grey300),
+              ),
             ),
             child: pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
@@ -243,7 +284,9 @@ class PdfBuilder {
                   width: 240,
                   decoration: pw.BoxDecoration(
                     border: pw.Border.all(color: PdfColors.grey300),
-                    borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
+                    borderRadius: const pw.BorderRadius.all(
+                      pw.Radius.circular(6),
+                    ),
                   ),
                   padding: const pw.EdgeInsets.all(6),
                   child: pw.Column(
@@ -260,7 +303,10 @@ class PdfBuilder {
                       pw.SizedBox(height: 6),
                       pw.Text(
                         attachmentCaptions[idx],
-                        style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey800),
+                        style: const pw.TextStyle(
+                          fontSize: 9,
+                          color: PdfColors.grey800,
+                        ),
                       ),
                     ],
                   ),
@@ -324,7 +370,10 @@ class PdfBuilder {
                         completeDoc.brand.address!.isNotEmpty)
                       pw.Text(
                         completeDoc.brand.address!,
-                        style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey200),
+                        style: const pw.TextStyle(
+                          fontSize: 8,
+                          color: PdfColors.grey200,
+                        ),
                       ),
                   ],
                 ),
@@ -343,7 +392,10 @@ class PdfBuilder {
                 ),
                 pw.Text(
                   completeDoc.document.docNumber,
-                  style: const pw.TextStyle(fontSize: 11, color: PdfColors.grey200),
+                  style: const pw.TextStyle(
+                    fontSize: 11,
+                    color: PdfColors.grey200,
+                  ),
                 ),
               ],
             ),
@@ -357,7 +409,9 @@ class PdfBuilder {
       decoration: pw.BoxDecoration(
         border: pw.Border(
           bottom: pw.BorderSide(
-            color: template == PdfTemplateType.modern ? palette.primary : palette.border,
+            color: template == PdfTemplateType.modern
+                ? palette.primary
+                : palette.border,
             width: template == PdfTemplateType.modern ? 3 : 1,
           ),
         ),
@@ -396,7 +450,10 @@ class PdfBuilder {
                         pw.SizedBox(height: 2),
                         pw.Text(
                           completeDoc.brand.address!,
-                          style: pw.TextStyle(fontSize: 8, color: palette.textSecondary),
+                          style: pw.TextStyle(
+                            fontSize: 8,
+                            color: palette.textSecondary,
+                          ),
                         ),
                       ],
                       pw.SizedBox(height: 4),
@@ -404,19 +461,28 @@ class PdfBuilder {
                           completeDoc.brand.phone!.isNotEmpty)
                         pw.Text(
                           'Tel: ${completeDoc.brand.phone}',
-                          style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey700),
+                          style: const pw.TextStyle(
+                            fontSize: 8,
+                            color: PdfColors.grey700,
+                          ),
                         ),
                       if (completeDoc.brand.email != null &&
                           completeDoc.brand.email!.isNotEmpty)
                         pw.Text(
                           'Email: ${completeDoc.brand.email}',
-                          style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey700),
+                          style: const pw.TextStyle(
+                            fontSize: 8,
+                            color: PdfColors.grey700,
+                          ),
                         ),
                       if (completeDoc.brand.kraPin != null &&
                           completeDoc.brand.kraPin!.isNotEmpty)
                         pw.Text(
                           'KRA PIN: ${completeDoc.brand.kraPin}',
-                          style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey700),
+                          style: const pw.TextStyle(
+                            fontSize: 8,
+                            color: PdfColors.grey700,
+                          ),
                         ),
                     ],
                   ),
@@ -490,11 +556,7 @@ class PdfBuilder {
       ),
       child: pw.Text(
         status.toUpperCase(),
-        style: pw.TextStyle(
-          font: boldFont,
-          fontSize: 8,
-          color: badgeText,
-        ),
+        style: pw.TextStyle(font: boldFont, fontSize: 8, color: badgeText),
       ),
     );
   }
@@ -530,7 +592,9 @@ class PdfBuilder {
     return pw.Container(
       padding: const pw.EdgeInsets.all(12),
       decoration: pw.BoxDecoration(
-        color: template == PdfTemplateType.minimal ? PdfColors.white : palette.surface,
+        color: template == PdfTemplateType.minimal
+            ? PdfColors.white
+            : palette.surface,
         borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
         border: pw.Border.all(color: palette.border),
       ),
@@ -577,28 +641,40 @@ class PdfBuilder {
                   pw.SizedBox(height: 2),
                   pw.Text(
                     client.email!,
-                    style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey700),
+                    style: const pw.TextStyle(
+                      fontSize: 8,
+                      color: PdfColors.grey700,
+                    ),
                   ),
                 ],
                 if (client?.phone != null && client!.phone!.isNotEmpty) ...[
                   pw.SizedBox(height: 2),
                   pw.Text(
                     client.phone!,
-                    style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey700),
+                    style: const pw.TextStyle(
+                      fontSize: 8,
+                      color: PdfColors.grey700,
+                    ),
                   ),
                 ],
                 if (client?.address != null && client!.address!.isNotEmpty) ...[
                   pw.SizedBox(height: 2),
                   pw.Text(
                     client.address!,
-                    style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey700),
+                    style: const pw.TextStyle(
+                      fontSize: 8,
+                      color: PdfColors.grey700,
+                    ),
                   ),
                 ],
                 if (client?.kraPin != null && client!.kraPin!.isNotEmpty) ...[
                   pw.SizedBox(height: 2),
                   pw.Text(
                     'KRA PIN: ${client.kraPin}',
-                    style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey700),
+                    style: const pw.TextStyle(
+                      fontSize: 8,
+                      color: PdfColors.grey700,
+                    ),
                   ),
                 ],
               ],
@@ -613,17 +689,29 @@ class PdfBuilder {
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                _buildMetaRow('Date Issued:', DateFormatter.format(completeDoc.document.issueDate), boldFont),
+                _buildMetaRow(
+                  'Date Issued:',
+                  DateFormatter.format(completeDoc.document.issueDate),
+                  boldFont,
+                ),
                 if (completeDoc.document.dueOrValidityDate != null) ...[
                   pw.SizedBox(height: 4),
                   _buildMetaRow(
-                    completeDoc.document.docType == 'quotation' ? 'Valid Until:' : 'Due Date:',
-                    DateFormatter.format(completeDoc.document.dueOrValidityDate!),
+                    completeDoc.document.docType == 'quotation'
+                        ? 'Valid Until:'
+                        : 'Due Date:',
+                    DateFormatter.format(
+                      completeDoc.document.dueOrValidityDate!,
+                    ),
                     boldFont,
                   ),
                 ],
                 pw.SizedBox(height: 4),
-                _buildMetaRow('Currency:', completeDoc.document.currencyCode, boldFont),
+                _buildMetaRow(
+                  'Currency:',
+                  completeDoc.document.currencyCode,
+                  boldFont,
+                ),
               ],
             ),
           ),
@@ -642,7 +730,11 @@ class PdfBuilder {
         ),
         pw.Text(
           value,
-          style: pw.TextStyle(font: boldFont, fontSize: 8, color: PdfColors.grey900),
+          style: pw.TextStyle(
+            font: boldFont,
+            fontSize: 8,
+            color: PdfColors.grey900,
+          ),
         ),
       ],
     );
@@ -653,7 +745,9 @@ class PdfBuilder {
     required CompleteDocument completeDoc,
     required PdfColorPalette palette,
   }) {
-    final validFields = completeDoc.customFields.where((cf) => cf.value != null && cf.value!.isNotEmpty).toList();
+    final validFields = completeDoc.customFields
+        .where((cf) => cf.value != null && cf.value!.isNotEmpty)
+        .toList();
     if (validFields.isEmpty) return pw.SizedBox();
 
     return pw.Container(
@@ -672,11 +766,17 @@ class PdfBuilder {
             children: [
               pw.Text(
                 '${cf.definition.fieldLabel}: ',
-                style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey600),
+                style: const pw.TextStyle(
+                  fontSize: 8,
+                  color: PdfColors.grey600,
+                ),
               ),
               pw.Text(
                 cf.value!,
-                style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey900),
+                style: const pw.TextStyle(
+                  fontSize: 8,
+                  color: PdfColors.grey900,
+                ),
               ),
             ],
           );
@@ -697,19 +797,27 @@ class PdfBuilder {
     final table = pw.TableHelper.fromTextArray(
       border: template == PdfTemplateType.minimal
           ? const pw.TableBorder(
-              horizontalInside: pw.BorderSide(color: PdfColors.grey200, width: 0.5),
+              horizontalInside: pw.BorderSide(
+                color: PdfColors.grey200,
+                width: 0.5,
+              ),
               bottom: pw.BorderSide(color: PdfColors.grey300, width: 1),
             )
           : pw.TableBorder(
-              horizontalInside: pw.BorderSide(color: palette.border, width: 0.5),
+              horizontalInside: pw.BorderSide(
+                color: palette.border,
+                width: 0.5,
+              ),
               bottom: pw.BorderSide(color: palette.border, width: 1),
             ),
       headerDecoration: pw.BoxDecoration(
-        color: (template == PdfTemplateType.bold || template == PdfTemplateType.modern)
+        color:
+            (template == PdfTemplateType.bold ||
+                template == PdfTemplateType.modern)
             ? palette.primary
             : template == PdfTemplateType.minimal
-                ? PdfColors.white
-                : palette.surface,
+            ? PdfColors.white
+            : palette.surface,
       ),
       headerHeight: 28,
       cellHeight: 28,
@@ -723,7 +831,9 @@ class PdfBuilder {
       headerStyle: pw.TextStyle(
         font: boldFont,
         fontSize: 8,
-        color: (template == PdfTemplateType.bold || template == PdfTemplateType.modern)
+        color:
+            (template == PdfTemplateType.bold ||
+                template == PdfTemplateType.modern)
             ? PdfColors.white
             : palette.primary,
         letterSpacing: 0.5,
@@ -789,7 +899,9 @@ class PdfBuilder {
                   padding: const pw.EdgeInsets.all(10),
                   decoration: pw.BoxDecoration(
                     color: palette.surface,
-                    borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
+                    borderRadius: const pw.BorderRadius.all(
+                      pw.Radius.circular(6),
+                    ),
                     border: pw.Border.all(color: palette.border),
                   ),
                   child: pw.Row(
@@ -808,16 +920,24 @@ class PdfBuilder {
                               ),
                             ),
                             pw.SizedBox(height: 4),
-                            if (brand.mpesaDetails != null && brand.mpesaDetails!.isNotEmpty)
+                            if (brand.mpesaDetails != null &&
+                                brand.mpesaDetails!.isNotEmpty)
                               pw.Text(
                                 brand.mpesaDetails!,
-                                style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey900),
+                                style: const pw.TextStyle(
+                                  fontSize: 8,
+                                  color: PdfColors.grey900,
+                                ),
                               ),
-                            if (brand.bankDetails != null && brand.bankDetails!.isNotEmpty) ...[
+                            if (brand.bankDetails != null &&
+                                brand.bankDetails!.isNotEmpty) ...[
                               pw.SizedBox(height: 2),
                               pw.Text(
                                 brand.bankDetails!,
-                                style: const pw.TextStyle(fontSize: 7.5, color: PdfColors.grey700),
+                                style: const pw.TextStyle(
+                                  fontSize: 7.5,
+                                  color: PdfColors.grey700,
+                                ),
                               ),
                             ],
                           ],
@@ -829,7 +949,8 @@ class PdfBuilder {
                         height: 54,
                         child: pw.BarcodeWidget(
                           barcode: pw.Barcode.qrCode(),
-                          data: '${brand.name} | Doc: ${doc.docNumber} | Total: ${doc.totalAmount} ${doc.currencyCode}',
+                          data:
+                              '${brand.name} | Doc: ${doc.docNumber} | Total: ${doc.totalAmount} ${doc.currencyCode}',
                           drawText: false,
                         ),
                       ),
@@ -850,13 +971,23 @@ class PdfBuilder {
                         pw.Container(
                           width: 100,
                           height: 45,
-                          child: pw.Image(signatureImage, fit: pw.BoxFit.contain),
+                          child: pw.Image(
+                            signatureImage,
+                            fit: pw.BoxFit.contain,
+                          ),
                         ),
-                        pw.Container(width: 110, height: 1, color: PdfColors.grey400),
+                        pw.Container(
+                          width: 110,
+                          height: 1,
+                          color: PdfColors.grey400,
+                        ),
                         pw.SizedBox(height: 2),
                         pw.Text(
                           'Authorized Signature',
-                          style: const pw.TextStyle(fontSize: 7, color: PdfColors.grey600),
+                          style: const pw.TextStyle(
+                            fontSize: 7,
+                            color: PdfColors.grey600,
+                          ),
                         ),
                       ],
                     ),
@@ -888,7 +1019,11 @@ class PdfBuilder {
             ),
             child: pw.Column(
               children: [
-                _buildTotalRow('Subtotal', CurrencyFormatter.format(doc.subtotal, currencyCode: symbol), boldFont),
+                _buildTotalRow(
+                  'Subtotal',
+                  CurrencyFormatter.format(doc.subtotal, currencyCode: symbol),
+                  boldFont,
+                ),
                 if (doc.discountAmount > 0) ...[
                   pw.SizedBox(height: 4),
                   _buildTotalRow(
@@ -902,14 +1037,20 @@ class PdfBuilder {
                   pw.SizedBox(height: 4),
                   _buildTotalRow(
                     'VAT (16%)',
-                    CurrencyFormatter.format(doc.taxAmount, currencyCode: symbol),
+                    CurrencyFormatter.format(
+                      doc.taxAmount,
+                      currencyCode: symbol,
+                    ),
                     boldFont,
                   ),
                 ],
                 pw.Divider(color: palette.border, thickness: 1),
                 _buildTotalRow(
                   'TOTAL',
-                  CurrencyFormatter.format(doc.totalAmount, currencyCode: symbol),
+                  CurrencyFormatter.format(
+                    doc.totalAmount,
+                    currencyCode: symbol,
+                  ),
                   boldFont,
                   isGrandTotal: doc.whtAmount == 0,
                   palette: palette,
@@ -925,7 +1066,12 @@ class PdfBuilder {
                   pw.Divider(color: palette.border, thickness: 1),
                   _buildTotalRow(
                     'NET AMOUNT PAYABLE',
-                    CurrencyFormatter.format(doc.netAmountPayable > 0 ? doc.netAmountPayable : doc.totalAmount - doc.whtAmount, currencyCode: symbol),
+                    CurrencyFormatter.format(
+                      doc.netAmountPayable > 0
+                          ? doc.netAmountPayable
+                          : doc.totalAmount - doc.whtAmount,
+                      currencyCode: symbol,
+                    ),
                     boldFont,
                     isGrandTotal: true,
                     palette: palette,
@@ -951,14 +1097,18 @@ class PdfBuilder {
                     ),
                   ),
                 ],
-                if (doc.currencyCode.toUpperCase() != 'KES' && doc.kesEquivalentRate != null && doc.kesEquivalentRate! > 0) ...[
+                if (doc.currencyCode.toUpperCase() != 'KES' &&
+                    doc.kesEquivalentRate != null &&
+                    doc.kesEquivalentRate! > 0) ...[
                   pw.SizedBox(height: 6),
                   pw.Container(
                     width: double.infinity,
                     padding: const pw.EdgeInsets.all(5),
                     decoration: pw.BoxDecoration(
                       border: pw.Border.all(color: palette.border, width: 0.5),
-                      borderRadius: const pw.BorderRadius.all(pw.Radius.circular(3)),
+                      borderRadius: const pw.BorderRadius.all(
+                        pw.Radius.circular(3),
+                      ),
                     ),
                     child: pw.Text(
                       'Equivalent: KES ${CurrencyFormatter.format(doc.kesEquivalentAmount ?? (doc.totalAmount * doc.kesEquivalentRate!), currencyCode: 'KES', includeSymbol: false)} (Rate: 1 ${doc.currencyCode} = ${doc.kesEquivalentRate!.toStringAsFixed(2)} KES${doc.kesEquivalentDate != null ? ' as at ${DateFormatter.format(doc.kesEquivalentDate!)}' : ''})',
@@ -973,7 +1123,10 @@ class PdfBuilder {
                   pw.SizedBox(height: 4),
                   _buildTotalRow(
                     'Deposit Required',
-                    CurrencyFormatter.format(doc.depositAmount, currencyCode: symbol),
+                    CurrencyFormatter.format(
+                      doc.depositAmount,
+                      currencyCode: symbol,
+                    ),
                     boldFont,
                   ),
                 ],
@@ -981,7 +1134,10 @@ class PdfBuilder {
                   pw.SizedBox(height: 4),
                   _buildTotalRow(
                     'Amount Paid',
-                    CurrencyFormatter.format(doc.totalAmount - doc.balanceDue, currencyCode: symbol),
+                    CurrencyFormatter.format(
+                      doc.totalAmount - doc.balanceDue,
+                      currencyCode: symbol,
+                    ),
                     boldFont,
                     color: PdfColors.green800,
                   ),
@@ -990,7 +1146,10 @@ class PdfBuilder {
                   pw.SizedBox(height: 4),
                   _buildTotalRow(
                     'Balance Due',
-                    CurrencyFormatter.format(doc.balanceDue, currencyCode: symbol),
+                    CurrencyFormatter.format(
+                      doc.balanceDue,
+                      currencyCode: symbol,
+                    ),
                     boldFont,
                     color: PdfColors.red900,
                   ),
@@ -1047,10 +1206,7 @@ class PdfBuilder {
       children: [
         pw.Text(
           label,
-          style: pw.TextStyle(
-            fontSize: 8,
-            color: color ?? PdfColors.grey700,
-          ),
+          style: pw.TextStyle(fontSize: 8, color: color ?? PdfColors.grey700),
         ),
         pw.Text(
           value,
@@ -1082,13 +1238,23 @@ class PdfBuilder {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Text(
-            completeDoc.document.titleOverride?.toUpperCase() ?? 'EXECUTIVE SUMMARY / SCOPE OF SERVICES',
-            style: pw.TextStyle(font: boldFont, fontSize: 8, color: palette.primary, letterSpacing: 0.5),
+            completeDoc.document.titleOverride?.toUpperCase() ??
+                'EXECUTIVE SUMMARY / SCOPE OF SERVICES',
+            style: pw.TextStyle(
+              font: boldFont,
+              fontSize: 8,
+              color: palette.primary,
+              letterSpacing: 0.5,
+            ),
           ),
           pw.SizedBox(height: 4),
           pw.Text(
             completeDoc.document.introText!,
-            style: const pw.TextStyle(fontSize: 8, height: 1.4, color: PdfColors.grey900),
+            style: const pw.TextStyle(
+              fontSize: 8,
+              height: 1.4,
+              color: PdfColors.grey900,
+            ),
           ),
         ],
       ),
@@ -1121,12 +1287,20 @@ class PdfBuilder {
             children: [
               pw.Text(
                 'ISSUED & AUTHORIZED BY:',
-                style: pw.TextStyle(font: boldFont, fontSize: 8, color: palette.primary),
+                style: pw.TextStyle(
+                  font: boldFont,
+                  fontSize: 8,
+                  color: palette.primary,
+                ),
               ),
               pw.SizedBox(height: 4),
               pw.Text(
                 completeDoc.brand.name,
-                style: pw.TextStyle(font: boldFont, fontSize: 9.5, color: PdfColors.grey900),
+                style: pw.TextStyle(
+                  font: boldFont,
+                  fontSize: 9.5,
+                  color: PdfColors.grey900,
+                ),
               ),
               pw.SizedBox(height: 6),
               pw.Row(
@@ -1139,13 +1313,23 @@ class PdfBuilder {
                         pw.Container(
                           width: 100,
                           height: 45,
-                          child: pw.Image(signatureImage, fit: pw.BoxFit.contain),
+                          child: pw.Image(
+                            signatureImage,
+                            fit: pw.BoxFit.contain,
+                          ),
                         ),
-                        pw.Container(width: 110, height: 1, color: PdfColors.grey400),
+                        pw.Container(
+                          width: 110,
+                          height: 1,
+                          color: PdfColors.grey400,
+                        ),
                         pw.SizedBox(height: 2),
                         pw.Text(
                           'Authorized Signatory',
-                          style: const pw.TextStyle(fontSize: 7, color: PdfColors.grey600),
+                          style: const pw.TextStyle(
+                            fontSize: 7,
+                            color: PdfColors.grey600,
+                          ),
                         ),
                       ],
                     ),
@@ -1167,14 +1351,21 @@ class PdfBuilder {
             children: [
               pw.Text(
                 'RECEIVED & ACKNOWLEDGED BY:',
-                style: pw.TextStyle(font: boldFont, fontSize: 8, color: PdfColors.grey700),
+                style: pw.TextStyle(
+                  font: boldFont,
+                  fontSize: 8,
+                  color: PdfColors.grey700,
+                ),
               ),
               pw.SizedBox(height: 38),
               pw.Container(width: 130, height: 1, color: PdfColors.grey400),
               pw.SizedBox(height: 2),
               pw.Text(
                 completeDoc.client?.name ?? 'Client / Recipient Signature',
-                style: const pw.TextStyle(fontSize: 7.5, color: PdfColors.grey700),
+                style: const pw.TextStyle(
+                  fontSize: 7.5,
+                  color: PdfColors.grey700,
+                ),
               ),
             ],
           ),
@@ -1202,7 +1393,11 @@ class PdfBuilder {
         children: [
           pw.Text(
             'NOTES:',
-            style: pw.TextStyle(font: boldFont, fontSize: 7, color: palette.primary),
+            style: pw.TextStyle(
+              font: boldFont,
+              fontSize: 7,
+              color: palette.primary,
+            ),
           ),
           pw.SizedBox(height: 2),
           pw.Text(
@@ -1233,7 +1428,11 @@ class PdfBuilder {
         children: [
           pw.Text(
             'TERMS & CONDITIONS:',
-            style: pw.TextStyle(font: boldFont, fontSize: 7, color: palette.primary),
+            style: pw.TextStyle(
+              font: boldFont,
+              fontSize: 7,
+              color: palette.primary,
+            ),
           ),
           pw.SizedBox(height: 2),
           pw.Text(
@@ -1255,7 +1454,9 @@ class PdfBuilder {
       margin: const pw.EdgeInsets.only(top: 14),
       padding: const pw.EdgeInsets.only(top: 6),
       decoration: const pw.BoxDecoration(
-        border: pw.Border(top: pw.BorderSide(color: PdfColors.grey300, width: 0.5)),
+        border: pw.Border(
+          top: pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+        ),
       ),
       child: pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
@@ -1273,7 +1474,10 @@ class PdfBuilder {
     );
   }
 
-  static pw.Widget _buildExpiredWatermark(PdfColorPalette palette, pw.Font boldFont) {
+  static pw.Widget _buildExpiredWatermark(
+    PdfColorPalette palette,
+    pw.Font boldFont,
+  ) {
     return pw.Container(
       width: double.infinity,
       padding: const pw.EdgeInsets.symmetric(vertical: 6, horizontal: 12),
@@ -1295,7 +1499,11 @@ class PdfBuilder {
     );
   }
 
-  static pw.Widget _buildShowreelQrSection(String url, PdfColorPalette palette, pw.Font boldFont) {
+  static pw.Widget _buildShowreelQrSection(
+    String url,
+    PdfColorPalette palette,
+    pw.Font boldFont,
+  ) {
     return pw.Container(
       padding: const pw.EdgeInsets.all(10),
       margin: const pw.EdgeInsets.only(bottom: 12),
@@ -1322,7 +1530,11 @@ class PdfBuilder {
               children: [
                 pw.Text(
                   'SHOWREEL & PORTFOLIO VIDEO',
-                  style: pw.TextStyle(font: boldFont, fontSize: 9, color: palette.primary),
+                  style: pw.TextStyle(
+                    font: boldFont,
+                    fontSize: 9,
+                    color: palette.primary,
+                  ),
                 ),
                 pw.SizedBox(height: 2),
                 pw.UrlLink(
@@ -1345,11 +1557,22 @@ class PdfBuilder {
   }
 
   static pw.Widget _buildPackageOptionsSection(
-      List<PackageOption> packages, String symbol, PdfColorPalette palette, pw.Font boldFont) {
+    List<PackageOption> packages,
+    String symbol,
+    PdfColorPalette palette,
+    pw.Font boldFont,
+  ) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text('PROPOSAL PACKAGE OPTIONS', style: pw.TextStyle(font: boldFont, fontSize: 10, color: palette.primary)),
+        pw.Text(
+          'PROPOSAL PACKAGE OPTIONS',
+          style: pw.TextStyle(
+            font: boldFont,
+            fontSize: 10,
+            color: palette.primary,
+          ),
+        ),
         pw.SizedBox(height: 6),
         pw.Row(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -1359,10 +1582,16 @@ class PdfBuilder {
                 margin: const pw.EdgeInsets.only(right: 6),
                 padding: const pw.EdgeInsets.all(8),
                 decoration: pw.BoxDecoration(
-                  color: pkg.isRecommended ? palette.surface : PdfColors.grey100,
-                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
+                  color: pkg.isRecommended
+                      ? palette.surface
+                      : PdfColors.grey100,
+                  borderRadius: const pw.BorderRadius.all(
+                    pw.Radius.circular(6),
+                  ),
                   border: pw.Border.all(
-                    color: pkg.isRecommended ? palette.primary : PdfColors.grey300,
+                    color: pkg.isRecommended
+                        ? palette.primary
+                        : PdfColors.grey300,
                     width: pkg.isRecommended ? 1.5 : 1,
                   ),
                 ),
@@ -1371,20 +1600,46 @@ class PdfBuilder {
                   children: [
                     if (pkg.isRecommended)
                       pw.Container(
-                        padding: const pw.EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                        padding: const pw.EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 2,
+                        ),
                         decoration: pw.BoxDecoration(
                           color: palette.primary,
-                          borderRadius: const pw.BorderRadius.all(pw.Radius.circular(3)),
+                          borderRadius: const pw.BorderRadius.all(
+                            pw.Radius.circular(3),
+                          ),
                         ),
-                        child: pw.Text('RECOMMENDED', style: pw.TextStyle(font: boldFont, fontSize: 6, color: PdfColors.white)),
+                        child: pw.Text(
+                          'RECOMMENDED',
+                          style: pw.TextStyle(
+                            font: boldFont,
+                            fontSize: 6,
+                            color: PdfColors.white,
+                          ),
+                        ),
                       ),
                     pw.SizedBox(height: 4),
-                    pw.Text(pkg.title, style: pw.TextStyle(font: boldFont, fontSize: 10)),
+                    pw.Text(
+                      pkg.title,
+                      style: pw.TextStyle(font: boldFont, fontSize: 10),
+                    ),
                     pw.SizedBox(height: 2),
-                    pw.Text(CurrencyFormatter.format(pkg.price, currencyCode: symbol),
-                        style: pw.TextStyle(font: boldFont, fontSize: 11, color: palette.primary)),
+                    pw.Text(
+                      CurrencyFormatter.format(pkg.price, currencyCode: symbol),
+                      style: pw.TextStyle(
+                        font: boldFont,
+                        fontSize: 11,
+                        color: palette.primary,
+                      ),
+                    ),
                     pw.SizedBox(height: 6),
-                    ...pkg.deliverables.map((d) => pw.Text('• $d', style: const pw.TextStyle(fontSize: 7))),
+                    ...pkg.deliverables.map(
+                      (d) => pw.Text(
+                        '• $d',
+                        style: const pw.TextStyle(fontSize: 7),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -1397,23 +1652,42 @@ class PdfBuilder {
   }
 
   static pw.Widget _buildOptionalAddonsSection(
-      List<OptionalAddon> addons, String symbol, PdfColorPalette palette, pw.Font boldFont) {
+    List<OptionalAddon> addons,
+    String symbol,
+    PdfColorPalette palette,
+    pw.Font boldFont,
+  ) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text('OPTIONAL UPGRADES & ADD-ONS', style: pw.TextStyle(font: boldFont, fontSize: 10, color: palette.primary)),
+        pw.Text(
+          'OPTIONAL UPGRADES & ADD-ONS',
+          style: pw.TextStyle(
+            font: boldFont,
+            fontSize: 10,
+            color: palette.primary,
+          ),
+        ),
         pw.SizedBox(height: 6),
         pw.TableHelper.fromTextArray(
           border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
           headerDecoration: pw.BoxDecoration(color: palette.surface),
           headers: ['ADD-ON ITEM', 'DETAILS', 'PRICE ($symbol)'],
-          headerStyle: pw.TextStyle(font: boldFont, fontSize: 8, color: palette.primary),
+          headerStyle: pw.TextStyle(
+            font: boldFont,
+            fontSize: 8,
+            color: palette.primary,
+          ),
           cellStyle: const pw.TextStyle(fontSize: 8),
-          data: addons.map((a) => [
-            a.name,
-            a.details ?? '-',
-            CurrencyFormatter.format(a.price, currencyCode: symbol),
-          ]).toList(),
+          data: addons
+              .map(
+                (a) => [
+                  a.name,
+                  a.details ?? '-',
+                  CurrencyFormatter.format(a.price, currencyCode: symbol),
+                ],
+              )
+              .toList(),
         ),
         pw.SizedBox(height: 12),
       ],
@@ -1421,24 +1695,48 @@ class PdfBuilder {
   }
 
   static pw.Widget _buildPaymentMilestonesSection(
-      List<PaymentMilestone> milestones, String symbol, PdfColorPalette palette, pw.Font boldFont) {
+    List<PaymentMilestone> milestones,
+    String symbol,
+    PdfColorPalette palette,
+    pw.Font boldFont,
+  ) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text('PAYMENT MILESTONES SCHEDULE', style: pw.TextStyle(font: boldFont, fontSize: 10, color: palette.primary)),
+        pw.Text(
+          'PAYMENT MILESTONES SCHEDULE',
+          style: pw.TextStyle(
+            font: boldFont,
+            fontSize: 10,
+            color: palette.primary,
+          ),
+        ),
         pw.SizedBox(height: 6),
         pw.TableHelper.fromTextArray(
           border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
           headerDecoration: pw.BoxDecoration(color: palette.surface),
-          headers: ['MILESTONE PHASE', 'SHARE (%)', 'AMOUNT ($symbol)', 'DUE / TRIGGER'],
-          headerStyle: pw.TextStyle(font: boldFont, fontSize: 8, color: palette.primary),
+          headers: [
+            'MILESTONE PHASE',
+            'SHARE (%)',
+            'AMOUNT ($symbol)',
+            'DUE / TRIGGER',
+          ],
+          headerStyle: pw.TextStyle(
+            font: boldFont,
+            fontSize: 8,
+            color: palette.primary,
+          ),
           cellStyle: const pw.TextStyle(fontSize: 8),
-          data: milestones.map((m) => [
-            m.title,
-            '${m.percentage.toStringAsFixed(0)}%',
-            CurrencyFormatter.format(m.amount, currencyCode: symbol),
-            m.dueDateText ?? '-',
-          ]).toList(),
+          data: milestones
+              .map(
+                (m) => [
+                  m.title,
+                  '${m.percentage.toStringAsFixed(0)}%',
+                  CurrencyFormatter.format(m.amount, currencyCode: symbol),
+                  m.dueDateText ?? '-',
+                ],
+              )
+              .toList(),
         ),
         pw.SizedBox(height: 12),
       ],

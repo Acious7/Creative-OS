@@ -171,8 +171,8 @@ class _SendDocumentEmailSheetState
       'due_date': dueDateStr,
       'project': projectStr,
       'payment_channels': paymentBuffer.toString().trim(),
-      'showreel_url': 'https://brianetole.com/films',
-      'rate_card_url': 'https://brianetole.com',
+      'showreel_url': 'https://creativeos.app',
+      'rate_card_url': 'https://creativeos.app',
     };
   }
 
@@ -585,7 +585,7 @@ class _SendDocumentEmailSheetState
       await docRepo.logActivity(
         docId,
         'SENT',
-        'Sent via Gmail (${_connectedAccount?.email ?? "hello@brianetole.com"}) to $recipientStr',
+        'Sent via Gmail (${_connectedAccount?.email ?? "studio@creativeos.app"}) to $recipientStr',
       );
 
       // 2. Mark document as sent and update lastSentAt
@@ -1055,7 +1055,7 @@ class _SendDocumentEmailSheetState
                 fontSize: 13,
               ),
               decoration: InputDecoration(
-                hintText: 'archive@brianetole.com',
+                hintText: 'archive@creativeos.app',
                 filled: true,
                 fillColor: isDark
                     ? const Color(0xFF0F1214)
@@ -1455,7 +1455,7 @@ class _SendDocumentEmailSheetState
                   ),
                   const SizedBox(height: 2),
                   const Text(
-                    'Brian Etole',
+                    'Creative Studio',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -1463,7 +1463,7 @@ class _SendDocumentEmailSheetState
                     ),
                   ),
                   const Text(
-                    'VisualStoryteller',
+                    'Commercial Production & Creative Direction',
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -1481,7 +1481,7 @@ class _SendDocumentEmailSheetState
               child: const Column(
                 children: [
                   Text(
-                    'BRIAN ETOLE • HYBRID FILMMAKER • PHOTOGRAPHER',
+                    'CREATIVE OS • PRODUCTION & COMMERCE',
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
@@ -1496,7 +1496,7 @@ class _SendDocumentEmailSheetState
                   ),
                   SizedBox(height: 12),
                   Text(
-                    'Films • Photography • Journal • Hire me',
+                    'Films • Photography • Commercials • Studio',
                     style: TextStyle(
                       fontSize: 10,
                       color: Color(0xFFA79F90),
@@ -1514,7 +1514,7 @@ class _SendDocumentEmailSheetState
                   ),
                   SizedBox(height: 8),
                   Text(
-                    'hello@brianetole.com • +254 718 013 579 • brianetole.com',
+                    'studio@creativeos.app • +254 700 000 000 • creativeos.app',
                     style: TextStyle(fontSize: 10, color: Color(0xFFA79F90)),
                   ),
                 ],

@@ -174,7 +174,7 @@ class _CrewRosterTabState extends State<CrewRosterTab> {
     EtoleHaptics.selection();
     final clean = crew.phone.replaceAll(RegExp(r'\D'), '');
     final text =
-        'Hi ${crew.name}! Brian Etole here from Brian Etole Productions. Checking your availability for an upcoming 4K commercial shoot as ${crew.role} at your day rate of KES ${_currencyFormat.format(crew.dayRate)}/day. Let me know what your dates look like!';
+        'Hi ${crew.name}! Checking your availability from our creative production team for an upcoming commercial shoot as ${crew.role} at your day rate of KES ${_currencyFormat.format(crew.dayRate)}/day. Let us know what your dates look like!';
     final uri = Uri.parse(
       'https://wa.me/$clean?text=${Uri.encodeComponent(text)}',
     );

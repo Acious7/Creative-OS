@@ -10,11 +10,15 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/constants/document_constants.dart';
 import '../../../../core/database/app_database.dart';
+import '../../../../core/calendar/calendar_intent_service.dart';
+import '../../../../core/calendar/calendar_sync_service.dart';
+import '../widgets/calendar_seven_day_radar_strip.dart';
 import '../../../../core/database/database_provider.dart';
 import '../../../../core/design_system/etole_colors.dart';
 import '../../../../core/design_system/etole_components.dart';
 import '../../../../core/design_system/etole_typography.dart';
 import '../../../../core/theme/brand_theme_provider.dart';
+import '../../../../core/theme/studio_theme.dart';
 import '../../../documents/presentation/screens/document_editor_screen.dart';
 import '../../domain/freelance_crm_models.dart';
 import '../../domain/location_task_model.dart';
@@ -54,6 +58,10 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
 
   static final _dateFormat = DateFormat('MMM d, yyyy • h:mm a');
   static final NumberFormat _currencyFormat = NumberFormat('#,##0', 'en_US');
+  StudioThemeData _theme = StudioThemeData.tribalOrange;
+  Color get _accent => _theme.primaryAccent;
+  Color get _bg => _theme.backgroundBase;
+  Color get _cardBg => _theme.surfaceCardColor;
 
   @override
   void dispose() {
@@ -78,7 +86,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
               ),
               border: Border(
                 top: BorderSide(
-                  color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
+                  color: _accent.withValues(alpha: 0.4),
                   width: 1.5,
                 ),
               ),
@@ -122,7 +130,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                 const SizedBox(height: 16),
                 _buildAddOption(
                   icon: Icons.place_outlined,
-                  color: const Color(0xFFF59E0B),
+                  color: _accent,
                   title: 'New Location or Meetup',
                   subtitle: 'Pick real venues (GPS / Places search), cafés, film sets, or upcoming events',
                   onTap: () {
@@ -311,6 +319,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
       await (db.update(db.networkingEvents)
             ..where((t) => t.id.equals(event.id)))
           .write(const NetworkingEventsCompanion(isDeleted: drift.Value(true)));
+      await CalendarSyncService.deleteReminder(key: 'location_${event.id}');
     }
   }
 
@@ -412,27 +421,26 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _theme = ref.watch(currentStudioThemeProvider);
     final leadsAsync = ref.watch(networkingLeadsProvider);
     final eventsAsync = ref.watch(networkingEventsProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF080B0F),
+      backgroundColor: _bg,
       body: SafeArea(
         child: eventsAsync.when(
-          loading: () => const Center(
-            child: CircularProgressIndicator(color: Color(0xFFF59E0B)),
-          ),
+          loading: () =>
+              Center(child: CircularProgressIndicator(color: _accent)),
           error: (err, _) => Center(
             child: Text(
               'Error loading network: $err',
-              style: const TextStyle(color: Colors.white70),
+              style: TextStyle(color: Colors.white70),
             ),
           ),
           data: (allEvents) {
             return leadsAsync.when(
-              loading: () => const Center(
-                child: CircularProgressIndicator(color: Color(0xFFF59E0B)),
-              ),
+              loading: () =>
+                  Center(child: CircularProgressIndicator(color: _accent)),
               error: (err, _) => Center(
                 child: Text(
                   'Error loading leads: $err',
@@ -483,7 +491,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddChoiceSheet,
-        backgroundColor: const Color(0xFFF59E0B),
+        backgroundColor: _accent,
         foregroundColor: Colors.black,
         elevation: 6,
         child: const Icon(Icons.add_rounded, size: 28),
@@ -503,10 +511,10 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'NETWORK & CRM',
                     style: TextStyle(
-                      color: Color(0xFFF59E0B),
+                      color: _accent,
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.5,
@@ -530,9 +538,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                       _isSearchExpanded
                           ? Icons.search_off_rounded
                           : Icons.search_rounded,
-                      color: _isSearchExpanded
-                          ? const Color(0xFFF59E0B)
-                          : Colors.white70,
+                      color: _isSearchExpanded ? _accent : Colors.white70,
                       size: 22,
                     ),
                     onPressed: () {
@@ -573,7 +579,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
               _buildMetricChip(
                 icon: Icons.place_rounded,
                 label: '$activeLocations Places',
-                color: const Color(0xFFF59E0B),
+                color: _accent,
               ),
               const SizedBox(width: 8),
               _buildMetricChip(
@@ -630,9 +636,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFF14181D),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color(0xFFF59E0B).withValues(alpha: 0.35),
-        ),
+        border: Border.all(color: _accent.withValues(alpha: 0.35)),
       ),
       child: TextField(
         controller: _searchCtrl,
@@ -642,12 +646,8 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
             setState(() => _searchQuery = val.trim().toLowerCase()),
         decoration: InputDecoration(
           hintText: 'Search locations, people, deals, roles, notes...',
-          hintStyle: const TextStyle(color: Color(0xFF64748B), fontSize: 13),
-          prefixIcon: const Icon(
-            Icons.search,
-            color: Color(0xFFF59E0B),
-            size: 20,
-          ),
+          hintStyle: TextStyle(color: Color(0xFF64748B), fontSize: 13),
+          prefixIcon: Icon(Icons.search, color: _accent, size: 20),
           suffixIcon: _searchCtrl.text.isNotEmpty
               ? IconButton(
                   icon: const Icon(
@@ -702,12 +702,10 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
             color: isSelected
-                ? const Color(0xFFF59E0B).withValues(alpha: 0.22)
+                ? _accent.withValues(alpha: 0.22)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
-            border: isSelected
-                ? Border.all(color: const Color(0xFFF59E0B), width: 1.1)
-                : null,
+            border: isSelected ? Border.all(color: _accent, width: 1.1) : null,
           ),
           alignment: Alignment.center,
           child: Text(
@@ -841,22 +839,36 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
               // Sort by date descending
               targetList.sort((a, b) => b.startDate.compareTo(a.startDate));
 
-              if (targetList.isEmpty) {
-                return _buildEmptyLocationsState(_locationSubTab);
-              }
+              return Column(
+                children: [
+                  if (_locationSubTab == 1) const CalendarSevenDayRadarStrip(),
+                  Expanded(
+                    child: targetList.isEmpty
+                        ? _buildEmptyLocationsState(_locationSubTab)
+                        : ListView.builder(
+                            padding: const EdgeInsets.fromLTRB(16, 6, 16, 80),
+                            itemCount: targetList.length,
+                            itemBuilder: (context, index) {
+                              final event = targetList[index];
+                              final peopleMet = allLeads
+                                  .where(
+                                    (l) =>
+                                        l.eventId == event.id && !l.isDeleted,
+                                  )
+                                  .toList();
+                              final taskCount = _countTasks(
+                                event.ticketsPhotosJson,
+                              );
 
-              return ListView.builder(
-                padding: const EdgeInsets.fromLTRB(16, 6, 16, 80),
-                itemCount: targetList.length,
-                itemBuilder: (context, index) {
-                  final event = targetList[index];
-                  final peopleMet = allLeads
-                      .where((l) => l.eventId == event.id && !l.isDeleted)
-                      .toList();
-                  final taskCount = _countTasks(event.ticketsPhotosJson);
-
-                  return _buildLocationCard(event, peopleMet, taskCount);
-                },
+                              return _buildLocationCard(
+                                event,
+                                peopleMet,
+                                taskCount,
+                              );
+                            },
+                          ),
+                  ),
+                ],
               );
             },
           ),
@@ -878,12 +890,12 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
           padding: const EdgeInsets.symmetric(vertical: 6),
           decoration: BoxDecoration(
             color: isSelected
-                ? const Color(0xFFF59E0B).withValues(alpha: 0.15)
+                ? _accent.withValues(alpha: 0.15)
                 : const Color(0xFF14181D),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: isSelected
-                  ? const Color(0xFFF59E0B)
+                  ? _accent
                   : Colors.white.withValues(alpha: 0.08),
             ),
           ),
@@ -891,7 +903,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
           child: Text(
             label,
             style: TextStyle(
-              color: isSelected ? const Color(0xFFF59E0B) : Colors.white70,
+              color: isSelected ? _accent : Colors.white70,
               fontSize: 11,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
             ),
@@ -914,7 +926,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
         border: Border.all(
           color: event.isArchived
               ? const Color(0xFF334155)
-              : const Color(0xFFF59E0B).withValues(alpha: 0.28),
+              : _accent.withValues(alpha: 0.28),
           width: 1.0,
         ),
       ),
@@ -948,7 +960,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                                 ? Icons.calendar_today_rounded
                                 : Icons.place_rounded,
                             size: 18,
-                            color: const Color(0xFFF59E0B),
+                            color: _accent,
                           ),
                           const SizedBox(width: 8),
                           Expanded(
@@ -976,10 +988,62 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       onSelected: (val) {
+                        if (val == 'edit') {
+                          AddLocationSheet.show(context, existingEvent: event);
+                        }
+                        if (val == 'calendar') {
+                          CalendarSyncService.syncOrUpdateReminder(
+                            context: context,
+                            key: 'location_${event.id}',
+                            title: event.name,
+                            startTime: event.startDate,
+                            endTime: event.endDate,
+                            location: [event.name, event.location]
+                                .where((s) => s != null && s.isNotEmpty)
+                                .toSet()
+                                .join(' - '),
+                            notes: event.notes ?? event.description ?? '',
+                            alertMinutesBefore: 30,
+                          );
+                        }
                         if (val == 'archive') _toggleArchive(event);
                         if (val == 'delete') _confirmDeleteLocation(event);
                       },
                       itemBuilder: (ctx) => [
+                        PopupMenuItem(
+                          value: 'edit',
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.edit_location_alt_outlined,
+                                color: _accent,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8),
+                              const Text(
+                                'Edit Location',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'calendar',
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.calendar_today_rounded,
+                                color: _accent,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8),
+                              const Text(
+                                'Add to Calendar',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
                         PopupMenuItem(
                           value: 'archive',
                           child: Row(
@@ -988,7 +1052,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                                 event.isArchived
                                     ? Icons.unarchive_outlined
                                     : Icons.archive_outlined,
-                                color: const Color(0xFFF59E0B),
+                                color: _accent,
                                 size: 18,
                               ),
                               const SizedBox(width: 8),
@@ -1025,11 +1089,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                 // Date & Time
                 Row(
                   children: [
-                    const Icon(
-                      Icons.access_time_rounded,
-                      size: 13,
-                      color: Color(0xFFF59E0B),
-                    ),
+                    Icon(Icons.access_time_rounded, size: 13, color: _accent),
                     const SizedBox(width: 6),
                     Text(
                       _dateFormat.format(event.startDate),
@@ -1086,22 +1146,22 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                        color: _accent.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.people_outline_rounded,
                             size: 13,
-                            color: Color(0xFFF59E0B),
+                            color: _accent,
                           ),
                           const SizedBox(width: 4),
                           Text(
                             '${people.length} people',
-                            style: const TextStyle(
-                              color: Color(0xFFF59E0B),
+                            style: TextStyle(
+                              color: _accent,
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
                             ),
@@ -1178,6 +1238,61 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                       ),
                     ],
 
+                    if (event.occasionType == 'upcoming' ||
+                        event.startDate.isAfter(DateTime.now())) ...[
+                      const SizedBox(width: 8),
+                      InkWell(
+                        onTap: () {
+                          CalendarSyncService.syncOrUpdateReminder(
+                            context: context,
+                            key: 'location_${event.id}',
+                            title: event.name,
+                            startTime: event.startDate,
+                            endTime: event.endDate,
+                            location: [event.name, event.location]
+                                .where((s) => s != null && s.isNotEmpty)
+                                .toSet()
+                                .join(' - '),
+                            notes: event.notes ?? event.description ?? '',
+                            alertMinutesBefore: 30,
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(6),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: _accent.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: _accent.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.calendar_today_rounded,
+                                size: 12,
+                                color: _accent,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Add to cal',
+                                style: TextStyle(
+                                  color: _accent,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+
                     const Spacer(),
                     const Icon(
                       Icons.arrow_forward_ios_rounded,
@@ -1215,7 +1330,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFF59E0B).withValues(alpha: 0.1),
+                color: _accent.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -1225,7 +1340,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                     ? Icons.archive_outlined
                     : Icons.place_outlined,
                 size: 38,
-                color: const Color(0xFFF59E0B),
+                color: _accent,
               ),
             ),
             const SizedBox(height: 16),
@@ -1253,7 +1368,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF59E0B),
+                  backgroundColor: _accent,
                   foregroundColor: Colors.black,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -1331,7 +1446,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                 Icon(
                   Icons.monetization_on_outlined,
                   size: 42,
-                  color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
+                  color: _accent.withValues(alpha: 0.4),
                 ),
                 const SizedBox(height: 12),
                 Text(
@@ -1361,7 +1476,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
 
   Widget _buildStageFilterChip(DealStage? stage, String label) {
     final isSelected = _pipelineFilter == stage;
-    final color = stage?.color ?? const Color(0xFFF59E0B);
+    final color = stage?.color ?? _accent;
     return Padding(
       padding: const EdgeInsets.only(right: 6),
       child: InkWell(
@@ -1474,10 +1589,10 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                        color: _accent.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
+                          color: _accent.withValues(alpha: 0.4),
                         ),
                       ),
                       child: Text(
@@ -1515,8 +1630,8 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                               lead.name.isNotEmpty
                                   ? lead.name[0].toUpperCase()
                                   : '?',
-                              style: const TextStyle(
-                                color: Color(0xFFF59E0B),
+                              style: TextStyle(
+                                color: _accent,
                                 fontWeight: FontWeight.bold,
                               ),
                             )
@@ -1556,11 +1671,11 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                       ),
                     ),
                     if (deal.isVip)
-                      const Padding(
-                        padding: EdgeInsets.only(left: 4),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4),
                         child: Icon(
                           Icons.star_rounded,
-                          color: Color(0xFFF59E0B),
+                          color: _accent,
                           size: 18,
                         ),
                       ),
@@ -1584,17 +1699,14 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                         minimumSize: const Size(0, 32),
                       ),
                       onPressed: () => EditDealSheet.show(context, lead: lead),
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.edit_note_rounded,
                         size: 16,
-                        color: Color(0xFFF59E0B),
+                        color: _accent,
                       ),
-                      label: const Text(
+                      label: Text(
                         'Edit Deal',
-                        style: TextStyle(
-                          color: Color(0xFFF59E0B),
-                          fontSize: 12,
-                        ),
+                        style: TextStyle(color: _accent, fontSize: 12),
                       ),
                     ),
                     Row(
@@ -1832,7 +1944,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: deal.isVip
-              ? const Color(0xFFF59E0B).withValues(alpha: 0.4)
+              ? _accent.withValues(alpha: 0.4)
               : Colors.white.withValues(alpha: 0.07),
           width: deal.isVip ? 1.3 : 0.8,
         ),
@@ -1870,9 +1982,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                               ? person.name[0].toUpperCase()
                               : '?',
                           style: TextStyle(
-                            color: deal.isVip
-                                ? const Color(0xFFF59E0B)
-                                : EtoleColors.cream,
+                            color: deal.isVip ? _accent : EtoleColors.cream,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -1899,11 +2009,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                           ),
                           if (deal.isVip) ...[
                             const SizedBox(width: 5),
-                            const Icon(
-                              Icons.star_rounded,
-                              color: Color(0xFFF59E0B),
-                              size: 16,
-                            ),
+                            Icon(Icons.star_rounded, color: _accent, size: 16),
                           ],
                           if (person.isClient) ...[
                             const SizedBox(width: 5),
@@ -1943,17 +2049,13 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                         const SizedBox(height: 3),
                         Row(
                           children: [
-                            const Icon(
-                              Icons.place_rounded,
-                              size: 11,
-                              color: Color(0xFFF59E0B),
-                            ),
+                            Icon(Icons.place_rounded, size: 11, color: _accent),
                             const SizedBox(width: 3),
                             Expanded(
                               child: Text(
                                 linkedEvent.name,
-                                style: const TextStyle(
-                                  color: Color(0xFFF59E0B),
+                                style: TextStyle(
+                                  color: _accent,
                                   fontSize: 10.5,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -2105,10 +2207,10 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
         ],
 
         if (vipNurture.isNotEmpty) ...[
-          const Text(
+          Text(
             'VIP NURTURE & RELATIONSHIPS',
             style: TextStyle(
-              color: Color(0xFFF59E0B),
+              color: _accent,
               fontSize: 11,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.2,
@@ -2174,7 +2276,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
         border: Border.all(
           color: isUrgent
               ? const Color(0xFFEF4444).withValues(alpha: 0.4)
-              : const Color(0xFFF59E0B).withValues(alpha: 0.3),
+              : _accent.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -2185,9 +2287,7 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
             child: Text(
               lead.name.isNotEmpty ? lead.name[0].toUpperCase() : '?',
               style: TextStyle(
-                color: isUrgent
-                    ? const Color(0xFFEF4444)
-                    : const Color(0xFFF59E0B),
+                color: isUrgent ? const Color(0xFFEF4444) : _accent,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -2216,8 +2316,8 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
                   const SizedBox(height: 3),
                   Text(
                     'Promise: "${lead.notes}"',
-                    style: const TextStyle(
-                      color: Color(0xFFF59E0B),
+                    style: TextStyle(
+                      color: _accent,
                       fontSize: 11,
                       fontStyle: FontStyle.italic,
                     ),
@@ -2228,6 +2328,31 @@ class _NetworkHubScreenState extends ConsumerState<NetworkHubScreen> {
               ],
             ),
           ),
+          IconButton(
+            icon: Icon(Icons.calendar_today_rounded, size: 18, color: _accent),
+            tooltip: 'Add follow-up to calendar',
+            onPressed: () {
+              final matchingEvent = events
+                  .where((e) => e.id == lead.eventId)
+                  .firstOrNull;
+              CalendarSyncService.syncOrUpdateReminder(
+                context: context,
+                key: 'lead_${lead.id}',
+                title: 'Follow-up: ${lead.name}',
+                startTime:
+                    lead.followUpDate ??
+                    DateTime.now().add(const Duration(days: 1, hours: 10)),
+                location: [
+                  matchingEvent?.name,
+                  matchingEvent?.location,
+                ].where((s) => s != null && s.isNotEmpty).join(' - '),
+                notes:
+                    'Follow-up with ${lead.name} (${lead.title ?? ""}). Notes: ${lead.notes ?? ""}',
+                alertMinutesBefore: 30,
+              );
+            },
+          ),
+          const SizedBox(width: 4),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF25D366),

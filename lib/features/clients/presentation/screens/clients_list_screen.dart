@@ -45,7 +45,9 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Contacts permission is required to import from phonebook.'),
+            content: Text(
+              'Contacts permission is required to import from phonebook.',
+            ),
           ),
         );
         return;
@@ -59,10 +61,18 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
       final name = fullContact.displayName.isNotEmpty
           ? fullContact.displayName
           : '${fullContact.name.first} ${fullContact.name.last}'.trim();
-      final phone = fullContact.phones.isNotEmpty ? fullContact.phones.first.number : '';
-      final email = fullContact.emails.isNotEmpty ? fullContact.emails.first.address : '';
-      final org = fullContact.organizations.isNotEmpty ? fullContact.organizations.first.company : '';
-      final address = fullContact.addresses.isNotEmpty ? fullContact.addresses.first.address : '';
+      final phone = fullContact.phones.isNotEmpty
+          ? fullContact.phones.first.number
+          : '';
+      final email = fullContact.emails.isNotEmpty
+          ? fullContact.emails.first.address
+          : '';
+      final org = fullContact.organizations.isNotEmpty
+          ? fullContact.organizations.first.company
+          : '';
+      final address = fullContact.addresses.isNotEmpty
+          ? fullContact.addresses.first.address
+          : '';
 
       if (!context.mounted) return;
       _showAddEditContactDialog(
@@ -75,17 +85,16 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
       );
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not load contact: $e')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Could not load contact: $e')));
     }
   }
 
   Future<void> _pickFromNetwork(BuildContext context) async {
     final db = ref.read(databaseProvider);
-    final leads = await (db.select(db.networkingLeads)
-          ..orderBy([(t) => drift.OrderingTerm.asc(t.name)]))
-        .get();
+    final leads = await (db.select(
+      db.networkingLeads,
+    )..orderBy([(t) => drift.OrderingTerm.asc(t.name)])).get();
 
     if (!context.mounted) return;
 
@@ -116,7 +125,10 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
 
             return SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,10 +138,15 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                       children: [
                         Text(
                           'FROM MY NETWORK',
-                          style: EtoleTypography.labelCaps(color: EtoleColors.cyan),
+                          style: EtoleTypography.labelCaps(
+                            color: EtoleColors.cyan,
+                          ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.close_rounded, color: EtoleColors.creamSecondary),
+                          icon: const Icon(
+                            Icons.close_rounded,
+                            color: EtoleColors.creamSecondary,
+                          ),
                           onPressed: () => Navigator.pop(ctx),
                         ),
                       ],
@@ -144,11 +161,17 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                       ),
                       child: TextField(
                         onChanged: (v) => setModalState(() => query = v.trim()),
-                        style: GoogleFonts.inter(color: EtoleColors.cream, fontSize: 13),
+                        style: GoogleFonts.inter(
+                          color: EtoleColors.cream,
+                          fontSize: 13,
+                        ),
                         cursorColor: EtoleColors.cyan,
                         decoration: const InputDecoration(
                           hintText: 'Search people met in Network...',
-                          hintStyle: TextStyle(color: EtoleColors.creamSecondary, fontSize: 12),
+                          hintStyle: TextStyle(
+                            color: EtoleColors.creamSecondary,
+                            fontSize: 12,
+                          ),
                           border: InputBorder.none,
                           isDense: true,
                         ),
@@ -165,7 +188,9 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                                 padding: EdgeInsets.all(24.0),
                                 child: Text(
                                   'No matching people from Network',
-                                  style: TextStyle(color: EtoleColors.creamSecondary),
+                                  style: TextStyle(
+                                    color: EtoleColors.creamSecondary,
+                                  ),
                                 ),
                               ),
                             )
@@ -179,7 +204,9 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                               itemBuilder: (ctx, idx) {
                                 final l = filtered[idx];
                                 return ListTile(
-                                  contentPadding: const EdgeInsets.symmetric(vertical: 4),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 4,
+                                  ),
                                   leading: Container(
                                     width: 36,
                                     height: 36,
@@ -187,12 +214,16 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                                       shape: BoxShape.circle,
                                       color: const Color(0xFF262C34),
                                       border: Border.all(
-                                        color: EtoleColors.cyan.withValues(alpha: 0.7),
+                                        color: EtoleColors.cyan.withValues(
+                                          alpha: 0.7,
+                                        ),
                                       ),
                                     ),
                                     alignment: Alignment.center,
                                     child: Text(
-                                      l.name.isNotEmpty ? l.name.substring(0, 1).toUpperCase() : 'N',
+                                      l.name.isNotEmpty
+                                          ? l.name.substring(0, 1).toUpperCase()
+                                          : 'N',
                                       style: GoogleFonts.inter(
                                         color: EtoleColors.cream,
                                         fontWeight: FontWeight.bold,
@@ -208,7 +239,10 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                                     ),
                                   ),
                                   subtitle: Text(
-                                    l.organization ?? l.title ?? l.phone ?? 'Lead',
+                                    l.organization ??
+                                        l.title ??
+                                        l.phone ??
+                                        'Lead',
                                     style: GoogleFonts.inter(
                                       color: EtoleColors.creamSecondary,
                                       fontSize: 12,
@@ -255,13 +289,27 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
     int? linkedLeadId,
   }) {
     final isEdit = client != null;
-    final nameCtrl = TextEditingController(text: initialName ?? client?.name ?? '');
-    final orgCtrl = TextEditingController(text: initialOrg ?? client?.organization ?? '');
-    final phoneCtrl = TextEditingController(text: initialPhone ?? client?.phone ?? '');
-    final emailCtrl = TextEditingController(text: initialEmail ?? client?.email ?? '');
-    final kraCtrl = TextEditingController(text: initialKra ?? client?.kraPin ?? '');
-    final addressCtrl = TextEditingController(text: initialAddress ?? client?.address ?? '');
-    final notesCtrl = TextEditingController(text: initialNotes ?? client?.notes ?? '');
+    final nameCtrl = TextEditingController(
+      text: initialName ?? client?.name ?? '',
+    );
+    final orgCtrl = TextEditingController(
+      text: initialOrg ?? client?.organization ?? '',
+    );
+    final phoneCtrl = TextEditingController(
+      text: initialPhone ?? client?.phone ?? '',
+    );
+    final emailCtrl = TextEditingController(
+      text: initialEmail ?? client?.email ?? '',
+    );
+    final kraCtrl = TextEditingController(
+      text: initialKra ?? client?.kraPin ?? '',
+    );
+    final addressCtrl = TextEditingController(
+      text: initialAddress ?? client?.address ?? '',
+    );
+    final notesCtrl = TextEditingController(
+      text: initialNotes ?? client?.notes ?? '',
+    );
 
     showModalBottomSheet(
       context: context,
@@ -291,7 +339,10 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                     style: EtoleTypography.labelCaps(color: EtoleColors.cyan),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close_rounded, color: EtoleColors.creamSecondary),
+                    icon: const Icon(
+                      Icons.close_rounded,
+                      color: EtoleColors.creamSecondary,
+                    ),
                     onPressed: () => Navigator.pop(ctx),
                   ),
                 ],
@@ -307,17 +358,26 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                         style: OutlinedButton.styleFrom(
                           foregroundColor: EtoleColors.cream,
                           side: const BorderSide(color: Color(0x33F3EAD9)),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           padding: const EdgeInsets.symmetric(vertical: 10),
                         ),
                         onPressed: () {
                           Navigator.pop(ctx);
                           _importFromContacts(context);
                         },
-                        icon: const Icon(Icons.contacts_rounded, size: 16, color: EtoleColors.cyan),
+                        icon: const Icon(
+                          Icons.contacts_rounded,
+                          size: 16,
+                          color: EtoleColors.cyan,
+                        ),
                         label: Text(
                           'Phone Contacts',
-                          style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600),
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
@@ -327,17 +387,26 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                         style: OutlinedButton.styleFrom(
                           foregroundColor: EtoleColors.cream,
                           side: const BorderSide(color: Color(0x33F3EAD9)),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           padding: const EdgeInsets.symmetric(vertical: 10),
                         ),
                         onPressed: () {
                           Navigator.pop(ctx);
                           _pickFromNetwork(context);
                         },
-                        icon: const Icon(Icons.hub_rounded, size: 16, color: EtoleColors.cyan),
+                        icon: const Icon(
+                          Icons.hub_rounded,
+                          size: 16,
+                          color: EtoleColors.cyan,
+                        ),
                         label: Text(
                           'From Network',
-                          style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600),
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
@@ -349,15 +418,35 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
               ],
 
               // Form fields
-              _buildField('Full Name *', nameCtrl, textCapitalization: TextCapitalization.words),
+              _buildField(
+                'Full Name *',
+                nameCtrl,
+                textCapitalization: TextCapitalization.words,
+              ),
               const SizedBox(height: 10),
-              _buildField('Organisation / Company', orgCtrl, textCapitalization: TextCapitalization.words),
+              _buildField(
+                'Organisation / Company',
+                orgCtrl,
+                textCapitalization: TextCapitalization.words,
+              ),
               const SizedBox(height: 10),
-              _buildField('Phone Number', phoneCtrl, keyboardType: TextInputType.phone),
+              _buildField(
+                'Phone Number',
+                phoneCtrl,
+                keyboardType: TextInputType.phone,
+              ),
               const SizedBox(height: 10),
-              _buildField('Email Address', emailCtrl, keyboardType: TextInputType.emailAddress),
+              _buildField(
+                'Email Address',
+                emailCtrl,
+                keyboardType: TextInputType.emailAddress,
+              ),
               const SizedBox(height: 10),
-              _buildField('KRA / Tax PIN (e.g. A012345678Z)', kraCtrl, textCapitalization: TextCapitalization.characters),
+              _buildField(
+                'KRA / Tax PIN (e.g. A012345678Z)',
+                kraCtrl,
+                textCapitalization: TextCapitalization.characters,
+              ),
               const SizedBox(height: 10),
               _buildField('Physical / Billing Address', addressCtrl),
               const SizedBox(height: 10),
@@ -372,7 +461,9 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                     backgroundColor: EtoleColors.cyan,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     elevation: 0,
                   ),
                   onPressed: () async {
@@ -381,34 +472,90 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
 
                     final db = ref.read(databaseProvider);
                     if (isEdit) {
-                      await (db.update(db.clients)..where((t) => t.id.equals(client.id))).write(
+                      await (db.update(
+                        db.clients,
+                      )..where((t) => t.id.equals(client.id))).write(
                         ClientsCompanion(
                           name: drift.Value(name),
-                          organization: drift.Value(orgCtrl.text.trim().isNotEmpty ? orgCtrl.text.trim() : null),
-                          phone: drift.Value(phoneCtrl.text.trim().isNotEmpty ? phoneCtrl.text.trim() : null),
-                          email: drift.Value(emailCtrl.text.trim().isNotEmpty ? emailCtrl.text.trim() : null),
-                          kraPin: drift.Value(kraCtrl.text.trim().isNotEmpty ? kraCtrl.text.trim() : null),
-                          address: drift.Value(addressCtrl.text.trim().isNotEmpty ? addressCtrl.text.trim() : null),
-                          notes: drift.Value(notesCtrl.text.trim().isNotEmpty ? notesCtrl.text.trim() : null),
+                          organization: drift.Value(
+                            orgCtrl.text.trim().isNotEmpty
+                                ? orgCtrl.text.trim()
+                                : null,
+                          ),
+                          phone: drift.Value(
+                            phoneCtrl.text.trim().isNotEmpty
+                                ? phoneCtrl.text.trim()
+                                : null,
+                          ),
+                          email: drift.Value(
+                            emailCtrl.text.trim().isNotEmpty
+                                ? emailCtrl.text.trim()
+                                : null,
+                          ),
+                          kraPin: drift.Value(
+                            kraCtrl.text.trim().isNotEmpty
+                                ? kraCtrl.text.trim()
+                                : null,
+                          ),
+                          address: drift.Value(
+                            addressCtrl.text.trim().isNotEmpty
+                                ? addressCtrl.text.trim()
+                                : null,
+                          ),
+                          notes: drift.Value(
+                            notesCtrl.text.trim().isNotEmpty
+                                ? notesCtrl.text.trim()
+                                : null,
+                          ),
                         ),
                       );
                     } else {
-                      await db.into(db.clients).insert(
+                      await db
+                          .into(db.clients)
+                          .insert(
                             ClientsCompanion.insert(
                               name: name,
-                              organization: drift.Value(orgCtrl.text.trim().isNotEmpty ? orgCtrl.text.trim() : null),
-                              phone: drift.Value(phoneCtrl.text.trim().isNotEmpty ? phoneCtrl.text.trim() : null),
-                              email: drift.Value(emailCtrl.text.trim().isNotEmpty ? emailCtrl.text.trim() : null),
-                              kraPin: drift.Value(kraCtrl.text.trim().isNotEmpty ? kraCtrl.text.trim() : null),
-                              address: drift.Value(addressCtrl.text.trim().isNotEmpty ? addressCtrl.text.trim() : null),
-                              notes: drift.Value(notesCtrl.text.trim().isNotEmpty ? notesCtrl.text.trim() : null),
+                              organization: drift.Value(
+                                orgCtrl.text.trim().isNotEmpty
+                                    ? orgCtrl.text.trim()
+                                    : null,
+                              ),
+                              phone: drift.Value(
+                                phoneCtrl.text.trim().isNotEmpty
+                                    ? phoneCtrl.text.trim()
+                                    : null,
+                              ),
+                              email: drift.Value(
+                                emailCtrl.text.trim().isNotEmpty
+                                    ? emailCtrl.text.trim()
+                                    : null,
+                              ),
+                              kraPin: drift.Value(
+                                kraCtrl.text.trim().isNotEmpty
+                                    ? kraCtrl.text.trim()
+                                    : null,
+                              ),
+                              address: drift.Value(
+                                addressCtrl.text.trim().isNotEmpty
+                                    ? addressCtrl.text.trim()
+                                    : null,
+                              ),
+                              notes: drift.Value(
+                                notesCtrl.text.trim().isNotEmpty
+                                    ? notesCtrl.text.trim()
+                                    : null,
+                              ),
                             ),
                           );
 
                       // If linked to a lead, mark lead as client
                       if (linkedLeadId != null) {
-                        await (db.update(db.networkingLeads)..where((t) => t.id.equals(linkedLeadId))).write(
-                          const NetworkingLeadsCompanion(isClient: drift.Value(true)),
+                        await (db.update(
+                          db.networkingLeads,
+                        )..where((t) => t.id.equals(linkedLeadId))).write(
+                          const NetworkingLeadsCompanion(
+                            isClient: drift.Value(true),
+                          ),
                         );
                       }
                     }
@@ -417,7 +564,10 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                   },
                   child: Text(
                     isEdit ? 'Save Changes' : 'Add Contact',
-                    style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w700),
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
@@ -478,15 +628,24 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF14171A),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Delete Contact?', style: GoogleFonts.inter(color: EtoleColors.cream)),
+        title: Text(
+          'Delete Contact?',
+          style: GoogleFonts.inter(color: EtoleColors.cream),
+        ),
         content: Text(
           'Move "${client.name}" to Trash? You can undo this action immediately.',
-          style: const TextStyle(color: EtoleColors.creamSecondary, fontSize: 13.5),
+          style: const TextStyle(
+            color: EtoleColors.creamSecondary,
+            fontSize: 13.5,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel', style: TextStyle(color: EtoleColors.creamSecondary)),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: EtoleColors.creamSecondary),
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -495,19 +654,21 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
             ),
             onPressed: () async {
               final db = ref.read(databaseProvider);
-              await (db.update(db.clients)..where((t) => t.id.equals(client.id))).write(
-                const ClientsCompanion(isDeleted: drift.Value(true)),
-              );
+              await (db.update(db.clients)
+                    ..where((t) => t.id.equals(client.id)))
+                  .write(const ClientsCompanion(isDeleted: drift.Value(true)));
               if (ctx.mounted) {
                 Navigator.pop(ctx);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                     content: Text('Contact "${client.name}" moved to Trash'),
+                    content: Text('Contact "${client.name}" moved to Trash'),
                     action: SnackBarAction(
                       label: 'Undo',
                       textColor: EtoleColors.gold,
                       onPressed: () async {
-                        await (db.update(db.clients)..where((t) => t.id.equals(client.id))).write(
+                        await (db.update(
+                          db.clients,
+                        )..where((t) => t.id.equals(client.id))).write(
                           const ClientsCompanion(isDeleted: drift.Value(false)),
                         );
                       },
@@ -533,7 +694,11 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
         backgroundColor: const Color(0xFF0A0C0E),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: EtoleColors.cream, size: 18),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: EtoleColors.cream,
+            size: 18,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -552,16 +717,24 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: EtoleColors.cyan,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 6,
+                ),
                 minimumSize: const Size(0, 34),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
                 elevation: 0,
               ),
               onPressed: () => _showAddEditContactDialog(context),
               icon: const Icon(Icons.add_rounded, size: 16),
               label: Text(
                 'Add new',
-                style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 12),
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12,
+                ),
               ),
             ),
           ),
@@ -578,24 +751,36 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                 color: const Color(0xFF14171A),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: _search.isNotEmpty ? EtoleColors.cyan : const Color(0x33F3EAD9),
+                  color: _search.isNotEmpty
+                      ? EtoleColors.cyan
+                      : const Color(0x33F3EAD9),
                 ),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
                 children: [
-                  const Icon(Icons.search_rounded, color: EtoleColors.creamSecondary, size: 18),
+                  const Icon(
+                    Icons.search_rounded,
+                    color: EtoleColors.creamSecondary,
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
                       controller: _searchCtrl,
-                      onChanged: (val) => setState(() => _search = val.toLowerCase().trim()),
-                      style: GoogleFonts.inter(color: EtoleColors.cream, fontSize: 13.5),
+                      onChanged: (val) =>
+                          setState(() => _search = val.toLowerCase().trim()),
+                      style: GoogleFonts.inter(
+                        color: EtoleColors.cream,
+                        fontSize: 13.5,
+                      ),
                       cursorColor: EtoleColors.cyan,
                       decoration: InputDecoration(
                         hintText: 'Search contacts by name, org, or PIN...',
                         hintStyle: GoogleFonts.inter(
-                          color: EtoleColors.creamSecondary.withValues(alpha: 0.6),
+                          color: EtoleColors.creamSecondary.withValues(
+                            alpha: 0.6,
+                          ),
                           fontSize: 12.5,
                         ),
                         border: InputBorder.none,
@@ -609,7 +794,11 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                         _searchCtrl.clear();
                         setState(() => _search = '');
                       },
-                      child: const Icon(Icons.close_rounded, color: EtoleColors.creamSecondary, size: 16),
+                      child: const Icon(
+                        Icons.close_rounded,
+                        color: EtoleColors.creamSecondary,
+                        size: 16,
+                      ),
                     ),
                 ],
               ),
@@ -623,8 +812,10 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                 final filtered = clients.where((c) {
                   if (_search.isEmpty) return true;
                   final nameMatch = c.name.toLowerCase().contains(_search);
-                  final orgMatch = c.organization?.toLowerCase().contains(_search) ?? false;
-                  final pinMatch = c.kraPin?.toLowerCase().contains(_search) ?? false;
+                  final orgMatch =
+                      c.organization?.toLowerCase().contains(_search) ?? false;
+                  final pinMatch =
+                      c.kraPin?.toLowerCase().contains(_search) ?? false;
                   return nameMatch || orgMatch || pinMatch;
                 }).toList();
 
@@ -635,10 +826,16 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.people_outline_rounded, color: EtoleColors.creamSecondary, size: 44),
+                          const Icon(
+                            Icons.people_outline_rounded,
+                            color: EtoleColors.creamSecondary,
+                            size: 44,
+                          ),
                           const SizedBox(height: 14),
                           Text(
-                            _search.isEmpty ? 'No contacts yet' : 'No contacts match "$_search"',
+                            _search.isEmpty
+                                ? 'No contacts yet'
+                                : 'No contacts match "$_search"',
                             style: GoogleFonts.inter(
                               color: EtoleColors.cream,
                               fontSize: 15,
@@ -651,7 +848,10 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                                 ? 'Add clients manually, import from phonebook, or select people from your Network.'
                                 : 'Try searching for a different name or organization.',
                             textAlign: TextAlign.center,
-                            style: GoogleFonts.inter(color: EtoleColors.creamSecondary, fontSize: 12.5),
+                            style: GoogleFonts.inter(
+                              color: EtoleColors.creamSecondary,
+                              fontSize: 12.5,
+                            ),
                           ),
                           if (_search.isEmpty) ...[
                             const SizedBox(height: 20),
@@ -659,14 +859,23 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: EtoleColors.cyan,
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 10,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                               ),
-                              onPressed: () => _showAddEditContactDialog(context),
+                              onPressed: () =>
+                                  _showAddEditContactDialog(context),
                               icon: const Icon(Icons.add_rounded, size: 16),
                               label: Text(
                                 'Add your first contact',
-                                style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 12.5),
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 12.5,
+                                ),
                               ),
                             ),
                           ],
@@ -677,12 +886,13 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                 }
 
                 return ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-                  itemCount: filtered.length,
-                  separatorBuilder: (_, __) => const Divider(
-                    color: Color(0x18F3EAD9),
-                    height: 1,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 6,
                   ),
+                  itemCount: filtered.length,
+                  separatorBuilder: (_, __) =>
+                      const Divider(color: Color(0x18F3EAD9), height: 1),
                   itemBuilder: (context, index) {
                     final client = filtered[index];
                     return ListTile(
@@ -700,7 +910,9 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                         ),
                         alignment: Alignment.center,
                         child: Text(
-                          client.name.isNotEmpty ? client.name.substring(0, 1).toUpperCase() : 'C',
+                          client.name.isNotEmpty
+                              ? client.name.substring(0, 1).toUpperCase()
+                              : 'C',
                           style: GoogleFonts.inter(
                             color: EtoleColors.cream,
                             fontWeight: FontWeight.w800,
@@ -717,7 +929,10 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                         ),
                       ),
                       subtitle: Text(
-                        client.organization ?? client.phone ?? client.email ?? 'Direct Client',
+                        client.organization ??
+                            client.phone ??
+                            client.email ??
+                            'Direct Client',
                         style: GoogleFonts.inter(
                           color: EtoleColors.creamSecondary,
                           fontSize: 12,
@@ -726,10 +941,14 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          if (client.kraPin != null && client.kraPin!.isNotEmpty)
+                          if (client.kraPin != null &&
+                              client.kraPin!.isNotEmpty)
                             Container(
                               margin: const EdgeInsets.only(right: 8),
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
                               decoration: BoxDecoration(
                                 color: const Color(0x18F3EAD9),
                                 borderRadius: BorderRadius.circular(4),
@@ -770,7 +989,10 @@ class _ClientsListScreenState extends ConsumerState<ClientsListScreen> {
                 child: CircularProgressIndicator(color: EtoleColors.cyan),
               ),
               error: (err, _) => Center(
-                child: Text('Error: $err', style: const TextStyle(color: EtoleColors.creamSecondary)),
+                child: Text(
+                  'Error: $err',
+                  style: const TextStyle(color: EtoleColors.creamSecondary),
+                ),
               ),
             ),
           ),

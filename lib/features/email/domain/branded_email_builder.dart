@@ -13,8 +13,8 @@ class BrandedEmailContent {
 }
 
 class BrandedEmailBuilder {
-  static const String siteUrl = 'https://brianetole.com';
-  static const String emailAssetsUrl = 'https://brianetole.com/email';
+  static const String siteUrl = 'https://creativeos.app';
+  static const String emailAssetsUrl = 'https://creativeos.app/email';
 
   /// Builds a fully-responsive, email-client-compatible HTML and plain-text email
   static BrandedEmailContent buildEmail({
@@ -260,11 +260,11 @@ class BrandedEmailBuilder {
                         <td valign="middle">
                           <a href="$siteUrl" target="_blank" style="text-decoration: none;">
                             <span style="font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: 900; color: #f3ead9; letter-spacing: 2px; text-transform: uppercase;">
-                              BRIAN ETOLE
+                              CREATIVE OS
                             </span>
                           </a>
                           <div style="font-family: Arial, Helvetica, sans-serif; font-size: 9px; font-weight: bold; letter-spacing: 2px; color: #a79f90; text-transform: uppercase; margin-top: 2px;">
-                            REAL STORIES &bull; IMAGINED WORLDS.
+                            COMMERCIAL SUITE &bull; PRODUCTION &bull; COMMERCE
                           </div>
                         </td>
                       </tr>
@@ -287,13 +287,13 @@ class BrandedEmailBuilder {
               <!-- Sign-off -->
               <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #e8e2d5;">
                 <p style="margin: 0; font-family: Arial, sans-serif; font-size: 14px; color: #5c5248;">Warm regards,</p>
-                <p style="margin: 4px 0 0 0; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; color: #141718;">Brian Etole</p>
-                <p style="margin: 2px 0 0 0; font-family: Arial, sans-serif; font-size: 12px; color: #38B6DB; font-weight: 600; letter-spacing: 0.5px;">Hybrid Filmmaker &bull; Photographer</p>
+                <p style="margin: 4px 0 0 0; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; color: #141718;">Creative Studio</p>
+                <p style="margin: 2px 0 0 0; font-family: Arial, sans-serif; font-size: 12px; color: #38B6DB; font-weight: 600; letter-spacing: 0.5px;">Commercial Production &bull; Creative Direction</p>
               </div>
             </td>
           </tr>
 
-          <!-- 3. Footer Band (brianetole.com matched) -->
+          <!-- 3. Footer Band -->
           <tr>
             <td style="background-color: #0a0c0d; padding: 32px 32px; color: #f3ead9; border-top: 1px solid #2a2d2e;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -301,7 +301,7 @@ class BrandedEmailBuilder {
                 <tr>
                   <td align="center" style="padding-bottom: 16px;">
                     <div style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; letter-spacing: 1.5px; color: #f3ead9; text-transform: uppercase;">
-                      BRIAN ETOLE &bull; HYBRID FILMMAKER &bull; PHOTOGRAPHER
+                      CREATIVE OS &bull; PRODUCTION &bull; COMMERCE
                     </div>
                     <div style="font-family: Arial, sans-serif; font-size: 11px; color: #a79f90; margin-top: 4px;">
                       Nairobi, Kenya &bull; Available for international commissions
@@ -320,7 +320,7 @@ class BrandedEmailBuilder {
                         <td style="color: #2a2d2e;">&bull;</td>
                         <td style="padding: 0 10px;"><a href="$siteUrl/journal" target="_blank" style="font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; color: #a79f90; text-decoration: none; text-transform: uppercase; letter-spacing: 1px;">Journal</a></td>
                         <td style="color: #2a2d2e;">&bull;</td>
-                        <td style="padding: 0 10px;"><a href="$siteUrl/hire-me" target="_blank" style="font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; color: #38B6DB; text-decoration: none; text-transform: uppercase; letter-spacing: 1px;">Hire Me</a></td>
+                        <td style="padding: 0 10px;"><a href="$siteUrl/hire-me" target="_blank" style="font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; color: #38B6DB; text-decoration: none; text-transform: uppercase; letter-spacing: 1px;">Contact</a></td>
                       </tr>
                     </table>
                   </td>
@@ -337,12 +337,9 @@ class BrandedEmailBuilder {
                 <tr>
                   <td align="center" style="border-top: 1px solid #2a2d2e; padding-top: 20px; font-family: Arial, sans-serif; font-size: 12px; color: #a79f90; line-height: 1.6;">
                     <div>
-                      <a href="mailto:hello@brianetole.com" style="color: #f3ead9; text-decoration: none; font-weight: bold;">hello@brianetole.com</a> &bull; 
-                      <a href="tel:+254718013579" style="color: #f3ead9; text-decoration: none;">+254 718 013 579</a> &bull; 
-                      <a href="$siteUrl" target="_blank" style="color: #38B6DB; text-decoration: none;">brianetole.com</a>
-                    </div>
-                    <div style="margin-top: 10px; font-size: 11px; color: #a79f90;">
-                      <em>Join The Director's Cut &mdash; new films, field stories and first access to prints and lessons.</em>
+                      <a href="mailto:studio@creativeos.app" style="color: #f3ead9; text-decoration: none; font-weight: bold;">studio@creativeos.app</a> &bull; 
+                      <a href="tel:+254700000000" style="color: #f3ead9; text-decoration: none;">+254 700 000 000</a> &bull; 
+                      <a href="$siteUrl" target="_blank" style="color: #38B6DB; text-decoration: none;">creativeos.app</a>
                     </div>
                   </td>
                 </tr>
@@ -350,7 +347,7 @@ class BrandedEmailBuilder {
                 <!-- Copyright -->
                 <tr>
                   <td align="center" style="padding-top: 16px; font-family: Arial, sans-serif; font-size: 11px; color: #666666;">
-                    &copy; 2026 Brian Etole &bull; <a href="$siteUrl/privacy" target="_blank" style="color: #666666; text-decoration: underline;">Privacy Policy</a>
+                    &copy; 2026 Creative Studio &bull; <a href="$siteUrl/privacy" target="_blank" style="color: #666666; text-decoration: underline;">Privacy Policy</a>
                   </td>
                 </tr>
               </table>
@@ -483,11 +480,11 @@ class BrandedEmailBuilder {
                       <img src="cid:custom_logo" alt="" style="display: block; margin: 0 auto 12px auto; max-width: 140px; max-height: 52px; height: auto; border: 0; outline: none;" />
                       ''' : ''}
                       <span style="font-family: Arial, Helvetica, sans-serif; font-size: 22px; font-weight: 900; letter-spacing: 3.5px; color: #f3ead9; text-transform: uppercase;">
-                        BRIAN ETOLE
+                        CREATIVE OS
                       </span>
                     </a>
                     <div style="font-family: Arial, sans-serif; font-size: 9px; font-weight: bold; letter-spacing: 2px; color: #a79f90; text-transform: uppercase; margin-top: 4px;">
-                      REAL STORIES &bull; IMAGINED WORLDS.
+                      COMMERCIAL SUITE &bull; PRODUCTION &bull; COMMERCE
                     </div>
                   </td>
                 </tr>
@@ -512,21 +509,21 @@ class BrandedEmailBuilder {
               <!-- Sign-off (strictly personal branding, never mentioning app name) -->
               <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #eae3d6;">
                 <div style="font-family: Georgia, serif; font-size: 14px; font-style: italic; color: #5c5248;">Warm regards,</div>
-                <div style="font-family: Arial, sans-serif; font-size: 17px; font-weight: bold; color: #141718; margin-top: 4px;">Brian Etole</div>
+                <div style="font-family: Arial, sans-serif; font-size: 17px; font-weight: bold; color: #141718; margin-top: 4px;">Creative Studio</div>
                 <div style="font-family: Arial, sans-serif; font-size: 12px; color: #38B6DB; font-weight: 600; letter-spacing: 0.5px; margin-top: 2px;">
-                  Hybrid Filmmaker &bull; Photographer
+                  Commercial Production &bull; Creative Direction
                 </div>
               </div>
             </td>
           </tr>
 
-          <!-- 3. Footer Band (brianetole.com matched) -->
+          <!-- 3. Footer Band -->
           <tr>
             <td style="background-color: #0a0c0d; padding: 30px 28px; color: #f3ead9; border-top: 1px solid #2a2d2e; text-align: center;">
               
               <!-- Title & Tagline -->
               <div style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; letter-spacing: 1.5px; color: #f3ead9; text-transform: uppercase;">
-                BRIAN ETOLE &bull; HYBRID FILMMAKER &bull; PHOTOGRAPHER
+                CREATIVE OS &bull; PRODUCTION &bull; COMMERCE
               </div>
               <div style="font-family: Arial, sans-serif; font-size: 11px; color: #a79f90; margin-top: 3px;">
                 Nairobi, Kenya
@@ -542,7 +539,7 @@ class BrandedEmailBuilder {
                     <td style="color: #2a2d2e;">&bull;</td>
                     <td style="padding: 0 8px;"><a href="$siteUrl/journal" target="_blank" style="font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; color: #a79f90; text-decoration: none; text-transform: uppercase; letter-spacing: 1px;">Journal</a></td>
                     <td style="color: #2a2d2e;">&bull;</td>
-                    <td style="padding: 0 8px;"><a href="$siteUrl/hire-me" target="_blank" style="font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; color: #38B6DB; text-decoration: none; text-transform: uppercase; letter-spacing: 1px;">Hire me</a></td>
+                    <td style="padding: 0 8px;"><a href="$siteUrl/hire-me" target="_blank" style="font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; color: #38B6DB; text-decoration: none; text-transform: uppercase; letter-spacing: 1px;">Contact</a></td>
                   </tr>
                 </table>
               </div>
@@ -552,21 +549,14 @@ class BrandedEmailBuilder {
 
               <!-- Contact Direct -->
               <div style="margin-top: 18px; font-family: Arial, sans-serif; font-size: 11px; color: #a79f90;">
-                <a href="mailto:hello@brianetole.com" style="color: #a79f90; text-decoration: none;">hello@brianetole.com</a> &bull;
-                <a href="tel:+254718013579" style="color: #a79f90; text-decoration: none;">+254 718 013 579</a> &bull;
-                <a href="$siteUrl" target="_blank" style="color: #38B6DB; text-decoration: none;">brianetole.com</a>
-              </div>
-
-              <!-- Newsletter Callout -->
-              <div style="margin-top: 16px; padding: 10px 14px; background-color: #0f1213; border: 1px solid #25292b; border-radius: 4px; display: inline-block;">
-                <a href="$siteUrl" target="_blank" style="font-family: Arial, sans-serif; font-size: 11px; color: #d4ccbd; text-decoration: none;">
-                  Join <strong style="color: #38B6DB;">The Director&rsquo;s Cut</strong> &mdash; new films, field stories &amp; masterclasses &rarr;
-                </a>
+                <a href="mailto:studio@creativeos.app" style="color: #a79f90; text-decoration: none;">studio@creativeos.app</a> &bull;
+                <a href="tel:+254700000000" style="color: #a79f90; text-decoration: none;">+254 700 000 000</a> &bull;
+                <a href="$siteUrl" target="_blank" style="color: #38B6DB; text-decoration: none;">creativeos.app</a>
               </div>
 
               <!-- Copyright -->
               <div style="margin-top: 16px; font-family: Arial, sans-serif; font-size: 10px; color: #5a5f61;">
-                &copy; 2026 Brian Etole &bull; <a href="$siteUrl/privacy" target="_blank" style="color: #5a5f61; text-decoration: none;">Privacy Policy</a>
+                &copy; 2026 Creative Studio &bull; <a href="$siteUrl/privacy" target="_blank" style="color: #5a5f61; text-decoration: none;">Privacy Policy</a>
               </div>
             </td>
           </tr>
@@ -623,15 +613,15 @@ class BrandedEmailBuilder {
     }
 
     sb.writeln('Warm regards,');
-    sb.writeln('Brian Etole');
-    sb.writeln('Hybrid Filmmaker · Photographer');
+    sb.writeln('Creative Studio');
+    sb.writeln('Commercial Production · Creative Direction');
     sb.writeln('Nairobi, Kenya');
     sb.writeln();
     sb.writeln(
-      'hello@brianetole.com | +254 718 013 579 | https://brianetole.com',
+      'studio@creativeos.app | +254 700 000 000 | https://creativeos.app',
     );
     sb.writeln(
-      'Films: https://brianetole.com/films | Photography: https://brianetole.com/photography',
+      'Portfolio: https://creativeos.app',
     );
 
     final links = socialLinks ?? BrandSocialLinks.defaultLinks;
@@ -657,7 +647,7 @@ class BrandedEmailBuilder {
     if (socialTextParts.isNotEmpty) {
       sb.writeln(socialTextParts.join(' | '));
     }
-    sb.writeln('© 2026 Brian Etole. All rights reserved.');
+    sb.writeln('© 2026 Creative Studio. All rights reserved.');
 
     return sb.toString();
   }
@@ -673,20 +663,20 @@ class BrandedEmailBuilder {
     BrandSocialLinks? socialLinks,
   }) {
     const heading =
-        'Invoice BE-INV-2026-004 — Documentary Production & Photography';
+        'Invoice COS-INV-2026-004 — Documentary Production & Photography';
     const messageHtml = '''
 <p style="margin: 0 0 16px 0;">Hello Maya,</p>
-<p style="margin: 0 0 16px 0;">Thank you for partnering with me on the <strong>Mara Wildlife Conservation Documentary</strong> production. It has been a profound privilege documenting these human stories in the field.</p>
-<p style="margin: 0 0 16px 0;">Please find attached the official invoice <strong>BE-INV-2026-004</strong> for the final production and color grading phase.</p>
+<p style="margin: 0 0 16px 0;">Thank you for partnering with us on the <strong>Mara Wildlife Conservation Documentary</strong> production. It has been a profound privilege documenting these human stories in the field.</p>
+<p style="margin: 0 0 16px 0;">Please find attached the official invoice <strong>COS-INV-2026-004</strong> for the final production and color grading phase.</p>
 <p style="margin: 0;">If you have any questions or require additional documentation for your accounts department, please feel free to reach out directly.</p>
 ''';
 
     const messagePlainText = '''
 Hello Maya,
 
-Thank you for partnering with me on the Mara Wildlife Conservation Documentary production. It has been a profound privilege documenting these human stories in the field.
+Thank you for partnering with us on the Mara Wildlife Conservation Documentary production. It has been a profound privilege documenting these human stories in the field.
 
-Please find attached the official invoice BE-INV-2026-004 for the final production and color grading phase.
+Please find attached the official invoice COS-INV-2026-004 for the final production and color grading phase.
 
 If you have any questions or require additional documentation for your accounts department, please feel free to reach out directly.
 ''';
@@ -694,19 +684,19 @@ If you have any questions or require additional documentation for your accounts 
     return buildEmail(
       theme: theme,
       recipientName: 'Maya Lin',
-      recipientEmail: 'hello@brianetole.com',
+      recipientEmail: 'studio@creativeos.app',
       heading: heading,
       messageHtml: messageHtml,
       messagePlainText: messagePlainText,
       docType: 'INVOICE',
-      docNumber: 'BE-INV-2026-004',
+      docNumber: 'COS-INV-2026-004',
       docAmount: 'KES 85,000.00',
       docDueDate: '15 Nov 2026',
       statusLabel: 'Payment Due 15 Nov',
       paymentDetails: {
-        'M-Pesa Buy Goods': '987 654 (Brian Etole)',
+        'M-Pesa Buy Goods': '987 654 (Creative Studio)',
         'Bank Name': 'NCBA Bank Kenya',
-        'Account Name': 'Brian Etole Media',
+        'Account Name': 'Creative Studio Media',
         'Account Number': '100 248 9301',
       },
       hasPdfAttachment: true,
@@ -722,37 +712,37 @@ If you have any questions or require additional documentation for your accounts 
     BrandSocialLinks? socialLinks,
   }) {
     const heading =
-        'Great connecting in Nairobi — Brian Etole (Hybrid Filmmaker & Photographer)';
+        'Great connecting in Nairobi — Creative Studio (Production & Direction)';
     const messageHtml =
         '''
 <p style="margin: 0 0 16px 0;">Hello Alex,</p>
-<p style="margin: 0 0 16px 0;">It was wonderful meeting you earlier today! As promised, I wanted to follow up with my digital card and creative portfolio details.</p>
-<p style="margin: 0 0 16px 0;">I produce <strong>documentary films, photography, and AI-driven storytelling</strong> for NGOs, brands, and independent creators with something real to say. My craft is grounded in camera truth and human preservation.</p>
-<p style="margin: 0 0 16px 0;">You can explore my latest film projects and documentary photography at <a href="$siteUrl" target="_blank" style="color: #38B6DB; font-weight: bold; text-decoration: underline;">brianetole.com</a>, or catch my latest field work on Instagram <a href="https://instagram.com/brianetole" target="_blank" style="color: #38B6DB; text-decoration: underline;">@brianetole</a>.</p>
-<p style="margin: 0;">I have also attached my 2026 Production Rate Card for your review. Let's find time next week to discuss your upcoming project!</p>
+<p style="margin: 0 0 16px 0;">It was wonderful meeting you earlier today! As promised, I wanted to follow up with our digital card and creative portfolio details.</p>
+<p style="margin: 0 0 16px 0;">We produce <strong>commercial films, brand storytelling, and high-ticket media productions</strong> for global brands, agencies, and creators with something real to say.</p>
+<p style="margin: 0 0 16px 0;">You can explore our latest work and services at <a href="$siteUrl" target="_blank" style="color: #38B6DB; font-weight: bold; text-decoration: underline;">creativeos.app</a>.</p>
+<p style="margin: 0;">I have also attached our 2026 Production Rate Card for your review. Let's find time next week to discuss your upcoming project!</p>
 ''';
 
     const messagePlainText = '''
 Hello Alex,
 
-It was wonderful meeting you earlier today! As promised, I wanted to follow up with my digital card and creative portfolio details.
+It was wonderful meeting you earlier today! As promised, I wanted to follow up with our digital card and creative portfolio details.
 
-I produce documentary films, photography, and AI-driven storytelling for NGOs, brands, and independent creators with something real to say. My craft is grounded in camera truth and human preservation.
+We produce commercial films, brand storytelling, and high-ticket media productions for global brands, agencies, and creators with something real to say.
 
-You can explore my latest film projects and documentary photography at https://brianetole.com, or catch my latest field work on Instagram @brianetole.
+You can explore our latest work and services at https://creativeos.app.
 
-I have also attached my 2026 Production Rate Card for your review. Let's find time next week to discuss your upcoming project!
+I have also attached our 2026 Production Rate Card for your review. Let's find time next week to discuss your upcoming project!
 ''';
 
     return buildEmail(
       theme: theme,
       recipientName: 'Alex Mercer',
-      recipientEmail: 'hello@brianetole.com',
+      recipientEmail: 'studio@creativeos.app',
       heading: heading,
       messageHtml: messageHtml,
       messagePlainText: messagePlainText,
       docType: 'RATE CARD',
-      docNumber: 'BE-RC-2026',
+      docNumber: 'COS-RC-2026',
       statusLabel: '2026 Production Rates',
       hasPdfAttachment: true,
       hasCustomLogo: hasCustomLogo,

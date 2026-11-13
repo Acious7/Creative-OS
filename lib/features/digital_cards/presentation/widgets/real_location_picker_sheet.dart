@@ -4,12 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/design_system/etole_colors.dart';
+import '../../../../core/design_system/etole_components.dart';
+import '../../../../core/design_system/etole_typography.dart';
+import '../../domain/osm_location_service.dart';
 import '../../domain/place_search_service.dart';
+import 'osm_map_view.dart';
 
 class RealLocationPickerSheet extends StatefulWidget {
   final String? initialQuery;
+  final double? initialLatitude;
+  final double? initialLongitude;
 
-  const RealLocationPickerSheet({super.key, this.initialQuery});
+  const RealLocationPickerSheet({
+    super.key,
+    this.initialQuery,
+    this.initialLatitude,
+    this.initialLongitude,
+  });
 
   @override
   State<RealLocationPickerSheet> createState() =>
@@ -18,125 +29,229 @@ class RealLocationPickerSheet extends StatefulWidget {
 
 class _RealLocationPickerSheetState extends State<RealLocationPickerSheet> {
   late final TextEditingController _searchController;
-  Timer? _debounce;
-  bool _isLoading = false;
-  List<PlaceSearchResult> _results = [];
-  PlaceSearchResult? _selectedPlace;
-  String _activeCategory = 'All';
+  late final TextEditingController _nameController;
+  late final TextEditingController _addressController;
 
-  final List<Map<String, String>> _categories = const [
-    {'label': 'All', 'icon': '📍'},
-    {'label': 'Café', 'query': 'cafe', 'icon': '☕'},
-    {'label': 'Restaurant', 'query': 'restaurant', 'icon': '🍽️'},
-    {'label': 'Hotel', 'query': 'hotel', 'icon': '🏨'},
-    {'label': 'Co-working', 'query': 'coworking office', 'icon': '🏢'},
-    {'label': 'Studio', 'query': 'studio film', 'icon': '🎬'},
-  ];
+  double _currentLat = -1.28333; // Default Nairobi center
+  double _currentLon = 36.81667;
+  String _currentCategory = 'place';
+  String _currentCity = '';
+  String _currentCountry = '';
+
+  bool _isLoading = false;
+  String? _statusMessage;
+  List<OsmPlaceDetail> _nearbyVenues = [];
+  List<OsmPlaceDetail> _searchResults = [];
+  Timer? _reverseGeocodeDebounce;
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController(text: widget.initialQuery ?? '');
-    if ((widget.initialQuery ?? '').isNotEmpty) {
+    _nameController = TextEditingController();
+    _addressController = TextEditingController();
+
+    if (widget.initialLatitude != null && widget.initialLongitude != null) {
+      _currentLat = widget.initialLatitude!;
+      _currentLon = widget.initialLongitude!;
+      _reverseGeocodeCoordinate(_currentLat, _currentLon);
+    } else if ((widget.initialQuery ?? '').isNotEmpty) {
+      _nameController.text = widget.initialQuery!;
       _performSearch(widget.initialQuery!);
     } else {
-      _performSearch('Java House Nairobi');
+      // Auto-detect location on first open
+      _useCurrentLocation();
     }
   }
 
   @override
   void dispose() {
-    _debounce?.cancel();
+    _reverseGeocodeDebounce?.cancel();
     _searchController.dispose();
+    _nameController.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
-  void _onSearchChanged(String query) {
-    _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 400), () {
-      if (mounted) _performSearch(query);
+  /// Use device GPS to detect position, find nearest venues, and pre-fill fields
+  Future<void> _useCurrentLocation() async {
+    EtoleHaptics.selection();
+    setState(() {
+      _isLoading = true;
+      _statusMessage = 'Acquiring GPS location...';
+    });
+
+    final coords = await OsmLocationService.getCurrentCoordinates();
+
+    if (coords != null && mounted) {
+      final lat = coords['latitude']!;
+      final lon = coords['longitude']!;
+
+      setState(() {
+        _currentLat = lat;
+        _currentLon = lon;
+        _statusMessage = 'Finding nearest venues & address...';
+      });
+
+      // 1. Reverse geocode primary location
+      final place = await OsmLocationService.reverseGeocode(lat, lon);
+      // 2. Query 5 nearest venues
+      final nearby = await OsmLocationService.getNearbyVenues(
+        lat,
+        lon,
+        limit: 5,
+      );
+
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _statusMessage = null;
+          _nearbyVenues = nearby;
+
+          if (place != null) {
+            _nameController.text = place.name;
+            _addressController.text = place.address;
+            _currentCategory = place.category;
+            _currentCity = place.city;
+            _currentCountry = place.country;
+          } else if (nearby.isNotEmpty) {
+            _nameController.text = nearby.first.name;
+            _addressController.text = nearby.first.address;
+            _currentCategory = nearby.first.category;
+          }
+        });
+      }
+    } else if (mounted) {
+      setState(() {
+        _isLoading = false;
+        _statusMessage = null;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'GPS unavailable. You can drag the map pin or type a location manually.',
+          ),
+          backgroundColor: Color(0xFFE57B22),
+        ),
+      );
+    }
+  }
+
+  /// Debounced reverse geocode when user finishes dragging pin on map
+  void _onCoordinatesMoved(OsmCoordinates coords) {
+    setState(() {
+      _currentLat = coords.latitude;
+      _currentLon = coords.longitude;
+    });
+
+    _reverseGeocodeDebounce?.cancel();
+    _reverseGeocodeDebounce = Timer(const Duration(milliseconds: 650), () {
+      _reverseGeocodeCoordinate(coords.latitude, coords.longitude);
     });
   }
 
-  Future<void> _performSearch(String query) async {
-    if (query.trim().isEmpty) return;
-    setState(() => _isLoading = true);
-    final list = await PlaceSearchService.searchPlaces(query);
+  Future<void> _reverseGeocodeCoordinate(double lat, double lon) async {
+    setState(() => _statusMessage = 'Looking up address...');
+    final place = await OsmLocationService.reverseGeocode(lat, lon);
+    final nearby = await OsmLocationService.getNearbyVenues(lat, lon, limit: 5);
+
     if (mounted) {
       setState(() {
-        _results = list;
-        _isLoading = false;
-        if (list.isNotEmpty && _selectedPlace == null) {
-          _selectedPlace = list.first;
+        _statusMessage = null;
+        _nearbyVenues = nearby;
+        if (place != null) {
+          _nameController.text = place.name;
+          _addressController.text = place.address;
+          _currentCategory = place.category;
+          _currentCity = place.city;
+          _currentCountry = place.country;
         }
       });
     }
   }
 
-  Future<void> _useCurrentLocation() async {
-    setState(() => _isLoading = true);
-    final loc = await PlaceSearchService.detectCurrentLocation();
+  /// Search places by name (on submit / explicit button press, no search-as-you-type)
+  Future<void> _performSearch(String query) async {
+    final clean = query.trim();
+    if (clean.isEmpty) return;
+
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _isLoading = true;
+      _statusMessage = 'Searching places...';
+      _searchResults = [];
+    });
+
+    final results = await OsmLocationService.searchPlaces(clean);
+
     if (mounted) {
-      setState(() => _isLoading = false);
-      if (loc != null) {
-        setState(() {
-          _selectedPlace = loc;
-          _results = [loc, ..._results];
-        });
-        _searchController.text = loc.city;
-        _performSearch(loc.city);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not detect location. Please search manually.'),
-            backgroundColor: Color(0xFFEF4444),
-          ),
-        );
-      }
+      setState(() {
+        _isLoading = false;
+        _statusMessage = null;
+        _searchResults = results;
+        if (results.isNotEmpty) {
+          final first = results.first;
+          _selectPlace(first);
+        }
+      });
     }
   }
 
-  IconData _getCategoryIcon(String cat) {
-    final lower = cat.toLowerCase();
-    if (lower.contains('cafe') || lower.contains('coffee')) {
-      return Icons.local_cafe_rounded;
-    }
-    if (lower.contains('restaurant') || lower.contains('food')) {
-      return Icons.restaurant_rounded;
-    }
-    if (lower.contains('hotel') || lower.contains('lodging')) {
-      return Icons.hotel_rounded;
-    }
-    if (lower.contains('office') || lower.contains('work')) {
-      return Icons.business_rounded;
-    }
-    if (lower.contains('studio') || lower.contains('film')) {
-      return Icons.movie_rounded;
-    }
-    return Icons.place_rounded;
+  void _selectPlace(OsmPlaceDetail place) {
+    EtoleHaptics.selection();
+    setState(() {
+      _currentLat = place.latitude;
+      _currentLon = place.longitude;
+      _nameController.text = place.name;
+      _addressController.text = place.address;
+      _currentCategory = place.category;
+      _currentCity = place.city;
+      _currentCountry = place.country;
+      _searchResults = [];
+    });
+  }
+
+  void _confirmSelection() {
+    EtoleHaptics.success();
+    final name = _nameController.text.trim();
+    final address = _addressController.text.trim();
+
+    final result = PlaceSearchResult(
+      name: name.isNotEmpty ? name : 'Meeting Venue',
+      address: address,
+      category: _currentCategory,
+      latitude: _currentLat,
+      longitude: _currentLon,
+      city: _currentCity,
+      country: _currentCountry,
+    );
+
+    Navigator.pop(context, result);
   }
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+
     return Container(
-      height: MediaQuery.of(context).size.height * 0.88,
+      height: MediaQuery.of(context).size.height * 0.90,
       decoration: const BoxDecoration(
-        color: Color(0xFF0F141C),
+        color: Color(0xFF0C1015),
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Column(
         children: [
-          // Handle
+          // Drag Handle
           const SizedBox(height: 12),
           Container(
-            width: 44,
+            width: 40,
             height: 4,
             decoration: BoxDecoration(
               color: Colors.white24,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
 
           // Header
           Padding(
@@ -150,7 +265,7 @@ class _RealLocationPickerSheetState extends State<RealLocationPickerSheet> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
-                    Icons.location_searching_rounded,
+                    Icons.map_rounded,
                     color: Color(0xFFF59E0B),
                     size: 20,
                   ),
@@ -161,16 +276,16 @@ class _RealLocationPickerSheetState extends State<RealLocationPickerSheet> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Select Real Location',
+                        'Location & Venue Picker',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        'Search venues, cafés, hotels, or use GPS',
-                        style: TextStyle(color: Colors.white54, fontSize: 12),
+                        'OpenStreetMap • Drag pin, search, or tap GPS',
+                        style: TextStyle(color: Colors.white54, fontSize: 11.5),
                       ),
                     ],
                   ),
@@ -182,9 +297,9 @@ class _RealLocationPickerSheetState extends State<RealLocationPickerSheet> {
               ],
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10),
 
-          // Search Field + Current Location Button
+          // Search Field + "Use My Location" GPS Button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
@@ -192,67 +307,85 @@ class _RealLocationPickerSheetState extends State<RealLocationPickerSheet> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xFF161D26),
-                      borderRadius: BorderRadius.circular(14),
+                      color: const Color(0xFF151B22),
+                      borderRadius: BorderRadius.circular(13),
                       border: Border.all(
-                        color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
+                        color: Colors.white.withValues(alpha: 0.1),
                       ),
                     ),
                     child: TextField(
                       controller: _searchController,
-                      style: const TextStyle(color: Colors.white, fontSize: 14),
-                      onChanged: _onSearchChanged,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 13.5,
+                      ),
+                      textInputAction: TextInputAction.search,
+                      onSubmitted: _performSearch,
                       decoration: InputDecoration(
-                        hintText: 'Search place, café, street...',
+                        hintText: 'Search venue by name...',
                         hintStyle: const TextStyle(
                           color: Colors.white38,
-                          fontSize: 14,
+                          fontSize: 13,
                         ),
                         prefixIcon: const Icon(
                           Icons.search_rounded,
                           color: Color(0xFFF59E0B),
-                          size: 20,
+                          size: 19,
                         ),
-                        suffixIcon: _searchController.text.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(
-                                  Icons.clear_rounded,
-                                  color: Colors.white38,
-                                  size: 18,
-                                ),
-                                onPressed: () {
-                                  _searchController.clear();
-                                  _performSearch('');
-                                },
-                              )
-                            : null,
+                        suffixIcon: IconButton(
+                          icon: const Icon(
+                            Icons.arrow_forward_rounded,
+                            color: Color(0xFFF59E0B),
+                            size: 18,
+                          ),
+                          onPressed: () =>
+                              _performSearch(_searchController.text),
+                        ),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(
-                          vertical: 12,
+                          vertical: 11,
                         ),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 8),
+                // "Use My Location" Button
                 Material(
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: _useCurrentLocation,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(13),
                     child: Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 11,
+                      ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(14),
+                        color: const Color(0xFFF59E0B).withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(13),
                         border: Border.all(
                           color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
                         ),
                       ),
-                      child: const Icon(
-                        Icons.my_location_rounded,
-                        color: Color(0xFFF59E0B),
-                        size: 22,
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.my_location_rounded,
+                            color: Color(0xFFF59E0B),
+                            size: 18,
+                          ),
+                          SizedBox(width: 6),
+                          Text(
+                            'Use GPS',
+                            style: TextStyle(
+                              color: Color(0xFFF59E0B),
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -260,222 +393,318 @@ class _RealLocationPickerSheetState extends State<RealLocationPickerSheet> {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
-          // Category Quick Chips
-          SizedBox(
-            height: 36,
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              scrollDirection: Axis.horizontal,
-              itemCount: _categories.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
-              itemBuilder: (context, index) {
-                final cat = _categories[index];
-                final isSelected = _activeCategory == cat['label'];
-                return FilterChip(
-                  label: Text('${cat['icon']} ${cat['label']}'),
-                  selected: isSelected,
-                  onSelected: (val) {
-                    setState(() => _activeCategory = cat['label']!);
-                    final term = cat['query'] ?? '';
-                    final currentText = _searchController.text;
-                    _performSearch(
-                      term.isEmpty ? currentText : '$currentText $term',
-                    );
-                  },
-                  backgroundColor: const Color(0xFF161D26),
-                  selectedColor: const Color(0xFFF59E0B)
-                      .withValues(alpha: 0.25),
-                  checkmarkColor: const Color(0xFFF59E0B),
-                  labelStyle: TextStyle(
-                    color: isSelected
-                        ? const Color(0xFFF59E0B)
-                        : Colors.white70,
-                    fontSize: 12,
-                    fontWeight: isSelected
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                  ),
-                  side: BorderSide(
-                    color: isSelected
-                        ? const Color(0xFFF59E0B)
-                        : Colors.white12,
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          // Results List
+          // Main Scrollable Area
           Expanded(
-            child: _isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(color: Color(0xFFF59E0B)),
-                  )
-                : _results.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
+            child: ListView(
+              padding: EdgeInsets.fromLTRB(20, 0, 20, 10 + bottomInset),
+              children: [
+                // Loading or status indicator
+                if (_statusMessage != null || _isLoading)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF59E0B).withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
                       children: [
-                        Icon(
-                          Icons.location_off_rounded,
-                          size: 40,
-                          color: Colors.white24,
+                        const SizedBox(
+                          width: 12,
+                          height: 12,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Color(0xFFF59E0B),
+                          ),
                         ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'No matching places found',
-                          style: TextStyle(color: Colors.white54, fontSize: 14),
+                        const SizedBox(width: 8),
+                        Text(
+                          _statusMessage ?? 'Processing...',
+                          style: const TextStyle(
+                            color: Color(0xFFF59E0B),
+                            fontSize: 11.5,
+                          ),
                         ),
                       ],
                     ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: _results.length,
-                    itemBuilder: (context, index) {
-                      final place = _results[index];
-                      final isSelected = _selectedPlace == place;
+                  ),
 
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Material(
+                // Search Results Dropdown List (if active)
+                if (_searchResults.isNotEmpty) ...[
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF151B22),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
+                          child: Text(
+                            'SEARCH RESULTS (TAP TO SELECT)',
+                            style: TextStyle(
+                              color: Color(0xFFF59E0B),
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        ..._searchResults
+                            .take(4)
+                            .map(
+                              (p) => ListTile(
+                                dense: true,
+                                visualDensity: VisualDensity.compact,
+                                leading: const Icon(
+                                  Icons.place_rounded,
+                                  color: Color(0xFFF59E0B),
+                                  size: 18,
+                                ),
+                                title: Text(
+                                  p.name,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  p.address,
+                                  style: const TextStyle(
+                                    color: Colors.white54,
+                                    fontSize: 11,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                onTap: () => _selectPlace(p),
+                              ),
+                            ),
+                      ],
+                    ),
+                  ),
+                ],
+
+                // OpenStreetMap View with draggable center pin
+                OsmMapView(
+                  initialLatitude: _currentLat,
+                  initialLongitude: _currentLon,
+                  height: 220,
+                  onCoordinatesChanged: _onCoordinatesMoved,
+                  onUseMyLocation: _useCurrentLocation,
+                ),
+                const SizedBox(height: 12),
+
+                // 5 Nearest Venues Strip (Rule: "If several venues are close, show the 5 nearest to tap")
+                if (_nearbyVenues.isNotEmpty) ...[
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.near_me_rounded,
+                        size: 14,
+                        color: Color(0xFFF59E0B),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        '5 NEAREST VENUES (TAP TO SELECT)',
+                        style: EtoleTypography.labelCaps(
+                          color: const Color(0xFFF59E0B),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  SizedBox(
+                    height: 58,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _nearbyVenues.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 8),
+                      itemBuilder: (context, index) {
+                        final v = _nearbyVenues[index];
+                        final isSelected =
+                            _nameController.text.trim().toLowerCase() ==
+                            v.name.toLowerCase();
+
+                        return Material(
                           color: isSelected
-                              ? const Color(0xFFF59E0B).withValues(alpha: 0.12)
-                              : const Color(0xFF161D26),
-                          borderRadius: BorderRadius.circular(14),
+                              ? const Color(0xFFF59E0B).withValues(alpha: 0.25)
+                              : const Color(0xFF151B22),
+                          borderRadius: BorderRadius.circular(10),
                           child: InkWell(
-                            onTap: () => setState(() => _selectedPlace = place),
-                            borderRadius: BorderRadius.circular(14),
+                            onTap: () => _selectPlace(v),
+                            borderRadius: BorderRadius.circular(10),
                             child: Container(
-                              padding: const EdgeInsets.all(12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14),
+                                borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
                                   color: isSelected
                                       ? const Color(0xFFF59E0B)
-                                      : Colors.white.withValues(alpha: 0.05),
-                                  width: isSelected ? 1.5 : 1,
+                                      : Colors.white.withValues(alpha: 0.08),
                                 ),
                               ),
-                              child: Row(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
+                                  Text(
+                                    v.name,
+                                    style: TextStyle(
                                       color: isSelected
                                           ? const Color(0xFFF59E0B)
-                                          : Colors.white10,
-                                      borderRadius: BorderRadius.circular(10),
+                                          : Colors.white,
+                                      fontSize: 12.5,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    child: Icon(
-                                      _getCategoryIcon(place.category),
-                                      color: isSelected
-                                          ? Colors.black
-                                          : const Color(0xFFF59E0B),
-                                      size: 20,
-                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          place.name,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: isSelected
-                                                ? FontWeight.bold
-                                                : FontWeight.w600,
-                                          ),
-                                        ),
-                                        if (place.address.isNotEmpty)
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                              top: 2,
-                                            ),
-                                            child: Text(
-                                              place.address,
-                                              style: const TextStyle(
-                                                color: Colors.white54,
-                                                fontSize: 12,
-                                              ),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                      ],
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    v.formattedDistance.isNotEmpty
+                                        ? '${v.formattedDistance} • ${v.address}'
+                                        : v.address,
+                                    style: const TextStyle(
+                                      color: Colors.white54,
+                                      fontSize: 10,
                                     ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  if (isSelected)
-                                    const Icon(
-                                      Icons.check_circle_rounded,
-                                      color: Color(0xFFF59E0B),
-                                      size: 22,
-                                    ),
                                 ],
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
+                  const SizedBox(height: 12),
+                ],
+
+                // Pre-filled Venue Name Field (editable, manual entry works offline)
+                TextField(
+                  controller: _nameController,
+                  style: const TextStyle(color: Colors.white, fontSize: 13.5),
+                  decoration: InputDecoration(
+                    labelText: 'Venue / Meeting Place Name',
+                    hintText: 'e.g. Java House Kilimani, Film Studio Karura',
+                    labelStyle: const TextStyle(
+                      color: Color(0xFFF59E0B),
+                      fontSize: 12,
+                    ),
+                    hintStyle: const TextStyle(
+                      color: Colors.white38,
+                      fontSize: 12,
+                    ),
+                    filled: true,
+                    fillColor: const Color(0xFF15191E),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: Colors.white.withValues(alpha: 0.1),
+                      ),
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.storefront_rounded,
+                      color: Color(0xFFF59E0B),
+                      size: 18,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                // Pre-filled Address Field (editable)
+                TextField(
+                  controller: _addressController,
+                  style: const TextStyle(color: Colors.white, fontSize: 13),
+                  decoration: InputDecoration(
+                    labelText: 'Address / Street / Area',
+                    hintText: 'e.g. Lenana Road, Nairobi',
+                    labelStyle: const TextStyle(
+                      color: Color(0xFFF59E0B),
+                      fontSize: 12,
+                    ),
+                    hintStyle: const TextStyle(
+                      color: Colors.white38,
+                      fontSize: 12,
+                    ),
+                    filled: true,
+                    fillColor: const Color(0xFF15191E),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: Colors.white.withValues(alpha: 0.1),
+                      ),
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.place_outlined,
+                      color: Color(0xFFF59E0B),
+                      size: 18,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 14),
+              ],
+            ),
           ),
 
-          // Confirm Button
+          // Bottom Action Bar: Google Maps Preview & Confirm Button
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
-              color: Color(0xFF0A0E14),
+              color: Color(0xFF090D12),
               border: Border(top: BorderSide(color: Colors.white10)),
             ),
             child: Row(
               children: [
-                if (_selectedPlace != null) ...[
-                  IconButton.filled(
-                    style: IconButton.styleFrom(
-                      backgroundColor: Colors.white10,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                IconButton.filled(
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.white10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    icon: const Icon(
-                      Icons.map_rounded,
-                      color: Color(0xFFF59E0B),
-                    ),
-                    onPressed: () {
-                      final url = Uri.parse(_selectedPlace!.mapUrl);
-                      launchUrl(url, mode: LaunchMode.externalApplication);
-                    },
                   ),
-                  const SizedBox(width: 10),
-                ],
+                  tooltip: 'Preview in Google Maps',
+                  icon: const Icon(Icons.map_rounded, color: Color(0xFFF59E0B)),
+                  onPressed: () {
+                    final url = Uri.parse(
+                      'https://www.google.com/maps/search/?api=1&query=$_currentLat,$_currentLon',
+                    );
+                    launchUrl(url, mode: LaunchMode.externalApplication);
+                  },
+                ),
+                const SizedBox(width: 10),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: _selectedPlace != null
-                        ? () => Navigator.pop(context, _selectedPlace)
-                        : null,
+                    onPressed: _confirmSelection,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFF59E0B),
                       foregroundColor: Colors.black,
-                      disabledBackgroundColor: Colors.white12,
-                      disabledForegroundColor: Colors.white30,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(vertical: 13),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: const Text(
-                      'Use This Location',
+                      'Confirm & Use This Location',
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 14.5,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

@@ -27,15 +27,15 @@ void main() {
       expect(content.html, isNot(contains('cid:custom_logo')));
 
       // 2. Styled text wordmark and tagline must exist
-      expect(content.html, contains('BRIAN ETOLE'));
-      expect(content.html, contains('REAL STORIES &bull; IMAGINED WORLDS.'));
+      expect(content.html, contains('CREATIVE OS'));
+      expect(content.html, contains('COMMERCIAL SUITE &bull; PRODUCTION &bull; COMMERCE'));
     });
 
     test('with custom logo: displays cid:custom_logo above wordmark', () {
       final content = BrandedEmailBuilder.buildEmail(
         theme: EmailTheme.editorialGallery,
-        recipientName: 'Brian Etole',
-        recipientEmail: 'hello@brianetole.com',
+        recipientName: 'Studio Lead',
+        recipientEmail: 'studio@creativeos.app',
         heading: 'Test Custom Logo',
         messageHtml: '<p>Custom logo test.</p>',
         messagePlainText: 'Custom logo test.',
@@ -44,7 +44,7 @@ void main() {
       );
 
       expect(content.html, contains('src="cid:custom_logo"'));
-      expect(content.html, contains('BRIAN ETOLE'));
+      expect(content.html, contains('CREATIVE OS'));
     });
 
     test('footer socials show only Instagram, LinkedIn, and WhatsApp text links in cream/ember', () {

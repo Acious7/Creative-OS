@@ -133,7 +133,7 @@ class LivingBackgroundState extends ConsumerState<LivingBackground>
   @override
   Widget build(BuildContext context) {
     final reduceMotion = ref.watch(reduceMotionProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final studioTheme = ref.watch(currentStudioThemeProvider);
 
     final effectiveTiltX = reduceMotion
         ? 0.0
@@ -153,42 +153,50 @@ class LivingBackgroundState extends ConsumerState<LivingBackground>
           child: Stack(
             fit: StackFit.expand,
             children: [
-              // 1. Pristine velvety studio obsidian base canvas
+              // 1. Pristine velvety studio obsidian / theme base canvas
               Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Color(0xFF0F141C), Color(0xFF080B0F)],
+                    colors: studioTheme.backgroundGradient,
                   ),
                 ),
               ),
 
-              // 2. Ultra-subtle, smooth studio ambient key-light (top)
+              // 2. Tribal Sketch Background Layer (tints with active theme)
+              Positioned.fill(
+                child: Transform.translate(
+                  offset: Offset(effectiveTiltX * 16, effectiveTiltY * 16),
+                  child: CustomPaint(
+                    painter: _TribalSketchCanvasPainter(
+                      tintColor: studioTheme.tribalSketchTint,
+                      glowColor: studioTheme.tribalGlowTint,
+                      isDark: studioTheme.isDark,
+                    ),
+                  ),
+                ),
+              ),
+
+              // 3. Ultra-subtle, smooth studio ambient key-light (top)
               Container(
                 decoration: BoxDecoration(
                   gradient: RadialGradient(
                     center: const Alignment(0.0, -0.6),
                     radius: 1.1,
-                    colors: [
-                      const Color(0xFF38B6DB).withValues(alpha: 0.06),
-                      Colors.transparent,
-                    ],
+                    colors: [studioTheme.ambientKeyLight, Colors.transparent],
                     stops: const [0.0, 1.0],
                   ),
                 ),
               ),
 
-              // 3. Ultra-subtle warm floor studio fill (bottom)
+              // 4. Ultra-subtle warm floor studio fill (bottom)
               Container(
                 decoration: BoxDecoration(
                   gradient: RadialGradient(
                     center: const Alignment(0.0, 0.8),
                     radius: 1.0,
-                    colors: [
-                      const Color(0xFFF5A623).withValues(alpha: 0.03),
-                      Colors.transparent,
-                    ],
+                    colors: [studioTheme.ambientFloorFill, Colors.transparent],
                     stops: const [0.0, 1.0],
                   ),
                 ),
@@ -290,5 +298,149 @@ class _DriftingParticlesPainter extends CustomPainter {
     return oldDelegate.progress != progress ||
         oldDelegate.tiltX != tiltX ||
         oldDelegate.tiltY != tiltY;
+  }
+}
+
+/// Paints the authentic tribal sketch background (concentric dials, warrior spears, chevron shields)
+/// tinted with the active StudioTheme colors.
+class _TribalSketchCanvasPainter extends CustomPainter {
+  final Color tintColor;
+  final Color glowColor;
+  final bool isDark;
+
+  const _TribalSketchCanvasPainter({
+    required this.tintColor,
+    required this.glowColor,
+    required this.isDark,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+
+    final primaryAlpha = isDark ? 0.16 : 0.22;
+    final secondaryAlpha = isDark ? 0.08 : 0.12;
+
+    final mainPaint = Paint()
+      ..color = tintColor.withValues(alpha: primaryAlpha)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+
+    final glowPaint = Paint()
+      ..color = glowColor.withValues(alpha: secondaryAlpha)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.4
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.0);
+
+    // 0. Night Starlight Field (when nighttime)
+    final hour = DateTime.now().hour;
+    if (hour >= 20 || hour < 5) {
+      final starPaint = Paint()
+        ..color = (isDark ? Colors.white : tintColor).withValues(alpha: 0.35)
+        ..style = PaintingStyle.fill;
+      // Procedural starlight constellations in top half
+      final starCoords = [
+        Offset(w * 0.15, h * 0.12),
+        Offset(w * 0.28, h * 0.08),
+        Offset(w * 0.42, h * 0.15),
+        Offset(w * 0.65, h * 0.10),
+        Offset(w * 0.78, h * 0.18),
+        Offset(w * 0.88, h * 0.06),
+        Offset(w * 0.20, h * 0.25),
+        Offset(w * 0.52, h * 0.22),
+        Offset(w * 0.72, h * 0.28),
+        Offset(w * 0.35, h * 0.32),
+      ];
+      for (final pt in starCoords) {
+        canvas.drawCircle(pt, 1.2, starPaint);
+      }
+      // Faint constellation connector lines
+      final constellPaint = Paint()
+        ..color = (isDark ? Colors.white : tintColor).withValues(alpha: 0.08)
+        ..strokeWidth = 0.6;
+      canvas.drawLine(starCoords[0], starCoords[1], constellPaint);
+      canvas.drawLine(starCoords[1], starCoords[2], constellPaint);
+      canvas.drawLine(starCoords[3], starCoords[4], constellPaint);
+      canvas.drawLine(starCoords[4], starCoords[5], constellPaint);
+      canvas.drawLine(starCoords[6], starCoords[9], constellPaint);
+      canvas.drawLine(starCoords[7], starCoords[8], constellPaint);
+    }
+
+    // 1. Concentric Tribal Dials in lower half
+    final centerDial = Offset(w * 0.5, h * 0.78);
+    for (double r = 40; r <= 220; r += 35) {
+      canvas.drawCircle(centerDial, r, glowPaint);
+      canvas.drawCircle(centerDial, r, mainPaint);
+    }
+
+    // Dial Radial Ticks
+    for (int deg = 0; deg < 360; deg += 30) {
+      final rad = deg * pi / 180;
+      final p1 = centerDial + Offset(cos(rad) * 190, sin(rad) * 190);
+      final p2 = centerDial + Offset(cos(rad) * 230, sin(rad) * 230);
+      canvas.drawLine(p1, p2, mainPaint);
+    }
+
+    // 1.5 Sacred Geometry: Maasai Diamond Lattice Matrix above dial
+    final diamondTop = h * 0.38;
+    const diamondSize = 16.0;
+    for (int col = -3; col <= 3; col++) {
+      final dx = w * 0.5 + col * (diamondSize * 1.5);
+      final dy = diamondTop + (col.abs() % 2 == 1 ? diamondSize * 0.5 : 0);
+      final diamondPath = Path()
+        ..moveTo(dx, dy - diamondSize * 0.5)
+        ..lineTo(dx + diamondSize * 0.6, dy)
+        ..lineTo(dx, dy + diamondSize * 0.5)
+        ..lineTo(dx - diamondSize * 0.6, dy)
+        ..close();
+      canvas.drawPath(diamondPath, mainPaint..strokeWidth = 0.9);
+    }
+
+    // 2. Warrior Spear & Shield Axis
+    canvas.drawLine(
+      Offset(w * 0.5, h * 0.48),
+      Offset(w * 0.5, h * 0.95),
+      mainPaint..strokeWidth = 2.0,
+    );
+
+    // Stepped Chevron Pyramids along the vertical axis
+    for (double y = h * 0.52; y <= h * 0.74; y += 38) {
+      final path = Path()
+        ..moveTo(w * 0.5, y - 14)
+        ..lineTo(w * 0.5 - 28, y + 14)
+        ..lineTo(w * 0.5 + 28, y + 14)
+        ..close();
+      canvas.drawPath(path, mainPaint..strokeWidth = 1.0);
+    }
+
+    // 3. Flanking Tribal Zig-zag Lines
+    for (int i = 0; i < 4; i++) {
+      final yOffset = h * 0.55 + i * 40;
+      // Left flank
+      final leftPath = Path()
+        ..moveTo(20, yOffset)
+        ..lineTo(70, yOffset - 30)
+        ..lineTo(120, yOffset + 15)
+        ..lineTo(160, yOffset - 10);
+      canvas.drawPath(leftPath, glowPaint);
+      canvas.drawPath(leftPath, mainPaint..strokeWidth = 1.1);
+
+      // Right flank
+      final rightPath = Path()
+        ..moveTo(w - 20, yOffset)
+        ..lineTo(w - 70, yOffset - 30)
+        ..lineTo(w - 120, yOffset + 15)
+        ..lineTo(w - 160, yOffset - 10);
+      canvas.drawPath(rightPath, glowPaint);
+      canvas.drawPath(rightPath, mainPaint..strokeWidth = 1.1);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _TribalSketchCanvasPainter oldDelegate) {
+    return oldDelegate.tintColor != tintColor ||
+        oldDelegate.glowColor != glowColor ||
+        oldDelegate.isDark != isDark;
   }
 }

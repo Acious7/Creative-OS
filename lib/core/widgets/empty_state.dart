@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../design_system/etole_colors.dart';
 import '../design_system/etole_components.dart';
 import '../design_system/etole_typography.dart';
@@ -24,8 +25,12 @@ class EmptyStateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryTextColor = isDark ? EtoleColors.cream : EtoleColors.lightTextPrimary;
-    final mutedTextColor = isDark ? EtoleColors.muted : EtoleColors.lightTextMuted;
+    final primaryTextColor = isDark
+        ? EtoleColors.cream
+        : EtoleColors.lightTextPrimary;
+    final mutedTextColor = isDark
+        ? EtoleColors.muted
+        : EtoleColors.lightTextMuted;
 
     return Center(
       child: Padding(
@@ -41,7 +46,9 @@ class EmptyStateWidget extends StatelessWidget {
               child: CustomPaint(
                 painter: _InkLineIllustrationPainter(
                   color: EtoleColors.cyan.withValues(alpha: 0.65),
-                  accentColor: isDark ? EtoleColors.cream.withValues(alpha: 0.25) : Colors.black26,
+                  accentColor: isDark
+                      ? EtoleColors.cream.withValues(alpha: 0.25)
+                      : Colors.black26,
                 ),
               ),
             ),
@@ -49,18 +56,15 @@ class EmptyStateWidget extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: EtoleTypography.subheading(color: primaryTextColor).copyWith(
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.3,
-              ),
+              style: EtoleTypography.subheading(color: primaryTextColor)
+                  .copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.3),
             ),
             const SizedBox(height: 8),
             Text(
               description,
               textAlign: TextAlign.center,
-              style: EtoleTypography.bodySmall(color: mutedTextColor).copyWith(
-                height: 1.5,
-              ),
+              style: EtoleTypography.bodySmall(color: mutedTextColor)
+                  .copyWith(height: 1.5),
             ),
             if (actionLabel != null && onAction != null) ...[
               const SizedBox(height: 28),
@@ -127,6 +131,6 @@ class _InkLineIllustrationPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _InkLineIllustrationPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _InkLineIllustrationPainter oldDelegate) =>
+      false;
 }
-

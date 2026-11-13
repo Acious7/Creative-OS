@@ -152,7 +152,7 @@ class _PersonProfileScreenState extends ConsumerState<PersonProfileScreen> {
         ? '\nRegarding our discussion: "${_person.notes}"'
         : '';
     final text =
-        'Hi ${_person.name}! Great connecting with you$org. Brian Etole here from Brian Etole Productions (Director & Hybrid Filmmaker).$notes\n\nLooking forward to collaborating on your upcoming visual projects. Let me know when is best for a quick alignment chat!';
+        'Hi ${_person.name}! Great connecting with you$org. Following up from our creative studio.$notes\n\nLooking forward to collaborating on your upcoming visual projects. Let me know when is best for a quick alignment chat!';
 
     final uri = Uri.parse(
       'https://wa.me/$clean?text=${Uri.encodeComponent(text)}',

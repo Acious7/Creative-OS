@@ -65,7 +65,7 @@ class _PaymentChaserSheetState extends State<PaymentChaserSheet> {
           'Hi $clientName! Hope you’re having a great week. Just touching base regarding invoice $docNum ($amountFormatted). Please let me know if your finance team needs any additional details or documents to process the settlement. Thank you!';
     } else if (_selectedTone == 1) {
       msg =
-          'Hello $clientName, Brian here from Brian Etole Productions. Following up on invoice $docNum ($amountFormatted). To ensure our shoot dates, cinema crew bookings, and post-production timeline remain locked, we kindly request settlement of this milestone balance. Let me know if you need any assistance!';
+          'Hello $clientName, following up from our creative studio regarding invoice $docNum ($amountFormatted). To ensure our project milestones, crew bookings, and post-production timeline remain locked, we kindly request settlement of this balance. Let us know if you need any assistance!';
     } else {
       msg =
           'Dear $clientName,\n\nPlease note invoice #$docNum in the amount of $amountFormatted is currently outstanding. Kindly arrange for settlement to our M-Pesa Till or Bank Wire accounts as specified on the invoice. We appreciate your prompt turnaround.';

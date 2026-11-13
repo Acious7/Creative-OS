@@ -5,11 +5,7 @@ class BrandSocialLinks {
   final String? linkedin;
   final String? whatsapp;
 
-  const BrandSocialLinks({
-    this.instagram,
-    this.linkedin,
-    this.whatsapp,
-  });
+  const BrandSocialLinks({this.instagram, this.linkedin, this.whatsapp});
 
   static const String defaultInstagram = 'instagram.com/brianetole';
   static const String defaultLinkedin = 'linkedin.com/in/brianetole';
@@ -29,7 +25,10 @@ class BrandSocialLinks {
 
 class BrandSocialLinksRepository {
   static const _storage = FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true, resetOnError: true),
+    aOptions: AndroidOptions(
+      encryptedSharedPreferences: true,
+      resetOnError: true,
+    ),
   );
 
   static const _keyInstagram = 'brand_social_instagram';
@@ -44,9 +43,15 @@ class BrandSocialLinksRepository {
       final wa = await _storage.read(key: _keyWhatsapp);
 
       return BrandSocialLinks(
-        instagram: ig == null ? BrandSocialLinks.defaultInstagram : (ig.trim().isEmpty ? null : ig.trim()),
-        linkedin: li == null ? BrandSocialLinks.defaultLinkedin : (li.trim().isEmpty ? null : li.trim()),
-        whatsapp: wa == null ? BrandSocialLinks.defaultWhatsapp : (wa.trim().isEmpty ? null : wa.trim()),
+        instagram: ig == null
+            ? BrandSocialLinks.defaultInstagram
+            : (ig.trim().isEmpty ? null : ig.trim()),
+        linkedin: li == null
+            ? BrandSocialLinks.defaultLinkedin
+            : (li.trim().isEmpty ? null : li.trim()),
+        whatsapp: wa == null
+            ? BrandSocialLinks.defaultWhatsapp
+            : (wa.trim().isEmpty ? null : wa.trim()),
       );
     } catch (_) {
       return BrandSocialLinks.defaultLinks;
@@ -55,8 +60,17 @@ class BrandSocialLinksRepository {
 
   /// Persists social links to secure storage. Empty strings signify hidden links.
   static Future<void> saveSocialLinks(BrandSocialLinks links) async {
-    await _storage.write(key: _keyInstagram, value: links.instagram?.trim() ?? '');
-    await _storage.write(key: _keyLinkedin, value: links.linkedin?.trim() ?? '');
-    await _storage.write(key: _keyWhatsapp, value: links.whatsapp?.trim() ?? '');
+    await _storage.write(
+      key: _keyInstagram,
+      value: links.instagram?.trim() ?? '',
+    );
+    await _storage.write(
+      key: _keyLinkedin,
+      value: links.linkedin?.trim() ?? '',
+    );
+    await _storage.write(
+      key: _keyWhatsapp,
+      value: links.whatsapp?.trim() ?? '',
+    );
   }
 }

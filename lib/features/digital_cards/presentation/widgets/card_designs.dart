@@ -101,19 +101,23 @@ class TribalCardTheme {
 class BusinessCardFrontView extends StatelessWidget {
   final BusinessCard card;
   final Brand brand;
+  final Color? customAccentOverride;
 
   const BusinessCardFrontView({
     super.key,
     required this.card,
     required this.brand,
+    this.customAccentOverride,
   });
 
   @override
   Widget build(BuildContext context) {
     final style = card.designStyle;
-    final customAccent = card.accentColorOverride != null
-        ? _parseColor(card.accentColorOverride!)
-        : null;
+    final customAccent =
+        customAccentOverride ??
+        (card.accentColorOverride != null
+            ? _parseColor(card.accentColorOverride!)
+            : null);
     final theme = TribalCardTheme.forStyle(style, customAccent);
 
     // Guaranteed phone number
@@ -371,20 +375,24 @@ class BusinessCardBackView extends StatelessWidget {
   final BusinessCard card;
   final Brand brand;
   final QrDisplayMode mode;
+  final Color? customAccentOverride;
 
   const BusinessCardBackView({
     super.key,
     required this.card,
     required this.brand,
     required this.mode,
+    this.customAccentOverride,
   });
 
   @override
   Widget build(BuildContext context) {
     final style = card.designStyle;
-    final customAccent = card.accentColorOverride != null
-        ? _parseColor(card.accentColorOverride!)
-        : null;
+    final customAccent =
+        customAccentOverride ??
+        (card.accentColorOverride != null
+            ? _parseColor(card.accentColorOverride!)
+            : null);
     final theme = TribalCardTheme.forStyle(style, customAccent);
 
     final qrData = _getQrData();

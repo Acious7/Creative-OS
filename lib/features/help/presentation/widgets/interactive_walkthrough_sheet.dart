@@ -52,7 +52,7 @@ class _InteractiveWalkthroughSheetState
 
   static const List<WalkthroughSlide> _slides = [
     WalkthroughSlide(
-      chapter: 'CHAPTER 01 / 10 • STUDIO CANVAS',
+      chapter: 'CHAPTER 01 / 12 • STUDIO CANVAS',
       title: 'The Studio Hub & 6 Doorways',
       subtitle:
           'Your velvet obsidian command center navigating 6 integrated worlds.',
@@ -67,7 +67,7 @@ class _InteractiveWalkthroughSheetState
       powerShortcut: 'From anywhere inside any world, tap the floating glass "< HUB" pill to instantly return home.',
     ),
     WalkthroughSlide(
-      chapter: 'CHAPTER 02 / 10 • AI SUPERPOWERS',
+      chapter: 'CHAPTER 02 / 12 • AI SUPERPOWERS',
       title: 'AI Pocket Chief of Staff',
       subtitle: 'Speak or dictate natural language notes to create CRM deals, contacts, and quotes.',
       accentColor: Color(0xFF38B6DB),
@@ -81,7 +81,7 @@ class _InteractiveWalkthroughSheetState
       powerShortcut: 'Tap any of the quick preset chips (e.g. "Pitch Safaricom") for instant 1-tap testing.',
     ),
     WalkthroughSlide(
-      chapter: 'CHAPTER 03 / 10 • CASHFLOW & TAXES',
+      chapter: 'CHAPTER 03 / 12 • CASHFLOW & TAXES',
       title: 'CEO Morning Radar & KRA Escrow',
       subtitle: 'A 30-second daily briefing of cashflow, aging debtors, and tax reserves.',
       accentColor: Color(0xFFF59E0B),
@@ -95,7 +95,7 @@ class _InteractiveWalkthroughSheetState
       powerShortcut: 'Tap "Chase" on any debtor to dispatch a customized payment reminder directly to WhatsApp.',
     ),
     WalkthroughSlide(
-      chapter: 'CHAPTER 04 / 10 • CLIENT RELATIONS',
+      chapter: 'CHAPTER 04 / 12 • CLIENT RELATIONS',
       title: 'Deals & Commercial Pipeline',
       subtitle: 'Track revenue opportunities from initial inquiry to signed commercial contract.',
       accentColor: Color(0xFFF59E0B),
@@ -109,7 +109,7 @@ class _InteractiveWalkthroughSheetState
       powerShortcut: 'Tap "Edit Deal" to customize project titles, budget valuations, and service offerings.',
     ),
     WalkthroughSlide(
-      chapter: 'CHAPTER 05 / 10 • SPEED CLOSING',
+      chapter: 'CHAPTER 05 / 12 • SPEED CLOSING',
       title: 'Smart 1-Tap WhatsApp Pitch Engine',
       subtitle: 'Personalized freelance pitching templates dispatched directly to client WhatsApp chats.',
       accentColor: Color(0xFF25D366),
@@ -123,7 +123,7 @@ class _InteractiveWalkthroughSheetState
       powerShortcut: 'Tap "Copy" to paste customized pitch templates into LinkedIn, Instagram DM, or Email.',
     ),
     WalkthroughSlide(
-      chapter: 'CHAPTER 06 / 10 • COMMERCIAL BILLING',
+      chapter: 'CHAPTER 06 / 12 • COMMERCIAL BILLING',
       title: 'Docs & Financial Engine',
       subtitle: 'Executive quotations, tax invoices, production contracts, and payment receipts.',
       accentColor: Color(0xFF007A3D),
@@ -137,7 +137,7 @@ class _InteractiveWalkthroughSheetState
       powerShortcut: 'Filter documents with 1 tap using the top capsule selector (Quotes, Invoices, Contracts, Receipts).',
     ),
     WalkthroughSlide(
-      chapter: 'CHAPTER 07 / 10 • PRODUCTION SET',
+      chapter: 'CHAPTER 07 / 12 • PRODUCTION SET',
       title: 'Production Slate & Crew Day Rates',
       subtitle: 'Manage active film projects, create professional call sheets, and book cinema crew.',
       accentColor: Color(0xFF00838F),
@@ -151,7 +151,7 @@ class _InteractiveWalkthroughSheetState
       powerShortcut: 'Tap "Book" on any crew member to auto-generate a shoot availability inquiry on WhatsApp.',
     ),
     WalkthroughSlide(
-      chapter: 'CHAPTER 08 / 10 • AUDIO INTELLIGENCE',
+      chapter: 'CHAPTER 08 / 12 • AUDIO INTELLIGENCE',
       title: 'Meetings & Speech Test Lab',
       subtitle: 'Log creative briefs, track promises made, and test on-device speech transcription.',
       accentColor: Color(0xFF2563EB),
@@ -165,7 +165,7 @@ class _InteractiveWalkthroughSheetState
       powerShortcut: 'Tap "Open Lab" in the Meetings hub to record and test speech recognition accuracy in real time.',
     ),
     WalkthroughSlide(
-      chapter: 'CHAPTER 09 / 10 • DIGITAL STAGE',
+      chapter: 'CHAPTER 09 / 12 • DIGITAL STAGE',
       title: 'NFC & QR Card Broadcast',
       subtitle: 'Your virtual business card with live 3D sensor tilt, specular sheen, and NFC tap.',
       accentColor: Color(0xFFDC2626),
@@ -179,7 +179,7 @@ class _InteractiveWalkthroughSheetState
       powerShortcut: 'Hold down anywhere on your business card to trigger full-screen presentation mode.',
     ),
     WalkthroughSlide(
-      chapter: 'CHAPTER 10 / 10 • SECURE VAULT',
+      chapter: 'CHAPTER 10 / 12 • SECURE VAULT',
       title: 'Settings, Vault & Offline Backup',
       subtitle: 'AES-256 local encryption, biometric fingerprint lock, and 1-tap offline archives.',
       accentColor: Color(0xFF4F46E5),
@@ -191,6 +191,34 @@ class _InteractiveWalkthroughSheetState
         'Encrypted .etole Archive: Export or restore your entire studio vault in seconds with 1 tap.',
       ],
       powerShortcut: 'In Settings, tap the version number 5 times to unlock the hidden Studio Design System Gallery.',
+    ),
+    WalkthroughSlide(
+      chapter: 'CHAPTER 11 / 12 • THE SANCTUARY',
+      title: 'Deep Solitude & Personal Life',
+      subtitle: 'Monk focus, dual soundscapes, analog voice capsules, secret spots, and gratitude stars.',
+      accentColor: Color(0xFFEC4899),
+      icon: Icons.self_improvement_rounded,
+      keyFeatures: [
+        'Monk Mode & Dual Soundscapes: Box breathing with tactile micro-haptic blind focus, Canopy Rain & Fire, and 432Hz Alpha binaural flow.',
+        'Creative Scrapbook & Voice Capsules: 60s vintage analog reel voice memo recorder, finger sketches, and real-world palette extraction.',
+        'Personal Atlas & Secret Spots: Life cartography with chronological route constellation line, spot ambient audio, and 1-tap Field Guide sharing.',
+        'Soulful Vault & Inner Circle: Biometric journal with 3-Point Gratitude Constellations, "Burn After Writing" tactile dissolution, Future Letters, and Quiet Milestone Horizon.',
+      ],
+      powerShortcut: 'Tap the glowing pink "SANCTUARY" jewel pill at the top of the Hub to step into your private retreat.',
+    ),
+    WalkthroughSlide(
+      chapter: 'CHAPTER 12 / 12 • AUTONOMOUS ENGINE',
+      title: 'Watchdogs & Custom Automation Recipes',
+      subtitle: '9 native background watchers and visual WHEN ➔ AND IF ➔ THEN autonomous workflow pipelines.',
+      accentColor: Color(0xFF00E5FF),
+      icon: Icons.bolt_rounded,
+      keyFeatures: [
+        '9 Native Background Watchdogs: Auto-detect overdue invoices, aging debtors, stale deals, VIP decay, and missing shoot gear.',
+        'Visual Recipe Builder: Easily create custom autonomous triggers (e.g. WHEN Payment Received ➔ THEN WhatsApp Thank You).',
+        '100% On-Device & Private: Rule evaluation runs locally under Android partial wakelock without third-party cloud services.',
+        'Execution Log Audit: Complete audit trail showing automated alerts, reminders, and notifications sent.',
+      ],
+      powerShortcut: 'Go to Settings ➔ Automations to toggle watchdogs or tap "+" to create custom visual recipes.',
     ),
   ];
 

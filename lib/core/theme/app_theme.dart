@@ -1,17 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'app_design_tokens.dart';
 
 class AppTheme {
   static ThemeData getDarkTheme(Color brandAccent, {bool isOled = false}) {
     final bg = isOled ? AppDesignTokens.oledBg : AppDesignTokens.darkBg;
-    final surfaceLowest = isOled ? AppDesignTokens.oledSurfaceLowest : AppDesignTokens.darkSurfaceLowest;
-    final surfaceLow = isOled ? AppDesignTokens.oledSurfaceLow : AppDesignTokens.darkSurfaceLow;
-    final surface = isOled ? AppDesignTokens.oledSurface : AppDesignTokens.darkSurface;
-    final surfaceHigh = isOled ? AppDesignTokens.oledSurfaceHigh : AppDesignTokens.darkSurfaceHigh;
-    final surfaceHighest = isOled ? AppDesignTokens.oledSurfaceHighest : AppDesignTokens.darkSurfaceHighest;
-    final border = isOled ? AppDesignTokens.oledBorder : AppDesignTokens.darkBorder;
-    final borderSubtle = isOled ? AppDesignTokens.oledBorderSubtle : AppDesignTokens.darkBorderSubtle;
+    final surfaceLowest = isOled
+        ? AppDesignTokens.oledSurfaceLowest
+        : AppDesignTokens.darkSurfaceLowest;
+    final surfaceLow = isOled
+        ? AppDesignTokens.oledSurfaceLow
+        : AppDesignTokens.darkSurfaceLow;
+    final surface = isOled
+        ? AppDesignTokens.oledSurface
+        : AppDesignTokens.darkSurface;
+    final surfaceHigh = isOled
+        ? AppDesignTokens.oledSurfaceHigh
+        : AppDesignTokens.darkSurfaceHigh;
+    final surfaceHighest = isOled
+        ? AppDesignTokens.oledSurfaceHighest
+        : AppDesignTokens.darkSurfaceHighest;
+    final border = isOled
+        ? AppDesignTokens.oledBorder
+        : AppDesignTokens.darkBorder;
+    final borderSubtle = isOled
+        ? AppDesignTokens.oledBorderSubtle
+        : AppDesignTokens.darkBorderSubtle;
 
     final colorScheme = ColorScheme.dark(
       primary: brandAccent,
@@ -37,19 +52,31 @@ class AppTheme {
       onError: Colors.white,
     );
 
-    final textTheme = GoogleFonts.interTextTheme(
-      ThemeData.dark().textTheme,
-    ).copyWith(
-      displayLarge: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w700),
-      displayMedium: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w700),
-      displaySmall: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w600),
-      headlineLarge: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w700),
-      headlineMedium: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w600),
-      headlineSmall: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w600),
-    ).apply(
-      bodyColor: AppDesignTokens.darkTextPrimary,
-      displayColor: AppDesignTokens.darkTextPrimary,
-    );
+    final textTheme = GoogleFonts.interTextTheme(ThemeData.dark().textTheme)
+        .copyWith(
+          displayLarge: GoogleFonts.playfairDisplay(
+            fontWeight: FontWeight.w700,
+          ),
+          displayMedium: GoogleFonts.playfairDisplay(
+            fontWeight: FontWeight.w700,
+          ),
+          displaySmall: GoogleFonts.playfairDisplay(
+            fontWeight: FontWeight.w600,
+          ),
+          headlineLarge: GoogleFonts.playfairDisplay(
+            fontWeight: FontWeight.w700,
+          ),
+          headlineMedium: GoogleFonts.playfairDisplay(
+            fontWeight: FontWeight.w600,
+          ),
+          headlineSmall: GoogleFonts.playfairDisplay(
+            fontWeight: FontWeight.w600,
+          ),
+        )
+        .apply(
+          bodyColor: AppDesignTokens.darkTextPrimary,
+          displayColor: AppDesignTokens.darkTextPrimary,
+        );
 
     return ThemeData(
       useMaterial3: true,
@@ -124,7 +151,10 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 15,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
           borderSide: BorderSide(color: border, width: 1),
@@ -139,10 +169,19 @@ class AppTheme {
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
-          borderSide: const BorderSide(color: AppDesignTokens.statusOverdue, width: 1.5),
+          borderSide: const BorderSide(
+            color: AppDesignTokens.statusOverdue,
+            width: 1.5,
+          ),
         ),
-        labelStyle: const TextStyle(color: AppDesignTokens.darkTextSecondary, fontSize: 14),
-        hintStyle: const TextStyle(color: AppDesignTokens.darkTextMuted, fontSize: 14),
+        labelStyle: const TextStyle(
+          color: AppDesignTokens.darkTextSecondary,
+          fontSize: 14,
+        ),
+        hintStyle: const TextStyle(
+          color: AppDesignTokens.darkTextMuted,
+          fontSize: 14,
+        ),
       ),
       dividerTheme: DividerThemeData(
         color: borderSubtle,
@@ -175,14 +214,22 @@ class AppTheme {
         unselectedItemColor: AppDesignTokens.darkTextMuted,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
-        selectedLabelStyle: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600),
-        unselectedLabelStyle: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w500),
+        selectedLabelStyle: GoogleFonts.inter(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: GoogleFonts.inter(
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+        ),
       ),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: surface,
         modalBackgroundColor: surface,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppDesignTokens.radiusXl)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppDesignTokens.radiusXl),
+          ),
         ),
       ),
     );
@@ -213,19 +260,31 @@ class AppTheme {
       onError: Colors.white,
     );
 
-    final textTheme = GoogleFonts.interTextTheme(
-      ThemeData.light().textTheme,
-    ).copyWith(
-      displayLarge: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w700),
-      displayMedium: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w700),
-      displaySmall: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w600),
-      headlineLarge: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w700),
-      headlineMedium: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w600),
-      headlineSmall: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w600),
-    ).apply(
-      bodyColor: AppDesignTokens.lightTextPrimary,
-      displayColor: AppDesignTokens.lightTextPrimary,
-    );
+    final textTheme = GoogleFonts.interTextTheme(ThemeData.light().textTheme)
+        .copyWith(
+          displayLarge: GoogleFonts.playfairDisplay(
+            fontWeight: FontWeight.w700,
+          ),
+          displayMedium: GoogleFonts.playfairDisplay(
+            fontWeight: FontWeight.w700,
+          ),
+          displaySmall: GoogleFonts.playfairDisplay(
+            fontWeight: FontWeight.w600,
+          ),
+          headlineLarge: GoogleFonts.playfairDisplay(
+            fontWeight: FontWeight.w700,
+          ),
+          headlineMedium: GoogleFonts.playfairDisplay(
+            fontWeight: FontWeight.w600,
+          ),
+          headlineSmall: GoogleFonts.playfairDisplay(
+            fontWeight: FontWeight.w600,
+          ),
+        )
+        .apply(
+          bodyColor: AppDesignTokens.lightTextPrimary,
+          displayColor: AppDesignTokens.lightTextPrimary,
+        );
 
     return ThemeData(
       useMaterial3: true,
@@ -277,7 +336,10 @@ class AppTheme {
           foregroundColor: AppDesignTokens.lightTextPrimary,
           minimumSize: const Size(64, 46),
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-          side: const BorderSide(color: AppDesignTokens.lightBorder, width: 1.2),
+          side: const BorderSide(
+            color: AppDesignTokens.lightBorder,
+            width: 1.2,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
           ),
@@ -300,14 +362,23 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppDesignTokens.lightSurface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 15,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
-          borderSide: const BorderSide(color: AppDesignTokens.lightBorder, width: 1),
+          borderSide: const BorderSide(
+            color: AppDesignTokens.lightBorder,
+            width: 1,
+          ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
-          borderSide: const BorderSide(color: AppDesignTokens.lightBorder, width: 1),
+          borderSide: const BorderSide(
+            color: AppDesignTokens.lightBorder,
+            width: 1,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
@@ -315,10 +386,19 @@ class AppTheme {
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
-          borderSide: const BorderSide(color: AppDesignTokens.statusOverdue, width: 1.5),
+          borderSide: const BorderSide(
+            color: AppDesignTokens.statusOverdue,
+            width: 1.5,
+          ),
         ),
-        labelStyle: const TextStyle(color: AppDesignTokens.lightTextSecondary, fontSize: 14),
-        hintStyle: const TextStyle(color: AppDesignTokens.lightTextMuted, fontSize: 14),
+        labelStyle: const TextStyle(
+          color: AppDesignTokens.lightTextSecondary,
+          fontSize: 14,
+        ),
+        hintStyle: const TextStyle(
+          color: AppDesignTokens.lightTextMuted,
+          fontSize: 14,
+        ),
       ),
       dividerTheme: const DividerThemeData(
         color: AppDesignTokens.lightBorderSubtle,
@@ -351,14 +431,22 @@ class AppTheme {
         unselectedItemColor: AppDesignTokens.lightTextMuted,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
-        selectedLabelStyle: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600),
-        unselectedLabelStyle: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w500),
+        selectedLabelStyle: GoogleFonts.inter(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: GoogleFonts.inter(
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+        ),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppDesignTokens.lightSurface,
         modalBackgroundColor: AppDesignTokens.lightSurface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppDesignTokens.radiusXl)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppDesignTokens.radiusXl),
+          ),
         ),
       ),
     );
