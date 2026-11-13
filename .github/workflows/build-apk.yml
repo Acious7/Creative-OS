@@ -36,7 +36,7 @@ jobs:
 
       - name: Assemble Release APK
         run: |
-          flutter build apk --release --target-platform android-arm64 --no-tree-shake-icons
+          flutter build apk --release --target-platform android-arm64 --no-tree-shake-icons --android-skip-build-dependency-validation
           cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/creative-os.apk || cp build/app/outputs/flutter-apk/*.apk build/app/outputs/flutter-apk/creative-os.apk
 
       - name: Upload APK Artifact
