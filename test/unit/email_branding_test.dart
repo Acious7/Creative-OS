@@ -35,7 +35,7 @@ void main() {
       final content = BrandedEmailBuilder.buildEmail(
         theme: EmailTheme.editorialGallery,
         recipientName: 'Studio Lead',
-        recipientEmail: 'studio@creativeos.app',
+        recipientEmail: 'hello@brianetole.com',
         heading: 'Test Custom Logo',
         messageHtml: '<p>Custom logo test.</p>',
         messagePlainText: 'Custom logo test.',

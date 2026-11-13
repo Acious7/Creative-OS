@@ -36,7 +36,7 @@ class _SmtpEmailSettingsScreenState extends State<SmtpEmailSettingsScreen> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: 'Creative Studio');
-    _emailController = TextEditingController(text: 'studio@creativeos.app');
+    _emailController = TextEditingController(text: 'hello@brianetole.com');
     _hostController = TextEditingController(text: 'smtp.gmail.com');
     _portController = TextEditingController(text: '465');
     _usernameController = TextEditingController();
@@ -82,7 +82,7 @@ class _SmtpEmailSettingsScreenState extends State<SmtpEmailSettingsScreen> {
           _isSsl = true;
           break;
         case 'custom':
-          _hostController.text = 'mail.yourdomain.com';
+          _hostController.text = 'mail.brianetole.com';
           _portController.text = '465';
           _isSsl = true;
           break;
@@ -471,7 +471,7 @@ class _SmtpEmailSettingsScreenState extends State<SmtpEmailSettingsScreen> {
                         ),
                         decoration: _inputDecoration(
                           label: 'Sender Email Address',
-                          hint: 'studio@creativeos.app or user@gmail.com',
+                          hint: 'hello@brianetole.com or user@gmail.com',
                           icon: Icons.alternate_email_rounded,
                         ),
                       ),

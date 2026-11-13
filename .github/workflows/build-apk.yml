@@ -50,11 +50,13 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         with:
-          tag_name: v2.2.0
-          name: "Creative OS v2.2.0 (Release)"
+          tag_name: v2.2.1
+          name: "Creative OS v2.2.1 (Release)"
           body: |
             ### 🎨 Creative OS - Mobile Operating System for Creative Entrepreneurs
             **Designed & Architected by Brian Etole**
+            - Official Domain: **brianetole.com**
+            - Official Contact: **hello@brianetole.com**
             Download and install **`creative-os.apk`** below on any Android phone.
 
             #### ⚡ Features & Modules (v2.2.0)

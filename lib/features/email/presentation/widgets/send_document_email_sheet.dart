@@ -171,8 +171,8 @@ class _SendDocumentEmailSheetState
       'due_date': dueDateStr,
       'project': projectStr,
       'payment_channels': paymentBuffer.toString().trim(),
-      'showreel_url': 'https://creativeos.app',
-      'rate_card_url': 'https://creativeos.app',
+      'showreel_url': 'https://brianetole.com/films',
+      'rate_card_url': 'https://brianetole.com',
     };
   }
 
@@ -585,7 +585,7 @@ class _SendDocumentEmailSheetState
       await docRepo.logActivity(
         docId,
         'SENT',
-        'Sent via Gmail (${_connectedAccount?.email ?? "studio@creativeos.app"}) to $recipientStr',
+        'Sent via Gmail (${_connectedAccount?.email ?? "hello@brianetole.com"}) to $recipientStr',
       );
 
       // 2. Mark document as sent and update lastSentAt
@@ -1055,7 +1055,7 @@ class _SendDocumentEmailSheetState
                 fontSize: 13,
               ),
               decoration: InputDecoration(
-                hintText: 'archive@creativeos.app',
+                hintText: 'archive@brianetole.com',
                 filled: true,
                 fillColor: isDark
                     ? const Color(0xFF0F1214)
@@ -1514,7 +1514,7 @@ class _SendDocumentEmailSheetState
                   ),
                   SizedBox(height: 8),
                   Text(
-                    'studio@creativeos.app • +254 700 000 000 • creativeos.app',
+                    'hello@brianetole.com • +254 718 013 579 • brianetole.com',
                     style: TextStyle(fontSize: 10, color: Color(0xFFA79F90)),
                   ),
                 ],

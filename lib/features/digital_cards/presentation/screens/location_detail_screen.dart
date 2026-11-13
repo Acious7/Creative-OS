@@ -1614,8 +1614,8 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
             onTap: () {
               Share.share(
                 'Creative Studio · Production & Direction\n'
-                'Portfolio: https://creativeos.app\n'
-                'Contact: +254 700 000 000',
+                'Portfolio: https://brianetole.com\n'
+                'Contact: +254 718 013 579',
               );
             },
           ),

@@ -833,7 +833,7 @@ class _ProjectDetailScreenState extends ConsumerState<ProjectDetailScreen> {
     buffer.writeln('');
     buffer.writeln('Thank you for creating with us!');
     buffer.writeln('Creative Studio · Production & Direction');
-    buffer.writeln('creativeos.app');
+    buffer.writeln('brianetole.com');
 
     final text = Uri.encodeComponent(buffer.toString());
     final whatsappUrl = Uri.parse('https://wa.me/?text=$text');

@@ -540,7 +540,7 @@ class GmailSendService {
                     ),
                   ),
                   pw.Text(
-                    'creativeos.app · Nairobi, Kenya',
+                    'brianetole.com · Nairobi, Kenya',
                     style: const pw.TextStyle(
                       fontSize: 9,
                       color: PdfColor.fromInt(0xFF777777),

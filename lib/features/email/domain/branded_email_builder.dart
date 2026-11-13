@@ -13,8 +13,8 @@ class BrandedEmailContent {
 }
 
 class BrandedEmailBuilder {
-  static const String siteUrl = 'https://creativeos.app';
-  static const String emailAssetsUrl = 'https://creativeos.app/email';
+  static const String siteUrl = 'https://brianetole.com';
+  static const String emailAssetsUrl = 'https://brianetole.com/email';
 
   /// Builds a fully-responsive, email-client-compatible HTML and plain-text email
   static BrandedEmailContent buildEmail({
@@ -337,9 +337,9 @@ class BrandedEmailBuilder {
                 <tr>
                   <td align="center" style="border-top: 1px solid #2a2d2e; padding-top: 20px; font-family: Arial, sans-serif; font-size: 12px; color: #a79f90; line-height: 1.6;">
                     <div>
-                      <a href="mailto:studio@creativeos.app" style="color: #f3ead9; text-decoration: none; font-weight: bold;">studio@creativeos.app</a> &bull; 
-                      <a href="tel:+254700000000" style="color: #f3ead9; text-decoration: none;">+254 700 000 000</a> &bull; 
-                      <a href="$siteUrl" target="_blank" style="color: #38B6DB; text-decoration: none;">creativeos.app</a>
+                      <a href="mailto:hello@brianetole.com" style="color: #f3ead9; text-decoration: none; font-weight: bold;">hello@brianetole.com</a> &bull; 
+                      <a href="tel:+254718013579" style="color: #f3ead9; text-decoration: none;">+254 718 013 579</a> &bull; 
+                      <a href="$siteUrl" target="_blank" style="color: #38B6DB; text-decoration: none;">brianetole.com</a>
                     </div>
                   </td>
                 </tr>
@@ -549,9 +549,9 @@ class BrandedEmailBuilder {
 
               <!-- Contact Direct -->
               <div style="margin-top: 18px; font-family: Arial, sans-serif; font-size: 11px; color: #a79f90;">
-                <a href="mailto:studio@creativeos.app" style="color: #a79f90; text-decoration: none;">studio@creativeos.app</a> &bull;
-                <a href="tel:+254700000000" style="color: #a79f90; text-decoration: none;">+254 700 000 000</a> &bull;
-                <a href="$siteUrl" target="_blank" style="color: #38B6DB; text-decoration: none;">creativeos.app</a>
+                <a href="mailto:hello@brianetole.com" style="color: #a79f90; text-decoration: none;">hello@brianetole.com</a> &bull;
+                <a href="tel:+254718013579" style="color: #a79f90; text-decoration: none;">+254 718 013 579</a> &bull;
+                <a href="$siteUrl" target="_blank" style="color: #38B6DB; text-decoration: none;">brianetole.com</a>
               </div>
 
               <!-- Copyright -->
@@ -618,10 +618,10 @@ class BrandedEmailBuilder {
     sb.writeln('Nairobi, Kenya');
     sb.writeln();
     sb.writeln(
-      'studio@creativeos.app | +254 700 000 000 | https://creativeos.app',
+      'hello@brianetole.com | +254 718 013 579 | https://brianetole.com',
     );
     sb.writeln(
-      'Portfolio: https://creativeos.app',
+      'Portfolio: https://brianetole.com',
     );
 
     final links = socialLinks ?? BrandSocialLinks.defaultLinks;
@@ -684,7 +684,7 @@ If you have any questions or require additional documentation for your accounts 
     return buildEmail(
       theme: theme,
       recipientName: 'Maya Lin',
-      recipientEmail: 'studio@creativeos.app',
+      recipientEmail: 'hello@brianetole.com',
       heading: heading,
       messageHtml: messageHtml,
       messagePlainText: messagePlainText,
@@ -718,7 +718,7 @@ If you have any questions or require additional documentation for your accounts 
 <p style="margin: 0 0 16px 0;">Hello Alex,</p>
 <p style="margin: 0 0 16px 0;">It was wonderful meeting you earlier today! As promised, I wanted to follow up with our digital card and creative portfolio details.</p>
 <p style="margin: 0 0 16px 0;">We produce <strong>commercial films, brand storytelling, and high-ticket media productions</strong> for global brands, agencies, and creators with something real to say.</p>
-<p style="margin: 0 0 16px 0;">You can explore our latest work and services at <a href="$siteUrl" target="_blank" style="color: #38B6DB; font-weight: bold; text-decoration: underline;">creativeos.app</a>.</p>
+<p style="margin: 0 0 16px 0;">You can explore our latest work and services at <a href="$siteUrl" target="_blank" style="color: #38B6DB; font-weight: bold; text-decoration: underline;">brianetole.com</a>.</p>
 <p style="margin: 0;">I have also attached our 2026 Production Rate Card for your review. Let's find time next week to discuss your upcoming project!</p>
 ''';
 
@@ -729,7 +729,7 @@ It was wonderful meeting you earlier today! As promised, I wanted to follow up w
 
 We produce commercial films, brand storytelling, and high-ticket media productions for global brands, agencies, and creators with something real to say.
 
-You can explore our latest work and services at https://creativeos.app.
+You can explore our latest work and services at https://brianetole.com.
 
 I have also attached our 2026 Production Rate Card for your review. Let's find time next week to discuss your upcoming project!
 ''';
@@ -737,7 +737,7 @@ I have also attached our 2026 Production Rate Card for your review. Let's find t
     return buildEmail(
       theme: theme,
       recipientName: 'Alex Mercer',
-      recipientEmail: 'studio@creativeos.app',
+      recipientEmail: 'hello@brianetole.com',
       heading: heading,
       messageHtml: messageHtml,
       messagePlainText: messagePlainText,

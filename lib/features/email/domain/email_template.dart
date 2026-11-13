@@ -123,7 +123,7 @@ Thank you for your interest in our creative production services.
 Please find attached our current 2026 Rate Card, detailing standard rates for directing, commercial cinematography, audio capture, and post-production color finishing.
 
 You can also explore our portfolio and commercial work at:
-https://creativeos.app
+https://brianetole.com
 
 We would be happy to discuss your project requirements and tailor an estimate specifically for your production timeline.''',
     ),
@@ -155,7 +155,7 @@ It was a real pleasure connecting with you recently at {project}.
 As discussed, we are a creative production studio specializing in authentic commercial storytelling, cinematic field visuals, and creative direction.
 
 You can view our digital business card and showreels here:
-Portfolio: https://creativeos.app
+Portfolio: https://brianetole.com
 
 Attached is our 2026 Rate Card for your future reference. Whenever a story, campaign, or event arises that calls for cinematic treatment, we would love to collaborate.''',
     ),
